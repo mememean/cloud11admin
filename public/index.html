@@ -12,7 +12,10 @@ img{display:block}
 /* ===== S1 HEADER ===== */
 .s1{position:relative;height:850px;overflow:hidden}
 .s1-bg{position:absolute;inset:0}
-.s1-bg img{position:absolute;width:115%;height:165%;object-fit:cover;left:-7.5%;top:-29%;max-width:none}
+/* slider: stack bg images, fade between them */
+.s1-bg-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out;}
+.s1-bg-slide.active{opacity:1;}
+.s1-bg-slide img{position:absolute;width:115%;height:165%;object-fit:cover;left:-7.5%;top:-29%;max-width:none}
 .s1-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25)}
 .s1-nav{
   position:absolute;top:calc(50% - 390px);left:50%;transform:translateX(-50%);
@@ -169,10 +172,10 @@ img{display:block}
 
 /* ===== HERO DISSOLVE / LOAD-IN ===== */
 @keyframes heroBgIn{
-  0%{opacity:0;transform:scale(1.06) translateX(-7.5%) translateY(-29%);}
-  100%{opacity:1;transform:scale(1) translateX(-7.5%) translateY(-29%);}
+  0%{opacity:0;transform:scale(1.06);}
+  100%{opacity:1;transform:scale(1);}
 }
-.s1-bg img{
+.s1-bg-slide.active img{
   animation:heroBgIn 1.8s cubic-bezier(.4,0,.2,1) forwards;
   will-change:transform,opacity;
 }
@@ -234,27 +237,30 @@ img{display:block}
 <body>
 
 <!-- ===== SECTION 1: HEADER ===== -->
-<section class="s1">
-  <div class="s1-bg">
-    <img id="s1-bg-img" src="/uploads/bgspace.png" alt="Cloud 11"/>
+<section class="s1" id="s1">
+  <div class="s1-bg" id="s1-bg">
+    <!-- slides injected by JS -->
+    <div class="s1-bg-slide active" id="s1-slide-default">
+      <img src="/uploads/bgspace.png" alt="Cloud 11"/>
+    </div>
     <div class="s1-overlay"></div>
   </div>
-  <nav class="s1-nav">
+  <nav class="s1-nav" id="s1-nav">
     <div class="s1-nav-logo">
-      <img src="/uploads/nav-logo.png" alt="c11"/>
+      <img id="s1-nav-logo-img" src="/uploads/nav-logo.png" alt="c11"/>
     </div>
-    <div class="s1-nav-items">
+    <div class="s1-nav-items" id="s1-nav-items">
       <div class="s1-nav-item">Ecosystem</div>
       <div class="s1-nav-item">Your Spaces</div>
       <div class="s1-nav-item">Happenings</div>
       <div class="s1-nav-item">Campaign &amp; Promotion</div>
     </div>
-    <button class="s1-nav-contact">Contact</button>
+    <button class="s1-nav-contact" id="s1-nav-cta">Contact</button>
   </nav>
   <div class="s1-content">
     <div class="s1-texts">
-      <div class="s1-text">bangkok's<br>new creative<br>ecosystem</div>
-      <div class="s1-text">designed for creator,<br>compaines, and communities<br>shaping the future of culture</div>
+      <div class="s1-text" id="s1-tagline-left">bangkok's<br>new creative<br>ecosystem</div>
+      <div class="s1-text" id="s1-tagline-right">designed for creator,<br>companies, and communities<br>shaping the future of culture</div>
     </div>
     <div class="s1-logo-wrap">
       <img id="s1-logo" src="/uploads/logo-gradient.svg" alt="cloud 11"/>
@@ -403,9 +409,9 @@ function s3nav(dir){
 
 // ===== STICKY NAV / LOGO SCROLL =====
 var nav = document.querySelector('.s1-nav');
-var s1 = document.querySelector('.s1');
+var s1El = document.querySelector('.s1');
 window.addEventListener('scroll', function(){
-  var scrolled = window.scrollY > s1.offsetHeight - 120;
+  var scrolled = window.scrollY > s1El.offsetHeight - 120;
   if(scrolled) nav.classList.add('scrolled');
   else nav.classList.remove('scrolled');
 }, {passive:true});
@@ -426,28 +432,132 @@ window.addEventListener('scroll', function(){
   els.forEach(function(el){ io.observe(el); });
 })();
 
-// ===== RENDER S2 (Our Vision from content1.spaces) =====
-function renderS2(spaces){
-  if(!spaces || !spaces.length) return;
-  var main = spaces[0];
-  var left = spaces[spaces.length-1] || spaces[0];
-  var right = spaces[1] || spaces[0];
-  if(main.image) document.getElementById('s2-main-img').src = main.image;
-  if(main.name) document.getElementById('s2-main-title').textContent = main.name;
-  if(main.type) document.getElementById('s2-main-sub').textContent = main.type;
-  if(left.image) document.querySelector('.s2-card-left img').src = left.image;
-  if(right.image) document.querySelector('.s2-card-right img').src = right.image;
+// ===== HERO SLIDER =====
+var heroSlides = [];
+var heroCurrent = 0;
+var heroTimer = null;
+
+function buildHeroSlides(slides){
+  var bg = document.getElementById('s1-bg');
+  var overlay = bg.querySelector('.s1-overlay');
+  // remove default slide
+  var def = document.getElementById('s1-slide-default');
+  if(def) def.remove();
+  heroSlides = slides.filter(function(s){ return s.image; });
+  if(!heroSlides.length) return;
+  heroSlides.forEach(function(s, i){
+    var div = document.createElement('div');
+    div.className = 's1-bg-slide' + (i===0?' active':'');
+    div.setAttribute('data-idx', i);
+    var img = document.createElement('img');
+    img.src = s.image; img.alt = '';
+    div.appendChild(img);
+    bg.insertBefore(div, overlay);
+  });
+  // update text for first slide
+  updateHeroText(heroSlides[0]);
+  if(heroSlides.length > 1){
+    heroTimer = setInterval(function(){ heroNext(); }, 5000);
+  }
+}
+
+function heroNext(){
+  var slideEls = document.querySelectorAll('.s1-bg-slide');
+  if(!slideEls.length) return;
+  slideEls[heroCurrent].classList.remove('active');
+  heroCurrent = (heroCurrent + 1) % slideEls.length;
+  slideEls[heroCurrent].classList.add('active');
+  if(heroSlides[heroCurrent]) updateHeroText(heroSlides[heroCurrent]);
+}
+
+function updateHeroText(slide){
+  var l = document.getElementById('s1-tagline-left');
+  var r = document.getElementById('s1-tagline-right');
+  if(l && slide.tagline_left) l.innerHTML = slide.tagline_left.replace(/\n/g,'<br>');
+  if(r && slide.tagline_right) r.innerHTML = slide.tagline_right.replace(/\n/g,'<br>');
+}
+
+// ===== RENDER NAV FROM CMS =====
+function renderNav(d){
+  if(!d) return;
+  // logo
+  var navLogo = document.getElementById('s1-nav-logo-img');
+  if(navLogo && d.header && d.header.logo && d.header.logo.image)
+    navLogo.src = d.header.logo.image;
+  // nav items
+  var navItems = document.getElementById('s1-nav-items');
+  if(navItems && d.header && d.header.nav && d.header.nav.length){
+    navItems.innerHTML = d.header.nav.map(function(item){
+      return '<div class="s1-nav-item">'+(item.label||'')+'</div>';
+    }).join('');
+  }
+  // cta
+  var cta = document.getElementById('s1-nav-cta');
+  if(cta && d.header && d.header.cta){
+    cta.textContent = d.header.cta.label || 'Contact';
+    if(d.header.cta.url) cta.onclick = function(){ window.open(d.header.cta.url); };
+  }
+}
+
+// ===== RENDER S2 (Our Vision from content1.carousel) =====
+function renderS2(c1){
+  if(!c1) return;
+  // background image
+  if(c1.bg_image){
+    var bgImg = document.querySelector('.s2-bglogo img');
+    if(bgImg) bgImg.src = c1.bg_image;
+  }
+  // heading
+  var h = document.querySelector('.s2-heading');
+  if(h && c1.heading) h.innerHTML = c1.heading.replace(/\n/g,'<br>');
+  // button
+  var btn = document.querySelector('.s2-btn');
+  if(btn && c1.button_text){
+    btn.textContent = c1.button_text + ' \u00a0→';
+    if(c1.button_url) btn.onclick = function(){ window.open(c1.button_url); };
+  }
+  // carousel slides — use content1.carousel (title/subtitle)
+  var items = c1.carousel || c1.spaces || [];
+  if(!items.length) return;
+  var valid = items.filter(function(s){ return s.image; });
+  if(!valid.length) return;
+  var main  = valid[0];
+  var left  = valid[valid.length-1];
+  var right = valid[1] || valid[0];
+  var mainImg   = document.getElementById('s2-main-img');
+  var mainTitle = document.getElementById('s2-main-title');
+  var mainSub   = document.getElementById('s2-main-sub');
+  var leftImg   = document.querySelector('.s2-card-left img');
+  var rightImg  = document.querySelector('.s2-card-right img');
+  if(mainImg && main.image) mainImg.src = main.image;
+  if(mainTitle) mainTitle.textContent = main.title || main.name || '';
+  if(mainSub)   mainSub.textContent   = main.subtitle || main.type || '';
+  if(leftImg  && left.image)  leftImg.src  = left.image;
+  if(rightImg && right.image) rightImg.src = right.image;
 }
 
 // ===== RENDER S3 (Industry from content2.spaces) =====
 function renderS3(c2){
   var track = document.getElementById('s3-track');
-  var spaces = (c2 && c2.spaces) || [];
+  if(!track) return;
+  // heading
+  var h = document.getElementById('s3-heading');
+  if(h && c2.heading) h.innerHTML = c2.heading.replace(/\n/g,'<br>');
+  var desc = document.getElementById('s3-desc');
+  if(desc && c2.description) desc.textContent = c2.description;
+  var btn = document.getElementById('s3-btn');
+  if(btn){
+    btn.textContent = c2.button_text || 'Discover all spaces';
+    if(c2.button_url) btn.onclick = function(){ window.open(c2.button_url); };
+  }
+  // cards — use category (not type)
+  var spaces = c2.spaces || [];
   if(!spaces.length){
     track.innerHTML = '<div class="s3-card"><div class="s3-card-img"></div><div class="s3-card-name" style="color:rgba(255,255,255,.6)">Add spaces in CMS</div></div>';
     return;
   }
   track.innerHTML = spaces.map(function(s){
+    var cat = s.category || s.type || '';
     return '<div class="s3-card">'+
       '<div class="s3-card-img">'+
         (s.image ? '<img src="'+s.image+'" alt="'+(s.name||'')+'">' : '')+
@@ -455,11 +565,12 @@ function renderS3(c2){
       '</div>'+
       '<div class="s3-card-name">'+(s.name||'')+'</div>'+
       '<div class="s3-card-bottom">'+
-        '<span class="s3-card-type">'+(s.type||'')+'</span>'+
+        '<span class="s3-card-type">'+cat+'</span>'+
         '<span class="s3-card-plus">+</span>'+
       '</div>'+
     '</div>';
   }).join('');
+  s3tx = 0;
 }
 
 // ===== RENDER S4 FLOATS (from content3.profile_images) =====
@@ -471,6 +582,20 @@ function renderS4(c3){
     '/uploads/dl-p1.jpg','/uploads/dl-p2.jpg','/uploads/dl-p3.jpg',
     '/uploads/dl-p4.jpg','/uploads/dl-p5.jpg','/uploads/dl-p6.jpg'
   ];
+  // S4 content fields
+  if(c3){
+    var sh = sec.querySelector('.s4-heading');
+    if(sh && c3.heading) sh.innerHTML = c3.heading.replace(/\n/g,'<br>');
+    var sd = sec.querySelector('.s4-desc');
+    if(sd && c3.description) sd.textContent = c3.description;
+    var sb = sec.querySelector('.s4-btn');
+    if(sb && c3.button_text){
+      sb.textContent = c3.button_text;
+      if(c3.button_url) sb.onclick = function(){ window.open(c3.button_url); };
+    }
+    var icon = sec.querySelector('.s4-icon img');
+    if(icon && c3.app_icon) icon.src = c3.app_icon;
+  }
   var pos = [
     {t:'25%',l:'8.76%',w:'108px',h:'143px',rot:'0deg',br:'9px',dur:'4s',del:'0s'},
     {t:'7%',l:'5%',w:'216px',h:'286px',rot:'-11.9deg',br:'27px',dur:'5s',del:'.5s'},
@@ -511,42 +636,75 @@ function renderS4(c3){
   s4io.observe(sec);
 }
 
+// ===== RENDER S5 FOOTER =====
+function renderFooter(d){
+  var footer = d.footer;
+  if(!footer) return;
+  // tagline
+  var ft = document.getElementById('s5-tagline');
+  if(ft && footer.tagline) ft.innerHTML = footer.tagline.replace(/\n/g,'<br>');
+  // logos
+  var logoImg = footer.logo_image;
+  if(logoImg){
+    var l1 = document.getElementById('s1-logo');
+    var l2 = document.getElementById('s5-logo');
+    if(l1) l1.src = logoImg;
+    if(l2) l2.src = logoImg;
+  }
+  // copyright
+  var fc = document.getElementById('s5-copy');
+  if(fc && footer.copyright) fc.textContent = footer.copyright;
+  // socials
+  var socContainer = document.querySelector('.s5-socials');
+  if(socContainer && footer.social && footer.social.length){
+    socContainer.innerHTML = footer.social.map(function(s){
+      return '<a href="'+(s.url||'#')+'" target="_blank">'+s.label+'</a>';
+    }).join('');
+  }
+  // nav columns from footer structure
+  var cols = document.querySelectorAll('.s5-nav-col');
+  var sections = [
+    footer.sitemap && {title: footer.sitemap.title, items: footer.sitemap.links},
+    footer.facility && {title: footer.facility.title, items: footer.facility.links},
+    footer.visit && {title: footer.visit.title, items: footer.visit.links},
+    footer.info && {title: footer.info.title, items: footer.info.items}
+  ].filter(Boolean);
+  sections.forEach(function(sec, i){
+    if(!cols[i]) return;
+    cols[i].querySelector('.s5-nav-h').textContent = sec.title || '';
+    var list = cols[i].querySelector('.s5-nav-list');
+    if(list && sec.items){
+      list.innerHTML = sec.items.map(function(item){
+        return '<div class="s5-nav-item" '+(item.url&&item.url!=='#'?'onclick="window.open(\''+item.url+'\')"':'')+'>'+item.label+'</div>';
+      }).join('');
+    }
+  });
+}
+
 // ===== FETCH CMS DATA =====
 fetch('/api/content').then(function(r){return r.json();}).then(function(d){
-  // S1: header bg
-  if(d.bg_image) document.getElementById('s1-bg-img').src = d.bg_image;
+  // Nav
+  renderNav(d);
 
-  // S2: Our Vision (content1 spaces)
-  renderS2(d.content1 && d.content1.spaces);
-
-  // S3: Industry
-  if(d.content2){
-    var h = document.getElementById('s3-heading');
-    if(h && d.content2.heading) h.innerHTML = d.content2.heading.replace(/\n/g,'<br>');
-    var desc = document.getElementById('s3-desc');
-    if(desc && d.content2.description) desc.textContent = d.content2.description;
-    var btn = document.getElementById('s3-btn');
-    if(btn){
-      btn.textContent = d.content2.button_text||'Discover all spaces';
-      if(d.content2.button_url) btn.onclick=function(){window.open(d.content2.button_url)};
-    }
-    renderS3(d.content2);
+  // S1: Hero slider (hero_banner.slides)
+  var heroB = d.hero_banner;
+  if(heroB){
+    if(heroB.slides && heroB.slides.length) buildHeroSlides(heroB.slides);
+    else if(heroB.tagline_left || heroB.tagline_right) updateHeroText(heroB);
   }
 
-  // S4: Download floats
+  // S2: Our Vision (content1)
+  if(d.content1) renderS2(d.content1);
+
+  // S3: Industry (content2)
+  if(d.content2) renderS3(d.content2);
+
+  // S4: Download (content3)
   renderS4(d.content3);
 
   // S5: Footer
-  if(d.footer){
-    var ft = document.getElementById('s5-tagline');
-    if(ft && d.footer.tagline) ft.innerHTML = d.footer.tagline.replace(/\n/g,'<br>');
-    if(d.footer.logo_image){
-      document.getElementById('s5-logo').src = d.footer.logo_image;
-      document.getElementById('s1-logo').src = d.footer.logo_image;
-    }
-    var fc = document.getElementById('s5-copy');
-    if(fc && d.footer.copyright) fc.textContent = d.footer.copyright;
-  }
+  renderFooter(d);
+
 }).catch(function(e){console.warn('CMS fetch failed:',e);});
 </script>
 </body>
