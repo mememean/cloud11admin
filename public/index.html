@@ -164,7 +164,71 @@ img{display:block}
 .s5-socials a{font-size:12px;color:#64748b;text-decoration:none;cursor:pointer}
 .s5-socials a:hover{color:#0f172a}
 
+/* ===== FLOAT ANIMATION ===== */
 @keyframes c3fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ===== HERO DISSOLVE / LOAD-IN ===== */
+@keyframes heroBgIn{
+  0%{opacity:0;transform:scale(1.06) translateX(-7.5%) translateY(-29%);}
+  100%{opacity:1;transform:scale(1) translateX(-7.5%) translateY(-29%);}
+}
+.s1-bg img{
+  animation:heroBgIn 1.8s cubic-bezier(.4,0,.2,1) forwards;
+  will-change:transform,opacity;
+}
+@keyframes navSlideDown{
+  0%{opacity:0;transform:translateX(-50%) translateY(-20px);}
+  100%{opacity:1;transform:translateX(-50%) translateY(0);}
+}
+.s1-nav{
+  animation:navSlideDown .9s cubic-bezier(.4,0,.2,1) .3s both;
+  will-change:transform,opacity;
+}
+@keyframes heroTextIn{
+  0%{opacity:0;transform:translateY(32px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.s1-texts{animation:heroTextIn .9s cubic-bezier(.4,0,.2,1) .7s both;}
+.s1-logo-wrap{animation:heroTextIn .9s cubic-bezier(.4,0,.2,1) 1s both;}
+
+/* ===== STICKY NAV — SCROLL-AWARE ===== */
+.s1-nav{transition:background .35s,box-shadow .35s,backdrop-filter .35s;}
+.s1-nav.scrolled{
+  position:fixed;top:24px;
+  background:rgba(15,23,42,.75);
+  border-color:rgba(255,255,255,.15);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+}
+.s1-nav.scrolled .s1-nav-item{color:rgba(255,255,255,.85);}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
+.reveal.visible{opacity:1;transform:none;}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
+.reveal-left.visible{opacity:1;transform:none;}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
+.reveal-right.visible{opacity:1;transform:none;}
+
+/* staggered children */
+.reveal-stagger > *{opacity:0;transform:translateY(32px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);}
+.reveal-stagger.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:.05s;}
+.reveal-stagger.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:.18s;}
+.reveal-stagger.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:.31s;}
+.reveal-stagger.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:.44s;}
+
+/* ===== CAROUSEL CARD HOVER ===== */
+.s2-card{transition:transform .4s cubic-bezier(.4,0,.2,1),box-shadow .4s;}
+.s2-card-main:hover{transform:translateX(-50%) scale(1.015);}
+.s2-card-side:hover{transform:scale(1.02);}
+
+/* ===== FLOAT IN for S4 portraits ===== */
+@keyframes floatIn{
+  from{opacity:0;transform:translateY(30px) scale(.93);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.s4-float-outer{opacity:0;}
+.s4-float-outer.float-visible{animation:floatIn .8s cubic-bezier(.4,0,.2,1) forwards;}
 </style>
 </head>
 <body>
@@ -205,7 +269,7 @@ img{display:block}
   </div>
   <div class="s2-fade" aria-hidden="true"></div>
   <div class="s2-inner">
-    <div class="s2-carousel" id="s2-carousel">
+    <div class="s2-carousel reveal" id="s2-carousel">
       <div class="s2-card s2-card-side s2-card-left">
         <img src="/uploads/vision-left.jpg" alt=""/>
         <div class="s2-card-overlay"></div>
@@ -226,8 +290,8 @@ img{display:block}
         <div class="s2-card-overlay"></div>
       </div>
     </div>
-    <p class="s2-heading">Snøhetta's design philosophy brought to life.<br>A new kind of creative park</p>
-    <button class="s2-btn">View full details &nbsp;&#8594;</button>
+    <p class="s2-heading reveal">Snøhetta's design philosophy brought to life.<br>A new kind of creative park</p>
+    <button class="s2-btn reveal">View full details &nbsp;&#8594;</button>
   </div>
 </section>
 
@@ -235,14 +299,14 @@ img{display:block}
 <section class="s3">
   <div class="s3-inner">
     <div class="s3-top">
-      <div class="s3-heading" id="s3-heading">Design for the<br>content industry</div>
-      <div class="s3-right">
+      <div class="s3-heading reveal-left" id="s3-heading">Design for the<br>content industry</div>
+      <div class="s3-right reveal-right">
         <p class="s3-desc" id="s3-desc">Purpose-built infrastructure for creators and storytellers. From production studios to cultural anchors, Cloud 11 is built for the people who shape what the world watches, listens to, and shares.</p>
         <button class="s3-btn" id="s3-btn">Discover all spaces</button>
       </div>
     </div>
   </div>
-  <div class="s3-clip">
+  <div class="s3-clip reveal">
     <div class="s3-clip-inner">
       <div class="s3-track" id="s3-track">
         <div class="s3-card">
@@ -260,7 +324,7 @@ img{display:block}
 
 <!-- ===== SECTION 4: DOWNLOAD ===== -->
 <section class="s4" id="s4">
-  <div class="s4-content">
+  <div class="s4-content reveal">
     <div class="s4-icon">
       <img src="/uploads/c11-app-icon.png" alt="c11"/>
     </div>
@@ -272,7 +336,7 @@ img{display:block}
 
 <!-- ===== SECTION 5: FOOTER ===== -->
 <footer class="s5">
-  <div class="s5-card">
+  <div class="s5-card reveal">
     <div class="s5-top">
       <div class="s5-tagline" id="s5-tagline">Bangkok's<br>new creative<br>ecosystem</div>
       <div class="s5-nav">
@@ -336,6 +400,31 @@ function s3nav(dir){
   s3tx = Math.max(0, Math.min(maxTx, s3tx + dir*STEP));
   track.style.transform = 'translateX(-'+s3tx+'px)';
 }
+
+// ===== STICKY NAV / LOGO SCROLL =====
+var nav = document.querySelector('.s1-nav');
+var s1 = document.querySelector('.s1');
+window.addEventListener('scroll', function(){
+  var scrolled = window.scrollY > s1.offsetHeight - 120;
+  if(scrolled) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+}, {passive:true});
+
+// ===== SCROLL REVEAL =====
+(function(){
+  var selectors = '.reveal,.reveal-left,.reveal-right,.reveal-stagger';
+  var els = document.querySelectorAll(selectors);
+  if(!els.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(el){ io.observe(el); });
+})();
 
 // ===== RENDER S2 (Our Vision from content1.spaces) =====
 function renderS2(spaces){
@@ -410,6 +499,16 @@ function renderS4(c3){
     outer.appendChild(inner);
     sec.insertBefore(outer, sec.querySelector('.s4-content'));
   });
+  // stagger float-in when s4 is visible
+  var s4io = new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      sec.querySelectorAll('.s4-float-outer').forEach(function(el,i){
+        setTimeout(function(){el.classList.add('float-visible');},i*120);
+      });
+      s4io.disconnect();
+    }
+  },{threshold:0.1});
+  s4io.observe(sec);
 }
 
 // ===== FETCH CMS DATA =====
