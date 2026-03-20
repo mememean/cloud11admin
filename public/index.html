@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cloud 11 — Bangkok's New Creative Ecosystem</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;background:#fff;overflow-x:hidden;color:#0f172a}
+img{display:block}
+
+/* ===== S1 HEADER ===== */
+.s1{position:relative;height:850px;overflow:hidden}
+.s1-bg{position:absolute;inset:0}
+.s1-bg img{position:absolute;width:115%;height:165%;object-fit:cover;left:-7.5%;top:-29%;max-width:none}
+.s1-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25)}
+.s1-nav{
+  position:absolute;top:calc(50% - 390px);left:50%;transform:translateX(-50%);
+  width:910px;height:62px;
+  background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.4);border-radius:174px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  display:flex;align-items:center;padding:0 8px 0 20px;gap:0;z-index:10
+}
+.s1-nav-logo{width:36px;height:24px;flex-shrink:0;margin-right:4px}
+.s1-nav-logo img{width:100%;height:100%;object-fit:contain}
+.s1-nav-items{display:flex;align-items:center;flex:1}
+.s1-nav-item{padding:0 12px;height:50px;display:flex;align-items:center;font-size:14px;color:white;font-weight:500;white-space:nowrap;cursor:pointer;border-radius:46px}
+.s1-nav-item:hover{background:rgba(255,255,255,.15)}
+.s1-nav-contact{background:#000;border-radius:46px;padding:8px 24px;font-size:14px;color:white;font-weight:500;cursor:pointer;white-space:nowrap;margin-left:auto;border:none;flex-shrink:0}
+.s1-content{position:absolute;bottom:0;left:80px;right:80px;display:flex;flex-direction:column;gap:24px;z-index:5}
+.s1-texts{display:flex;justify-content:space-between;align-items:flex-start}
+.s1-text{font-size:48px;font-weight:700;color:white;line-height:50px}
+.s1-logo-wrap{width:100%;aspect-ratio:82.5/20;overflow:hidden}
+.s1-logo-wrap img{width:100%;height:100%;object-fit:contain}
+
+/* ===== S2 OUR VISION ===== */
+.s2{background:white;padding:140px 0;position:relative;overflow:hidden}
+.s2-bglogo{
+  position:absolute;width:1732px;height:1732px;top:-0.5px;left:50%;
+  transform:translateX(-50%) scaleY(-1);
+  pointer-events:none;z-index:0;opacity:.07
+}
+.s2-bglogo img{width:100%;height:100%;object-fit:cover}
+.s2-fade{
+  position:absolute;bottom:.5px;right:0;width:100%;height:70%;
+  background:linear-gradient(to top,#fff 20%,rgba(255,255,255,0) 100%);
+  pointer-events:none;z-index:1
+}
+.s2-inner{position:relative;z-index:2;display:flex;flex-direction:column;gap:42px;align-items:center;padding:0 80px}
+.s2-carousel{
+  width:calc(100vw);margin-left:calc(-50vw + 50%);
+  position:relative;height:620px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:0
+}
+.s2-card{position:absolute;border-radius:35px;overflow:hidden;flex-shrink:0}
+.s2-card-main{
+  width:1280px;height:600px;z-index:3;
+  box-shadow:0 18px 36px -9px rgba(0,0,0,.25);
+  left:50%;transform:translateX(-50%);top:10px
+}
+.s2-card-side{
+  width:924px;height:500px;z-index:2;
+  box-shadow:0 18px 36px -9px rgba(0,0,0,.25);top:60px
+}
+.s2-card-left{right:calc(50% + 560px)}
+.s2-card-right{left:calc(50% + 560px)}
+.s2-card img{width:100%;height:100%;object-fit:cover;display:block}
+.s2-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:.6}
+.s2-card-info{position:absolute;bottom:34px;left:92px;right:92px;display:flex;justify-content:space-between;align-items:flex-end}
+.s2-card-title{font-size:30px;font-weight:700;color:white;line-height:1.2}
+.s2-card-sub{font-size:16px;color:rgba(255,255,255,.8);margin-top:8px}
+.s2-card-btn{
+  backdrop-filter:blur(6px);background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.3);border-radius:9999px;
+  padding:13px 25px;color:white;font-size:16px;
+  white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:8px;
+  background:none;
+}
+.s2-heading{font-size:38px;font-weight:700;color:#0f172a;text-align:center;line-height:1.35}
+.s2-btn{
+  background:white;border:1px solid #f1f5f9;border-radius:9999px;
+  padding:13px 33px;font-size:16px;color:#0f172a;cursor:pointer;
+  box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
+  display:flex;align-items:center;gap:8px
+}
+
+/* ===== S3 INDUSTRY ===== */
+.s3{background:white;padding:72px 0}
+.s3-inner{padding:0 80px}
+.s3-top{display:flex;gap:40px;align-items:center;margin-bottom:69px}
+.s3-heading{flex:1;font-size:52px;font-weight:700;color:#0f172a;line-height:1.15}
+.s3-right{flex:1;display:flex;flex-direction:column;gap:24px;align-items:flex-start}
+.s3-desc{font-size:18px;color:#334155;line-height:26px}
+.s3-btn{background:#347fee;color:white;border:none;border-radius:8px;padding:12px 32px;font-size:16px;font-weight:500;cursor:pointer;box-shadow:0 10px 15px -3px rgba(0,0,0,.1)}
+.s3-clip{overflow:hidden;margin:0 -0px}
+.s3-clip-inner{padding:16px 80px 48px;overflow:visible}
+.s3-track{display:flex;gap:24px;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.s3-card{
+  width:400px;min-width:400px;background:#347fee;
+  border-radius:32px;padding:32px 32px 20px;flex-shrink:0;
+  box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)
+}
+.s3-card-img{width:100%;height:300px;border-radius:12px;overflow:hidden;position:relative;background:rgba(0,0,0,.2)}
+.s3-card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.s3-card-overlay{position:absolute;inset:0;background:rgba(0,0,0,.2)}
+.s3-card-name{font-size:20px;font-weight:700;color:white;margin-top:16px;line-height:28px}
+.s3-card-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.s3-card-type{font-size:14px;color:white}
+.s3-card-plus{width:20px;height:20px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#347fee;font-size:14px;flex-shrink:0}
+.s3-arrows{display:flex;gap:16px;justify-content:flex-end;margin-top:16px;padding:0 80px}
+.s3-arrow{width:48px;height:48px;background:white;border:none;border-radius:9999px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);font-size:20px}
+
+/* ===== S4 DOWNLOAD ===== */
+.s4{background:white;padding:144px 216px;position:relative;min-height:745px;display:flex;align-items:center;justify-content:center}
+.s4-float-outer{position:absolute;z-index:1}
+.s4-float-inner{width:100%;height:100%;overflow:hidden;box-shadow:0 22.5px 28px -5.6px rgba(0,0,0,.1),0 9px 11px -6.75px rgba(0,0,0,.1)}
+.s4-float-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.s4-content{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;text-align:center;max-width:800px}
+.s4-icon{
+  width:90px;height:90px;border-radius:27px;
+  background:linear-gradient(135deg,#347fee 0%,#a1d6f5 100%);
+  overflow:hidden;margin-bottom:36px;flex-shrink:0
+}
+.s4-icon img{width:100%;height:100%;object-fit:cover}
+.s4-heading{
+  font-size:67.5px;font-weight:700;line-height:1.0;
+  background:linear-gradient(90deg,#347fee 0%,#76baf2 55%,#a1d6f5 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:27px
+}
+.s4-desc{font-size:21px;color:#475569;line-height:1.5;margin-bottom:45px}
+.s4-btn{
+  background:linear-gradient(90deg,#347fee,#76baf2);color:white;border:none;
+  border-radius:9px;padding:18px 36px;font-size:20px;font-weight:700;cursor:pointer;
+  box-shadow:0 11px 17px -3px rgba(0,0,0,.1)
+}
+
+/* ===== S5 FOOTER ===== */
+.s5{background:#f1f5f9;padding:80px 60px 40px}
+.s5-card{
+  background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.5);
+  border-radius:32px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:49px;display:flex;flex-direction:column;gap:48px;
+  box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)
+}
+.s5-top{display:flex;gap:32px;align-items:flex-start}
+.s5-tagline{
+  font-size:42px;font-weight:700;line-height:46px;
+  background:linear-gradient(90deg,#347fee 0%,#76baf2 55%,#a1d6f5 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  white-space:nowrap;flex-shrink:0
+}
+.s5-nav{display:flex;flex:1;gap:32px}
+.s5-nav-col{flex:1;display:flex;flex-direction:column;gap:16px}
+.s5-nav-h{font-size:16px;font-weight:700;color:#0f172a}
+.s5-nav-list{display:flex;flex-direction:column;gap:8px}
+.s5-nav-item{font-size:14px;color:#475569;cursor:pointer}
+.s5-nav-item:hover{color:#0f172a}
+.s5-logo{width:100%;aspect-ratio:82.5/20}
+.s5-logo img{width:100%;height:100%;object-fit:contain;display:block}
+.s5-bottom{display:flex;justify-content:space-between;align-items:center}
+.s5-copy{font-size:12px;color:#64748b}
+.s5-socials{display:flex;gap:16px}
+.s5-socials a{font-size:12px;color:#64748b;text-decoration:none;cursor:pointer}
+.s5-socials a:hover{color:#0f172a}
+
+@keyframes c3fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+</style>
+</head>
+<body>
+
+<!-- ===== SECTION 1: HEADER ===== -->
+<section class="s1">
+  <div class="s1-bg">
+    <img id="s1-bg-img" src="/uploads/bgspace.png" alt="Cloud 11"/>
+    <div class="s1-overlay"></div>
+  </div>
+  <nav class="s1-nav">
+    <div class="s1-nav-logo">
+      <img src="/uploads/nav-logo.png" alt="c11"/>
+    </div>
+    <div class="s1-nav-items">
+      <div class="s1-nav-item">Ecosystem</div>
+      <div class="s1-nav-item">Your Spaces</div>
+      <div class="s1-nav-item">Happenings</div>
+      <div class="s1-nav-item">Campaign &amp; Promotion</div>
+    </div>
+    <button class="s1-nav-contact">Contact</button>
+  </nav>
+  <div class="s1-content">
+    <div class="s1-texts">
+      <div class="s1-text">bangkok's<br>new creative<br>ecosystem</div>
+      <div class="s1-text">designed for creator,<br>compaines, and communities<br>shaping the future of culture</div>
+    </div>
+    <div class="s1-logo-wrap">
+      <img id="s1-logo" src="/uploads/logo-gradient.svg" alt="cloud 11"/>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: OUR VISION ===== -->
+<section class="s2">
+  <div class="s2-bglogo" aria-hidden="true">
+    <img src="/uploads/vision-main.jpg" alt=""/>
+  </div>
+  <div class="s2-fade" aria-hidden="true"></div>
+  <div class="s2-inner">
+    <div class="s2-carousel" id="s2-carousel">
+      <div class="s2-card s2-card-side s2-card-left">
+        <img src="/uploads/vision-left.jpg" alt=""/>
+        <div class="s2-card-overlay"></div>
+      </div>
+      <div class="s2-card s2-card-main">
+        <img id="s2-main-img" src="/uploads/vision-main.jpg" alt="The Garden Atrium"/>
+        <div class="s2-card-overlay"></div>
+        <div class="s2-card-info">
+          <div>
+            <div class="s2-card-title" id="s2-main-title">The Garden Atrium</div>
+            <div class="s2-card-sub" id="s2-main-sub">Where nature meets technology</div>
+          </div>
+          <button class="s2-card-btn">Explore &nbsp;&#8594;</button>
+        </div>
+      </div>
+      <div class="s2-card s2-card-side s2-card-right">
+        <img src="/uploads/vision-right.jpg" alt=""/>
+        <div class="s2-card-overlay"></div>
+      </div>
+    </div>
+    <p class="s2-heading">Snøhetta's design philosophy brought to life.<br>A new kind of creative park</p>
+    <button class="s2-btn">View full details &nbsp;&#8594;</button>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: DESIGN FOR CONTENT ===== -->
+<section class="s3">
+  <div class="s3-inner">
+    <div class="s3-top">
+      <div class="s3-heading" id="s3-heading">Design for the<br>content industry</div>
+      <div class="s3-right">
+        <p class="s3-desc" id="s3-desc">Purpose-built infrastructure for creators and storytellers. From production studios to cultural anchors, Cloud 11 is built for the people who shape what the world watches, listens to, and shares.</p>
+        <button class="s3-btn" id="s3-btn">Discover all spaces</button>
+      </div>
+    </div>
+  </div>
+  <div class="s3-clip">
+    <div class="s3-clip-inner">
+      <div class="s3-track" id="s3-track">
+        <div class="s3-card">
+          <div class="s3-card-img"><div class="s3-card-overlay"></div></div>
+          <div class="s3-card-name">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s3-arrows">
+    <button class="s3-arrow" id="s3-prev">&#8592;</button>
+    <button class="s3-arrow" id="s3-next">&#8594;</button>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: DOWNLOAD ===== -->
+<section class="s4" id="s4">
+  <div class="s4-content">
+    <div class="s4-icon">
+      <img src="/uploads/c11-app-icon.png" alt="c11"/>
+    </div>
+    <div class="s4-heading">Become part of our new<br>creative culture</div>
+    <p class="s4-desc">Experiences and resources empowering people to create, collaborate,<br>and bring ideas to life.</p>
+    <button class="s4-btn">Download the app</button>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: FOOTER ===== -->
+<footer class="s5">
+  <div class="s5-card">
+    <div class="s5-top">
+      <div class="s5-tagline" id="s5-tagline">Bangkok's<br>new creative<br>ecosystem</div>
+      <div class="s5-nav">
+        <div class="s5-nav-col">
+          <div class="s5-nav-h">Sitemap</div>
+          <div class="s5-nav-list">
+            <div class="s5-nav-item">Home</div>
+            <div class="s5-nav-item">About Cloud11</div>
+            <div class="s5-nav-item">To be a Creative</div>
+            <div class="s5-nav-item">Business contract</div>
+          </div>
+        </div>
+        <div class="s5-nav-col">
+          <div class="s5-nav-h">Facility Service</div>
+          <div class="s5-nav-list">
+            <div class="s5-nav-item">Booking Service</div>
+            <div class="s5-nav-item">Auto Parking</div>
+            <div class="s5-nav-item">Cart &amp; Etc.</div>
+          </div>
+        </div>
+        <div class="s5-nav-col">
+          <div class="s5-nav-h">Your visit</div>
+          <div class="s5-nav-list">
+            <div class="s5-nav-item">Map &amp; Directory</div>
+            <div class="s5-nav-item">Terms &amp; Conditions</div>
+            <div class="s5-nav-item">Contact us</div>
+          </div>
+        </div>
+        <div class="s5-nav-col">
+          <div class="s5-nav-h">Information or assistance</div>
+          <div class="s5-nav-list">
+            <div class="s5-nav-item" style="text-decoration:underline">Chat support</div>
+            <div class="s5-nav-item">Customer Service Counter</div>
+            <div class="s5-nav-item">customer-support@cloud11.co.th</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="s5-logo">
+      <img id="s5-logo" src="/uploads/logo-gradient.svg" alt="cloud 11"/>
+    </div>
+    <div class="s5-bottom">
+      <div class="s5-copy" id="s5-copy">@2026 Cloud11. All Right Reserved</div>
+      <div class="s5-socials">
+        <a>Youtube</a><a>X</a><a>Instagram</a><a>Facebook</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== S3 CAROUSEL =====
+var s3tx = 0;
+document.getElementById('s3-prev').onclick = function(){s3nav(-1)};
+document.getElementById('s3-next').onclick = function(){s3nav(1)};
+function s3nav(dir){
+  var track = document.getElementById('s3-track');
+  var n = track.querySelectorAll('.s3-card').length;
+  var STEP = 424;
+  var maxTx = Math.max(0, n*STEP - 24 - 1280);
+  s3tx = Math.max(0, Math.min(maxTx, s3tx + dir*STEP));
+  track.style.transform = 'translateX(-'+s3tx+'px)';
+}
+
+// ===== RENDER S2 (Our Vision from content1.spaces) =====
+function renderS2(spaces){
+  if(!spaces || !spaces.length) return;
+  var main = spaces[0];
+  var left = spaces[spaces.length-1] || spaces[0];
+  var right = spaces[1] || spaces[0];
+  if(main.image) document.getElementById('s2-main-img').src = main.image;
+  if(main.name) document.getElementById('s2-main-title').textContent = main.name;
+  if(main.type) document.getElementById('s2-main-sub').textContent = main.type;
+  if(left.image) document.querySelector('.s2-card-left img').src = left.image;
+  if(right.image) document.querySelector('.s2-card-right img').src = right.image;
+}
+
+// ===== RENDER S3 (Industry from content2.spaces) =====
+function renderS3(c2){
+  var track = document.getElementById('s3-track');
+  var spaces = (c2 && c2.spaces) || [];
+  if(!spaces.length){
+    track.innerHTML = '<div class="s3-card"><div class="s3-card-img"></div><div class="s3-card-name" style="color:rgba(255,255,255,.6)">Add spaces in CMS</div></div>';
+    return;
+  }
+  track.innerHTML = spaces.map(function(s){
+    return '<div class="s3-card">'+
+      '<div class="s3-card-img">'+
+        (s.image ? '<img src="'+s.image+'" alt="'+(s.name||'')+'">' : '')+
+        '<div class="s3-card-overlay"></div>'+
+      '</div>'+
+      '<div class="s3-card-name">'+(s.name||'')+'</div>'+
+      '<div class="s3-card-bottom">'+
+        '<span class="s3-card-type">'+(s.type||'')+'</span>'+
+        '<span class="s3-card-plus">+</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ===== RENDER S4 FLOATS (from content3.profile_images) =====
+function renderS4(c3){
+  var sec = document.getElementById('s4');
+  sec.querySelectorAll('.s4-float-outer').forEach(function(e){e.remove()});
+  var imgs = (c3 && c3.profile_images) || [];
+  var dfImgs = [
+    '/uploads/dl-p1.jpg','/uploads/dl-p2.jpg','/uploads/dl-p3.jpg',
+    '/uploads/dl-p4.jpg','/uploads/dl-p5.jpg','/uploads/dl-p6.jpg'
+  ];
+  var pos = [
+    {t:'25%',l:'8.76%',w:'108px',h:'143px',rot:'0deg',br:'9px',dur:'4s',del:'0s'},
+    {t:'7%',l:'5%',w:'216px',h:'286px',rot:'-11.9deg',br:'27px',dur:'5s',del:'.5s'},
+    {t:'66%',l:'5%',w:'288px',h:'161px',rot:'5.95deg',br:'27px',dur:'4.5s',del:'1s'},
+    {t:'11%',l:'68%',w:'118px',h:'118px',rot:'0deg',br:'50%',dur:'6s',del:'.3s',border:'4px solid white'},
+    {t:'37%',l:'76%',w:'180px',h:'298px',rot:'11.9deg',br:'27px',dur:'5.5s',del:'.8s'},
+    {t:'70%',l:'55%',w:'288px',h:'161px',rot:'-2.97deg',br:'27px',dur:'4s',del:'1.3s'}
+  ];
+  pos.forEach(function(p,i){
+    var src = (imgs[i] && imgs[i]!=='') ? imgs[i] : dfImgs[i];
+    var outer = document.createElement('div');
+    outer.className = 's4-float-outer';
+    outer.style.cssText = 'top:'+p.t+';left:'+p.l+';width:'+p.w+';height:'+p.h+';'+
+      'animation:c3fl '+p.dur+' ease-in-out '+p.del+' infinite;';
+    var inner = document.createElement('div');
+    inner.className = 's4-float-inner';
+    inner.style.cssText = 'border-radius:'+p.br+';'+(p.border?'border:'+p.border+';':'');
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;height:100%;transform:rotate('+p.rot+');overflow:hidden;border-radius:'+p.br;
+    if(src){
+      var img = document.createElement('img');
+      img.src = src; img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';
+      wrap.appendChild(img);
+    }
+    inner.appendChild(wrap);
+    outer.appendChild(inner);
+    sec.insertBefore(outer, sec.querySelector('.s4-content'));
+  });
+}
+
+// ===== FETCH CMS DATA =====
+fetch('/api/content').then(function(r){return r.json();}).then(function(d){
+  // S1: header bg
+  if(d.bg_image) document.getElementById('s1-bg-img').src = d.bg_image;
+
+  // S2: Our Vision (content1 spaces)
+  renderS2(d.content1 && d.content1.spaces);
+
+  // S3: Industry
+  if(d.content2){
+    var h = document.getElementById('s3-heading');
+    if(h && d.content2.heading) h.innerHTML = d.content2.heading.replace(/\n/g,'<br>');
+    var desc = document.getElementById('s3-desc');
+    if(desc && d.content2.description) desc.textContent = d.content2.description;
+    var btn = document.getElementById('s3-btn');
+    if(btn){
+      btn.textContent = d.content2.button_text||'Discover all spaces';
+      if(d.content2.button_url) btn.onclick=function(){window.open(d.content2.button_url)};
+    }
+    renderS3(d.content2);
+  }
+
+  // S4: Download floats
+  renderS4(d.content3);
+
+  // S5: Footer
+  if(d.footer){
+    var ft = document.getElementById('s5-tagline');
+    if(ft && d.footer.tagline) ft.innerHTML = d.footer.tagline.replace(/\n/g,'<br>');
+    if(d.footer.logo_image){
+      document.getElementById('s5-logo').src = d.footer.logo_image;
+      document.getElementById('s1-logo').src = d.footer.logo_image;
+    }
+    var fc = document.getElementById('s5-copy');
+    if(fc && d.footer.copyright) fc.textContent = d.footer.copyright;
+  }
+}).catch(function(e){console.warn('CMS fetch failed:',e);});
+</script>
+</body>
+</html>

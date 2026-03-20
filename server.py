@@ -73,9 +73,9 @@ class CMSHandler(http.server.BaseHTTPRequestHandler):
             self.serve_file(file_path)
             return
 
-        # Public viewer
+        # Public website
         if path == "/":
-            self.serve_viewer()
+            self.serve_file(BASE_DIR / "public" / "index.html")
             return
 
         # Admin UI
