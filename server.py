@@ -9,7 +9,6 @@ import http.server
 import json
 import os
 import urllib.parse
-import cgi
 import shutil
 import mimetypes
 from pathlib import Path
