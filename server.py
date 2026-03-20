@@ -73,8 +73,13 @@ class CMSHandler(http.server.BaseHTTPRequestHandler):
             self.serve_file(file_path)
             return
 
+        # Public viewer
+        if path == "/":
+            self.serve_viewer()
+            return
+
         # Admin UI
-        if path == "/" or path == "/admin" or path == "/admin/":
+        if path == "/admin" or path == "/admin/":
             file_path = ADMIN_DIR / "index.html"
         elif path.startswith("/admin/"):
             file_path = ADMIN_DIR / path[len("/admin/"):]
@@ -82,6 +87,70 @@ class CMSHandler(http.server.BaseHTTPRequestHandler):
             file_path = BASE_DIR / path.lstrip("/")
 
         self.serve_file(file_path)
+
+    def serve_viewer(self):
+        import re, json
+        try:
+            with open(ADMIN_DIR / "index.html", encoding="utf-8") as f:
+                admin_html = f.read()
+            blocks = re.findall(r"<script[^>]*>(.*?)</script>", admin_html, re.DOTALL)
+            main_script = max(blocks, key=len) if blocks else ""
+            html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cloud 11</title>
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.5;overflow-x:hidden}}
+img{{display:block;width:100%;height:100%;object-fit:cover}}
+a{{cursor:pointer}}
+</style>
+</head>
+<body>
+<script>{main_script}</script>
+<script>
+(function(){{
+  var _noop=function(){{}};
+  window.loadContent=async function(){{}};
+  window.showPage=_noop;
+  window.markDirty=_noop;
+  window.schedulePreviewRefresh=_noop;
+  window.refreshPreview=_noop;
+  window.populateAll=_noop;
+  window.clearDirty=_noop;
+  function renderWithScripts(container,html){{
+    container.innerHTML=html;
+    container.querySelectorAll('script').forEach(function(old){{
+      var s=document.createElement('script');
+      s.textContent=old.textContent;
+      old.parentNode.replaceChild(s,old);
+    }});
+  }}
+  document.addEventListener('DOMContentLoaded',function(){{
+    fetch('/api/content')
+      .then(function(r){{return r.json();}})
+      .then(function(data){{
+        var html=buildDashboardPreview(data);
+        renderWithScripts(document.body,html);
+      }})
+      .catch(function(e){{
+        document.body.innerHTML='<div style="padding:40px;color:red">Error: '+e.message+'</div>';
+      }});
+  }});
+}})();
+</script>
+</body>
+</html>"""
+            body = html.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", len(body))
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception as e:
+            self.send_json({"error": str(e)}, 500)
 
     def serve_file(self, file_path):
         file_path = Path(file_path)
