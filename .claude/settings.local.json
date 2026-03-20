@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(npm --version)",
+      "Read(//Users/mememean/.nvm/**)",
+      "Read(//Users/mememean/.volta/**)",
+      "Bash(echo $PATH)",
+      "Read(//usr/local/bin/**)",
+      "Bash(chmod +x \"/Users/mememean/Documents/Cloud 11/start.sh\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\(''data/content.json''\\)\\); print\\(''JSON ok —'', list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(python3 -c \"import server; print\\(''server.py imports ok''\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 export.py)",
+      "Bash(curl -s -X POST http://localhost:8080/api/upload -F \"file=@/tmp/test_pixel.png;type=image/png\" -v)",
+      "Bash(open \"/var/folders/48/2cf72m092ljcffpywxcnm20w0000gn/T/TemporaryItems/NSIRD_screencaptureui_ERH74V/Screen Recording 2569-03-19 at 15.39.22.mov\")",
+      "Bash(ffmpeg -i \"/Users/mememean/Desktop/Screen Recording 2569-03-19 at 15.41.20.mov\" -vf \"fps=3\" /tmp/hero_frame_%03d.jpg -y)",
+      "Bash(screencapture -x /tmp/screen_now.jpg)",
+      "Bash(osascript:*)",
+      "Bash(screencapture -x /tmp/qt_frame1.jpg)",
+      "Bash(screencapture -x /tmp/qt_open.jpg)",
+      "Bash(screencapture -x /tmp/qt_t1.jpg)",
+      "Bash(__NEW_LINE_74457477cf407a6a__ osascript:*)",
+      "Bash(screencapture -x /tmp/qt_t2.jpg)",
+      "Bash(screencapture -x /tmp/qt_t3.jpg)",
+      "Bash(screencapture -x /tmp/qt_t4.jpg)",
+      "Bash(__NEW_LINE_f0d841a8f2a5fc20__ osascript:*)",
+      "Bash(screencapture -x /tmp/qt_f0.jpg)",
+      "Bash(__NEW_LINE_940c2af92529cdc7__ osascript:*)",
+      "Bash(screencapture -x /tmp/qt_f1.jpg)",
+      "Bash(screencapture -x /tmp/qt_f2.jpg)",
+      "Bash(screencapture -x /tmp/qt_f3.jpg)",
+      "Bash(screencapture -x /tmp/qt_f4.jpg)",
+      "Bash(__NEW_LINE_b21c40fe7414b40b__ osascript:*)",
+      "Bash(do osascript:*)",
+      "Bash(/dev/null sleep:*)",
+      "Bash(/dev/null done:*)",
+      "Bash(lsof -t -i:8080)",
+      "Bash(python3 export_standalone.py)",
+      "Bash(gh auth:*)"
+    ]
+  }
+}

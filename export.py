@@ -1,0 +1,1011 @@
+#!/usr/bin/env python3
+"""
+Cloud 11 CMS — Export standalone mockup
+Run: python3 export.py
+Output: mockup.html  (open in any browser, no server needed)
+"""
+
+import json
+import re
+from pathlib import Path
+
+BASE = Path(__file__).parent
+DATA = BASE / "data" / "content.json"
+OUT  = BASE / "mockup.html"
+
+with open(DATA, encoding="utf-8") as f:
+    content = json.load(f)
+
+INITIAL_JSON = json.dumps(content, ensure_ascii=False, indent=2)
+
+HTML = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloud 11 — CMS Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+/* Cloud 11 Design System — Brand Guidelines 1.0 */
+:root {
+  /* Brand Colors (from Figma Cloud11-Design-1.0) */
+  --brand-primary-light: #C3E3FF;
+  --brand-neutral:       #D1D4D9;
+  --brand-white:         #FFFFFF;
+  --brand-black:         #000000;
+
+  /* Interactive */
+  --primary:          #347FEE;
+  --primary-fg:       #ffffff;
+  --primary-hover:    #2563d4;
+  --primary-light:    #e8f2ff;
+
+  /* Surfaces */
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card:       #ffffff;
+  --secondary:  #f4f4f5;
+  --muted:      #f4f4f5;
+  --muted-fg:   #71717a;
+  --accent:     #C3E3FF;
+  --accent-fg:  #09090b;
+  --border:     #D1D4D9;
+  --input:      #e4e4e7;
+  --ring:       #347FEE;
+  --destructive:    #dc2626;
+  --destructive-fg: #fafafa;
+  --radius: 0.375rem;
+  --sidebar-w: 256px;
+
+  /* Typography — Helvetica Neue scale */
+  --font-sans:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --text-h1: 28px; --weight-h1: 700;
+  --text-h2: 24px; --weight-h2: 700;
+  --text-h3: 20px; --weight-h3: 700;
+  --text-h4: 18px; --weight-h4: 700;
+  --text-h5: 16px; --weight-h5: 700;
+  --text-body-xl: 18px;
+  --text-body-lg: 16px;
+  --text-body-md: 14px;
+  --text-body-sm: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md); line-height: 1.5; min-height: 100vh; display: flex;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w); min-height: 100vh;
+  border-right: 1px solid var(--brand-neutral);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+  background: var(--background);
+}
+.sidebar::before {
+  content: ''; display: block; height: 3px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--brand-primary-light) 100%);
+}
+.sidebar-header {
+  display: flex; align-items: center; height: 56px;
+  padding: 0 16px; border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 28px; height: 28px; background: var(--primary); color: var(--primary-fg);
+  border-radius: var(--radius); font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  box-shadow: 0 1px 6px rgba(52,127,238,0.3);
+}
+.logo-name { font-size: 13.5px; font-weight: 600; margin-left: 10px; }
+.logo-sub  { font-size: 11px; color: var(--muted-fg); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 8px; }
+.nav-group-label {
+  padding: 6px 8px 4px; font-size: 11px; font-weight: 500;
+  color: var(--muted-fg); letter-spacing: .04em; text-transform: uppercase;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: var(--radius);
+  cursor: pointer; font-size: 13.5px; color: var(--muted-fg);
+  transition: background .12s, color .12s; margin-bottom: 1px;
+}
+.nav-item:hover { background: var(--muted); color: var(--foreground); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; background: var(--muted);
+  color: var(--muted-fg); border-radius: 4px; padding: 1px 6px; font-weight: 500;
+}
+.sidebar-footer {
+  padding: 12px 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(245,158,11,0.15); }
+.sidebar-footer-text { font-size: 12px; color: var(--muted-fg); }
+.sidebar-footer-text strong { color: #d97706; font-weight: 600; }
+
+/* Main */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.header-bar {
+  position: sticky; top: 0; z-index: 40; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--background);
+}
+.breadcrumb { display: flex; align-items: center; gap: 6px; }
+.breadcrumb-sep { color: var(--muted-fg); font-size: 13px; }
+.breadcrumb-root { font-size: 13px; color: var(--muted-fg); }
+.breadcrumb-page { font-size: 13.5px; font-weight: 500; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+.unsaved-pill {
+  display: none; align-items: center; gap: 6px; font-size: 12px; color: #f59e0b;
+  background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.18);
+  border-radius: 9999px; padding: 3px 10px; font-weight: 500;
+}
+.unsaved-pill.show { display: flex; }
+.unsaved-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+
+/* Content */
+.content { padding: 24px; max-width: 900px; padding-bottom: 80px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  white-space: nowrap; border-radius: var(--radius); font-size: 13.5px; font-weight: 500;
+  font-family: inherit; cursor: pointer; border: none; outline: none; transition: all .15s;
+}
+.btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.btn:disabled { pointer-events: none; opacity: .5; }
+.btn svg { width: 14px; height: 14px; }
+.btn-default { background: var(--primary); color: var(--primary-fg); padding: 8px 16px; }
+.btn-default:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: var(--foreground); padding: 8px 16px; }
+.btn-secondary:hover { background: rgba(39,39,42,.8); }
+.btn-ghost { background: transparent; color: var(--foreground); padding: 8px 16px; }
+.btn-ghost:hover { background: var(--muted); }
+.btn-outline { background: transparent; color: var(--foreground); border: 1px solid var(--border); padding: 7px 15px; }
+.btn-outline:hover { background: var(--muted); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-fg); padding: 8px 16px; }
+.btn-sm   { padding: 5px 12px; font-size: 12.5px; }
+.btn-icon { padding: 7px; }
+.btn-icon svg { width: 15px; height: 15px; }
+
+/* Card */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); margin-bottom: 16px; }
+.card-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+}
+.card-title { font-size: var(--text-h5); font-weight: var(--weight-h5); line-height: 1; }
+.card-description { font-size: 13px; color: var(--muted-fg); margin-top: 3px; }
+.card-body { padding: 20px 24px; }
+
+/* Input */
+.shad-input, .shad-textarea {
+  width: 100%; background: transparent; border: 1px solid var(--input);
+  border-radius: var(--radius); color: var(--foreground); font-size: 13.5px;
+  font-family: inherit; padding: 8px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.shad-input::placeholder, .shad-textarea::placeholder { color: var(--muted-fg); }
+.shad-input:focus, .shad-textarea:focus {
+  border-color: var(--primary); box-shadow: 0 0 0 3px rgba(52,127,238,.12);
+}
+.shad-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* Fields */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+.label-hint { font-weight: 400; color: var(--muted-fg); font-size: 12px; }
+.field-desc { font-size: 12px; color: var(--muted-fg); margin-top: 5px; }
+.field-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.separator { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* Image */
+.img-upload-wrap { display: flex; gap: 14px; align-items: flex-start; }
+.img-thumb {
+  width: 80px; height: 80px; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--secondary); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0; font-size: 10.5px; color: var(--muted-fg); text-align: center;
+}
+.img-thumb-wide { width: 120px; height: 80px; }
+.img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.img-upload-zone { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.url-note {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border: 1px dashed var(--border); border-radius: var(--radius);
+  font-size: 12px; color: var(--muted-fg); background: var(--secondary);
+}
+.url-note svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* List card */
+.list-card { border: 1px solid var(--border); border-radius: calc(var(--radius)+2px); margin-bottom: 8px; overflow: hidden; transition: border-color .12s; }
+.list-card:hover { border-color: var(--ring); }
+.list-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--secondary); border-bottom: 1px solid var(--border);
+}
+.list-card-left { display: flex; align-items: center; gap: 8px; }
+.list-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 4px; background: var(--muted);
+  color: var(--muted-fg); font-size: 11px; font-weight: 600;
+}
+.list-card-title { font-size: 13px; font-weight: 500; }
+.list-card-body { padding: 16px; }
+.add-row {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 10px; border: 1px dashed var(--border); border-radius: calc(var(--radius)+2px);
+  background: transparent; color: var(--muted-fg); font-size: 13px; font-weight: 500;
+  font-family: inherit; cursor: pointer; transition: all .15s; margin-top: 8px;
+}
+.add-row:hover { border-color: var(--foreground); color: var(--foreground); background: var(--muted); }
+
+/* Page */
+.page { display: none; }
+.page.active { display: block; animation: fi .15s ease; }
+@keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.page-heading { margin-bottom: 24px; }
+.page-heading h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+.page-heading p  { font-size: 13.5px; color: var(--muted-fg); margin-top: 4px; }
+
+/* Dashboard */
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 16px; }
+.stat-card {
+  border: 1px solid var(--border); border-radius: calc(var(--radius)+2px); padding: 16px 20px;
+  background: var(--card); transition: border-color .12s;
+}
+.stat-card:hover { border-color: var(--muted-fg); }
+.stat-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stat-label-top { font-size: 12.5px; font-weight: 500; color: var(--muted-fg); }
+.stat-icon svg { width: 15px; height: 15px; color: var(--muted-fg); }
+.stat-value { font-size: 28px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+
+.quick-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+.quick-card {
+  border: 1px solid var(--border); border-radius: calc(var(--radius)+2px); padding: 14px 16px;
+  background: var(--card); cursor: pointer; transition: background .12s, border-color .12s;
+  display: flex; align-items: center; gap: 12px;
+}
+.quick-card:hover { background: var(--secondary); border-color: var(--muted-fg); }
+.quick-icon {
+  width: 36px; height: 36px; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--secondary); display: flex; align-items: center; justify-content: center;
+  color: var(--muted-fg); flex-shrink: 0;
+}
+.quick-icon svg { width: 16px; height: 16px; }
+.qname { font-size: 13.5px; font-weight: 500; }
+.qdesc { font-size: 12px; color: var(--muted-fg); margin-top: 2px; }
+.quick-arrow { margin-left: auto; color: var(--muted-fg); }
+.quick-arrow svg { width: 14px; height: 14px; }
+
+.hint-steps { display: flex; flex-direction: column; gap: 8px; }
+.hint-step { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--secondary); border-radius: var(--radius); }
+.hint-num {
+  width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
+  font-weight: 700; color: var(--muted-fg); flex-shrink: 0; margin-top: 1px;
+}
+.hint-text { font-size: 13px; color: var(--muted-fg); line-height: 1.5; }
+.hint-text strong { color: var(--foreground); font-weight: 500; }
+code.inline { background: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; font-size: 11.5px; }
+
+/* Save bar */
+.save-bar {
+  display: none; position: fixed; bottom: 0; left: var(--sidebar-w); right: 0; z-index: 100;
+  height: 52px; background: var(--background); border-top: 1px solid var(--border);
+  padding: 0 24px; align-items: center; justify-content: space-between;
+  animation: su .2s ease;
+}
+.save-bar.show { display: flex; }
+@keyframes su { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.save-bar-left { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-fg); }
+.save-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+.save-bar-right { display: flex; gap: 8px; }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 68px; right: 24px; z-index: 999;
+  display: none; align-items: center; gap: 10px;
+  padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
+  border-radius: calc(var(--radius)+2px); font-size: 13.5px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.5); min-width: 220px;
+  opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s;
+}
+#toast.show { display: flex; opacity: 1; transform: translateY(0); }
+#toast .t-icon svg { width: 15px; height: 15px; }
+#toast.success .t-icon { color: #22c55e; }
+#toast.error   .t-icon { color: #f87171; }
+#toast.info    .t-icon { color: #60a5fa; }
+#toast .t-msg  { font-size: 13px; font-weight: 500; }
+
+/* Empty */
+.empty-state { padding: 32px; text-align: center; color: var(--muted-fg); }
+.empty-state svg { width: 32px; height: 32px; margin: 0 auto 8px; display: block; opacity: .4; }
+.empty-state p { font-size: 13px; }
+
+/* Export banner */
+.export-banner {
+  background: rgba(245,158,11,.06); border: 1px solid rgba(245,158,11,.2);
+  border-radius: calc(var(--radius)+2px); padding: 14px 18px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px; font-size: 13px;
+}
+.export-banner svg { width: 18px; height: 18px; color: #f59e0b; flex-shrink: 0; }
+.export-banner-text { flex: 1; color: var(--muted-fg); line-height: 1.5; }
+.export-banner-text strong { color: var(--foreground); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon">c11</div>
+    <div style="margin-left:10px">
+      <div class="logo-name">Cloud 11</div>
+      <div class="logo-sub">CMS Mockup</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-group-label" style="margin-top:4px">Sections</div>
+    <div class="nav-item" onclick="showPage('header')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m-15 0-4.5-4.5m4.5 4.5-4.5 4.5"/></svg>
+      Header
+    </div>
+    <div class="nav-item" onclick="showPage('content1')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+      Content 1 <span class="nav-badge">Spaces</span>
+    </div>
+    <div class="nav-item" onclick="showPage('content2')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h7.5c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-7.5 0h7.5"/></svg>
+      Content 2 <span class="nav-badge">Industry</span>
+    </div>
+    <div class="nav-item" onclick="showPage('content3')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+      Content 3 <span class="nav-badge">App</span>
+    </div>
+    <div class="nav-item" onclick="showPage('footer')">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/></svg>
+      Footer
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="status-dot"></div>
+    <div class="sidebar-footer-text">Mockup — <strong>Offline mode</strong></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="header-bar">
+    <div class="breadcrumb">
+      <span class="breadcrumb-root">Cloud 11</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-page" id="page-title">Dashboard</span>
+    </div>
+    <div class="header-right">
+      <div class="unsaved-pill" id="unsaved-pill">Unsaved changes</div>
+      <button class="btn btn-ghost btn-sm" onclick="discardChanges()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        Reset
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="exportJSON()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Export JSON
+      </button>
+      <button class="btn btn-default btn-sm" id="save-btn" onclick="saveToLocal()" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a3.75 3.75 0 0 0-.1.83V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.279-.035-.557-.1-.83l-2.413-8.088a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 0 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3"/></svg>
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="export-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+        <div class="export-banner-text">
+          <strong>Mockup mode</strong> — Changes are saved in your browser (localStorage).
+          Use <strong>Export JSON</strong> to download the edited content, or <strong>Reset</strong> to restore the original.
+        </div>
+      </div>
+
+      <div class="page-heading">
+        <h1>Dashboard</h1>
+        <p>Manage all content sections for the Cloud 11 website.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-head"><span class="stat-label-top">Nav Links</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-nav">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-head"><span class="stat-label-top">Carousel Slides</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-carousel">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-head"><span class="stat-label-top">Space Cards</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-spaces">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Quick Edit</div><div class="card-description">Jump directly to any section</div></div>
+        </div>
+        <div class="card-body">
+          <div class="quick-grid">
+            <div class="quick-card" onclick="showPage('header')">
+              <div class="quick-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m-15 0-4.5-4.5m4.5 4.5-4.5 4.5"/></svg></div>
+              <div><div class="qname">Header</div><div class="qdesc">Navigation & hero</div></div>
+              <div class="quick-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+            </div>
+            <div class="quick-card" onclick="showPage('content1')">
+              <div class="quick-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6z"/></svg></div>
+              <div><div class="qname">Content 1</div><div class="qdesc">Carousel slides</div></div>
+              <div class="quick-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+            </div>
+            <div class="quick-card" onclick="showPage('content2')">
+              <div class="quick-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625"/></svg></div>
+              <div><div class="qname">Content 2</div><div class="qdesc">Space cards</div></div>
+              <div class="quick-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+            </div>
+            <div class="quick-card" onclick="showPage('content3')">
+              <div class="quick-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3"/></svg></div>
+              <div><div class="qname">Content 3</div><div class="qdesc">App download</div></div>
+              <div class="quick-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+            </div>
+            <div class="quick-card" onclick="showPage('footer')" style="grid-column:span 2">
+              <div class="quick-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/></svg></div>
+              <div><div class="qname">Footer</div><div class="qdesc">Links, social & copyright</div></div>
+              <div class="quick-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">How to use this mockup</div></div></div>
+        <div class="card-body">
+          <div class="hint-steps">
+            <div class="hint-step"><div class="hint-num">1</div><div class="hint-text">Edit any field in any section — changes save automatically in your browser.</div></div>
+            <div class="hint-step"><div class="hint-num">2</div><div class="hint-text">Paste image URLs directly into the image fields (no upload in offline mode).</div></div>
+            <div class="hint-step"><div class="hint-num">3</div><div class="hint-text">Click <strong>Export JSON</strong> to download <code class="inline">content.json</code> with your edits.</div></div>
+            <div class="hint-step"><div class="hint-num">4</div><div class="hint-text">Click <strong>Reset</strong> to discard all changes and restore the original data.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="page" id="page-header">
+      <div class="page-heading"><h1>Header</h1><p>Logo, navigation links, CTA button, and hero section.</p></div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Logo</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Logo text</label><input class="shad-input" id="header-logo-text" placeholder="c11" /></div>
+            <div class="field">
+              <label class="label">Logo image <span class="label-hint">(URL)</span></label>
+              <div class="img-upload-wrap" style="margin-top:2px">
+                <div class="img-thumb" id="prev-header-logo"><span style="padding:6px;font-size:10px">No image</span></div>
+                <div class="img-upload-zone">
+                  <div class="url-note"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg> Paste image URL below</div>
+                  <input class="shad-input" id="header-logo-image" placeholder="https://…" oninput="updatePreview('header-logo-image','prev-header-logo')" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Navigation links</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addNavLink()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="nav-links-list"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">CTA button</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Label</label><input class="shad-input" id="header-cta-label" placeholder="Contact" /></div>
+            <div class="field"><label class="label">URL</label><input class="shad-input" id="header-cta-url" placeholder="#contact" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Hero section</div></div></div>
+        <div class="card-body">
+          <div class="field">
+            <label class="label">Background image URL</label>
+            <div class="img-upload-wrap" style="margin-top:2px">
+              <div class="img-thumb img-thumb-wide" id="prev-hero-bg"><span style="padding:6px;font-size:10px">No image</span></div>
+              <div class="img-upload-zone">
+                <input class="shad-input" id="header-hero-bg" placeholder="https://… (1920×1080 recommended)" oninput="updatePreview('header-hero-bg','prev-hero-bg')" />
+              </div>
+            </div>
+          </div>
+          <hr class="separator" />
+          <div class="field-row">
+            <div class="field"><label class="label">Tagline — left</label><textarea class="shad-textarea" id="header-hero-left" rows="3" placeholder="bangkok's&#10;new creative&#10;ecosystem"></textarea></div>
+            <div class="field"><label class="label">Tagline — right</label><textarea class="shad-textarea" id="header-hero-right" rows="3" placeholder="designed for creator…"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT 1 -->
+    <div class="page" id="page-content1">
+      <div class="page-heading"><h1>Content 1 — Spaces</h1><p>Full-width carousel showcasing Cloud 11 spaces.</p></div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field"><label class="label">Heading</label><textarea class="shad-textarea" id="c1-heading" rows="2"></textarea></div>
+          <div class="field-row" style="margin-top:16px">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c1-btn-text" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c1-btn-url" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Carousel slides</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addCarouselItem()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add slide</button>
+        </div>
+        <div class="card-body"><div id="c1-carousel-list"></div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT 2 -->
+    <div class="page" id="page-content2">
+      <div class="page-heading"><h1>Content 2 — Industry</h1><p>Horizontal scrolling grid of space cards.</p></div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Heading</label><textarea class="shad-textarea" id="c2-heading" rows="2"></textarea></div>
+            <div class="field"><label class="label">Description</label><textarea class="shad-textarea" id="c2-desc" rows="2"></textarea></div>
+          </div>
+          <div class="field-row" style="margin-top:16px">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c2-btn-text" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c2-btn-url" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Space cards</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addSpaceCard()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add card</button>
+        </div>
+        <div class="card-body"><div id="c2-spaces-list"></div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT 3 -->
+    <div class="page" id="page-content3">
+      <div class="page-heading"><h1>Content 3 — App</h1><p>App download promo section.</p></div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field"><label class="label">Heading</label><textarea class="shad-textarea" id="c3-heading" rows="2"></textarea></div>
+          <div class="field" style="margin-top:16px"><label class="label">Description</label><textarea class="shad-textarea" id="c3-desc" rows="2"></textarea></div>
+          <div class="field-row" style="margin-top:16px">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c3-btn-text" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c3-btn-url" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">App icon URL</div></div></div>
+        <div class="card-body">
+          <div class="img-upload-wrap">
+            <div class="img-thumb" id="prev-c3-icon"><span style="padding:6px;font-size:10px">No icon</span></div>
+            <div class="img-upload-zone">
+              <input class="shad-input" id="c3-app-icon" placeholder="https://… (512×512)" oninput="updatePreview('c3-app-icon','prev-c3-icon')" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Profile images</div><div class="card-description">Float around the app icon</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addProfileImage()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="c3-profiles-list"></div></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="page" id="page-footer">
+      <div class="page-heading"><h1>Footer</h1><p>Site links, social, and branding.</p></div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Branding</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Tagline</label><textarea class="shad-textarea" id="footer-tagline" rows="3"></textarea></div>
+            <div class="field"><label class="label">Large decorative text</label><input class="shad-input" id="footer-logo-text" /><div class="field-desc">Oversized text at bottom of footer</div></div>
+          </div>
+          <div class="field" style="margin-top:16px"><label class="label">Copyright</label><input class="shad-input" id="footer-copyright" /></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Sitemap</div></div><button class="btn btn-outline btn-sm" onclick="addFooterLink('sitemap')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button></div>
+        <div class="card-body"><div id="footer-sitemap-list"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Facility service</div></div><button class="btn btn-outline btn-sm" onclick="addFooterLink('facility')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button></div>
+        <div class="card-body"><div id="footer-facility-list"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Your visit</div></div><button class="btn btn-outline btn-sm" onclick="addFooterLink('visit')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button></div>
+        <div class="card-body"><div id="footer-visit-list"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Information &amp; assistance</div></div><button class="btn btn-outline btn-sm" onclick="addFooterLink('info')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button></div>
+        <div class="card-body"><div id="footer-info-list"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Social links</div></div><button class="btn btn-outline btn-sm" onclick="addSocialLink()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button></div>
+        <div class="card-body"><div id="footer-social-list"></div></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- Save bar -->
+<div class="save-bar" id="save-bar">
+  <div class="save-bar-left"><div class="save-dot"></div>You have unsaved changes</div>
+  <div class="save-bar-right">
+    <button class="btn btn-ghost btn-sm" onclick="discardChanges()">Discard</button>
+    <button class="btn btn-outline btn-sm" onclick="exportJSON()">Export JSON</button>
+    <button class="btn btn-default btn-sm" onclick="saveToLocal()">Save</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <div class="t-icon" id="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div>
+  <div class="t-msg" id="toast-msg">Saved!</div>
+</div>
+
+<script>
+// ── Initial data (embedded from content.json) ─────────────────
+const ORIGINAL = __CONTENT_JSON__;
+const LS_KEY = 'cloud11_cms_data';
+
+let data = {};
+let dirty = false;
+
+// ── Init ──────────────────────────────────────────────────────
+function init() {
+  const saved = localStorage.getItem(LS_KEY);
+  if (saved) {
+    try { data = JSON.parse(saved); showToast('Restored from browser storage', 'info'); }
+    catch { data = JSON.parse(JSON.stringify(ORIGINAL)); }
+  } else {
+    data = JSON.parse(JSON.stringify(ORIGINAL));
+  }
+  populateAll();
+  updateStats();
+}
+
+// ── Dirty state ───────────────────────────────────────────────
+function markDirty() {
+  if (dirty) return;
+  dirty = true;
+  document.getElementById('save-btn').disabled = false;
+  document.getElementById('unsaved-pill').classList.add('show');
+  document.getElementById('save-bar').classList.add('show');
+}
+function clearDirty() {
+  dirty = false;
+  document.getElementById('save-btn').disabled = true;
+  document.getElementById('unsaved-pill').classList.remove('show');
+  document.getElementById('save-bar').classList.remove('show');
+}
+
+// ── Save / discard / export ───────────────────────────────────
+function saveToLocal() {
+  collectAll();
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  clearDirty();
+  showToast('Saved to browser storage');
+}
+
+function discardChanges() {
+  if (!confirm('Discard all changes and restore original data?')) return;
+  localStorage.removeItem(LS_KEY);
+  data = JSON.parse(JSON.stringify(ORIGINAL));
+  populateAll(); updateStats(); clearDirty();
+  showToast('Reset to original');
+}
+
+function exportJSON() {
+  collectAll();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'content.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('content.json downloaded');
+}
+
+// ── Navigation ────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n =>
+    n.classList.toggle('active', n.getAttribute('onclick')?.includes(`'${id}'`) ?? false));
+  const labels = {dashboard:'Dashboard',header:'Header',content1:'Content 1',content2:'Content 2',content3:'Content 3',footer:'Footer'};
+  document.getElementById('page-title').textContent = labels[id] || id;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Preview ───────────────────────────────────────────────────
+function updatePreview(inputId, previewId) {
+  const url = document.getElementById(inputId)?.value||'';
+  const el = document.getElementById(previewId);
+  if (!el) return;
+  el.innerHTML = url
+    ? `<img src="${url}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:10px;padding:6px\\'>Load error</span>'" />`
+    : `<span style="padding:6px;font-size:10px">No image</span>`;
+}
+
+// ── Populate ──────────────────────────────────────────────────
+function populateAll() {
+  populateHeader(); populateContent1(); populateContent2(); populateContent3(); populateFooter();
+}
+
+function populateHeader() {
+  setVal('header-logo-text', data.header.logo.text);
+  setVal('header-logo-image', data.header.logo.image);
+  updatePreview('header-logo-image','prev-header-logo');
+  setVal('header-cta-label', data.header.cta.label);
+  setVal('header-cta-url', data.header.cta.url);
+  setVal('header-hero-left', data.header.hero.tagline_left);
+  setVal('header-hero-right', data.header.hero.tagline_right);
+  setVal('header-hero-bg', data.header.hero.background_image);
+  updatePreview('header-hero-bg','prev-hero-bg');
+  renderNavLinks();
+}
+function renderNavLinks() {
+  render('nav-links-list', data.header.nav||[], (lnk,i) => card(lnk.label||'Untitled', `removeNavLink(${i})`, `
+    <div class="field-row">
+      <div class="field"><label class="label">Label</label><input class="shad-input" value="${esc(lnk.label)}" oninput="data.header.nav[${i}].label=this.value;syncLbl(this,'lbl-nav-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">URL</label><input class="shad-input" value="${esc(lnk.url)}" oninput="data.header.nav[${i}].url=this.value;markDirty()" /></div>
+    </div>`, i, 'lbl-nav-'));
+}
+function removeNavLink(i){ data.header.nav.splice(i,1); renderNavLinks(); markDirty(); }
+function addNavLink(){ data.header.nav.push({label:'New Link',url:'#'}); renderNavLinks(); markDirty(); }
+
+function populateContent1() {
+  setVal('c1-heading', data.content1.heading);
+  setVal('c1-btn-text', data.content1.button_text);
+  setVal('c1-btn-url', data.content1.button_url);
+  renderCarousel();
+}
+function renderCarousel() {
+  render('c1-carousel-list', data.content1.carousel||[], (item,i) => card(item.title||'Untitled', `removeCarouselItem(${i})`, `
+    <div class="field">
+      <label class="label">Image URL</label>
+      <div class="img-upload-wrap">
+        <div class="img-thumb img-thumb-wide" id="prev-c1-${i}">${item.image?`<img src="${esc(item.image)}"/>`:'<span style="font-size:10px;padding:6px">No image</span>'}</div>
+        <div class="img-upload-zone"><input class="shad-input" value="${esc(item.image)}" placeholder="https://…" oninput="data.content1.carousel[${i}].image=this.value;setThumb('prev-c1-${i}',this.value);markDirty()" /></div>
+      </div>
+    </div>
+    <div class="field-row" style="margin-top:14px">
+      <div class="field"><label class="label">Title</label><input class="shad-input" value="${esc(item.title)}" oninput="data.content1.carousel[${i}].title=this.value;syncLbl(this,'lbl-c1-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">Subtitle</label><input class="shad-input" value="${esc(item.subtitle)}" oninput="data.content1.carousel[${i}].subtitle=this.value;markDirty()" /></div>
+    </div>`, i, 'lbl-c1-'));
+}
+function removeCarouselItem(i){ data.content1.carousel.splice(i,1); renderCarousel(); markDirty(); }
+function addCarouselItem(){ data.content1.carousel.push({id:Date.now(),image:'',title:'New Slide',subtitle:''}); renderCarousel(); markDirty(); }
+
+function populateContent2() {
+  setVal('c2-heading', data.content2.heading);
+  setVal('c2-desc', data.content2.description);
+  setVal('c2-btn-text', data.content2.button_text);
+  setVal('c2-btn-url', data.content2.button_url);
+  renderSpaces();
+}
+function renderSpaces() {
+  render('c2-spaces-list', data.content2.spaces||[], (item,i) => card(item.name||'Untitled', `removeSpace(${i})`, `
+    <div class="field">
+      <label class="label">Image URL</label>
+      <div class="img-upload-wrap">
+        <div class="img-thumb img-thumb-wide" id="prev-c2-${i}">${item.image?`<img src="${esc(item.image)}"/>`:'<span style="font-size:10px;padding:6px">No image</span>'}</div>
+        <div class="img-upload-zone"><input class="shad-input" value="${esc(item.image)}" placeholder="https://…" oninput="data.content2.spaces[${i}].image=this.value;setThumb('prev-c2-${i}',this.value);markDirty()" /></div>
+      </div>
+    </div>
+    <div class="field-row-3" style="margin-top:14px">
+      <div class="field"><label class="label">Name</label><input class="shad-input" value="${esc(item.name)}" oninput="data.content2.spaces[${i}].name=this.value;syncLbl(this,'lbl-c2-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">Category</label><input class="shad-input" value="${esc(item.category)}" oninput="data.content2.spaces[${i}].category=this.value;markDirty()" /></div>
+      <div class="field"><label class="label">Sub-category</label><input class="shad-input" value="${esc(item.subcategory)}" oninput="data.content2.spaces[${i}].subcategory=this.value;markDirty()" /></div>
+    </div>`, i, 'lbl-c2-'));
+}
+function removeSpace(i){ data.content2.spaces.splice(i,1); renderSpaces(); markDirty(); }
+function addSpaceCard(){ data.content2.spaces.push({id:Date.now(),image:'',name:'New Space',category:'',subcategory:''}); renderSpaces(); markDirty(); }
+
+function populateContent3() {
+  setVal('c3-heading', data.content3.heading);
+  setVal('c3-desc', data.content3.description);
+  setVal('c3-btn-text', data.content3.button_text);
+  setVal('c3-btn-url', data.content3.button_url);
+  setVal('c3-app-icon', data.content3.app_icon);
+  updatePreview('c3-app-icon','prev-c3-icon');
+  renderProfiles();
+}
+function renderProfiles() {
+  render('c3-profiles-list', data.content3.profile_images||[], (url,i) => card(`Profile ${i+1}`, `removeProfile(${i})`, `
+    <div class="img-upload-wrap">
+      <div class="img-thumb" id="prev-c3p-${i}">${url?`<img src="${esc(url)}"/>`:'<span style="font-size:10px;padding:6px">No image</span>'}</div>
+      <div class="img-upload-zone"><input class="shad-input" value="${esc(url)}" placeholder="https://…" oninput="data.content3.profile_images[${i}]=this.value;setThumb('prev-c3p-${i}',this.value);markDirty()" /></div>
+    </div>`, i, 'lbl-c3p-'));
+}
+function removeProfile(i){ data.content3.profile_images.splice(i,1); renderProfiles(); markDirty(); }
+function addProfileImage(){ data.content3.profile_images.push(''); renderProfiles(); markDirty(); }
+
+function populateFooter() {
+  const f = data.footer;
+  setVal('footer-tagline', f.tagline);
+  setVal('footer-logo-text', f.logo_text);
+  setVal('footer-copyright', f.copyright);
+  renderFL('sitemap', f.sitemap.links);
+  renderFL('facility', f.facility.links);
+  renderFL('visit', f.visit.links);
+  renderFInfo(f.info.items);
+  renderSocial(f.social);
+}
+function renderFL(key, links) {
+  render(`footer-${key}-list`, links||[], (lnk,i) => card(lnk.label||'Untitled', `removeFL('${key}',${i})`, `
+    <div class="field-row">
+      <div class="field"><label class="label">Label</label><input class="shad-input" value="${esc(lnk.label)}" oninput="data.footer.${key}.links[${i}].label=this.value;syncLbl(this,'lbl-fl${key}-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">URL</label><input class="shad-input" value="${esc(lnk.url)}" oninput="data.footer.${key}.links[${i}].url=this.value;markDirty()" /></div>
+    </div>`, i, `lbl-fl${key}-`));
+}
+function renderFInfo(items) {
+  render('footer-info-list', items||[], (item,i) => card(item.label||'Untitled', `removeFL('info',${i})`, `
+    <div class="field-row">
+      <div class="field"><label class="label">Label</label><input class="shad-input" value="${esc(item.label)}" oninput="data.footer.info.items[${i}].label=this.value;syncLbl(this,'lbl-flinfo-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">URL</label><input class="shad-input" value="${esc(item.url)}" oninput="data.footer.info.items[${i}].url=this.value;markDirty()" /></div>
+    </div>`, i, 'lbl-flinfo-'));
+}
+function renderSocial(links) {
+  render('footer-social-list', links||[], (lnk,i) => card(lnk.label||'Platform', `removeSocial(${i})`, `
+    <div class="field-row">
+      <div class="field"><label class="label">Platform</label><input class="shad-input" value="${esc(lnk.label)}" oninput="data.footer.social[${i}].label=this.value;syncLbl(this,'lbl-soc-${i}');markDirty()" /></div>
+      <div class="field"><label class="label">URL</label><input class="shad-input" value="${esc(lnk.url)}" oninput="data.footer.social[${i}].url=this.value;markDirty()" /></div>
+    </div>`, i, 'lbl-soc-'));
+}
+function removeFL(key,i){
+  if(key==='info'){ data.footer.info.items.splice(i,1); renderFInfo(data.footer.info.items); }
+  else { data.footer[key].links.splice(i,1); renderFL(key,data.footer[key].links); }
+  markDirty();
+}
+function addFooterLink(key){
+  if(key==='info'){ data.footer.info.items.push({label:'New Item',url:'#'}); renderFInfo(data.footer.info.items); }
+  else { data.footer[key].links.push({label:'New Link',url:'#'}); renderFL(key,data.footer[key].links); }
+  markDirty();
+}
+function removeSocial(i){ data.footer.social.splice(i,1); renderSocial(data.footer.social); markDirty(); }
+function addSocialLink(){ data.footer.social.push({label:'Platform',url:'#'}); renderSocial(data.footer.social); markDirty(); }
+
+// ── Collect ───────────────────────────────────────────────────
+function collectAll() {
+  data.header.logo.text = getVal('header-logo-text');
+  data.header.logo.image = getVal('header-logo-image');
+  data.header.cta.label = getVal('header-cta-label');
+  data.header.cta.url = getVal('header-cta-url');
+  data.header.hero.tagline_left = getVal('header-hero-left');
+  data.header.hero.tagline_right = getVal('header-hero-right');
+  data.header.hero.background_image = getVal('header-hero-bg');
+  data.content1.heading = getVal('c1-heading');
+  data.content1.button_text = getVal('c1-btn-text');
+  data.content1.button_url = getVal('c1-btn-url');
+  data.content2.heading = getVal('c2-heading');
+  data.content2.description = getVal('c2-desc');
+  data.content2.button_text = getVal('c2-btn-text');
+  data.content2.button_url = getVal('c2-btn-url');
+  data.content3.heading = getVal('c3-heading');
+  data.content3.description = getVal('c3-desc');
+  data.content3.button_text = getVal('c3-btn-text');
+  data.content3.button_url = getVal('c3-btn-url');
+  data.content3.app_icon = getVal('c3-app-icon');
+  data.footer.tagline = getVal('footer-tagline');
+  data.footer.logo_text = getVal('footer-logo-text');
+  data.footer.copyright = getVal('footer-copyright');
+}
+
+// ── Render helpers ────────────────────────────────────────────
+function render(id, arr, fn) {
+  const el = document.getElementById(id);
+  el.innerHTML = arr.length ? arr.map((x,i)=>fn(x,i)).join('') : emptyState();
+}
+function card(title, removeFn, body, i, pfx) {
+  const uid = (pfx||'lbl-') + i;
+  return `<div class="list-card">
+    <div class="list-card-header">
+      <div class="list-card-left"><span class="list-num">${i+1}</span><span class="list-card-title" id="${uid}">${esc(title)}</span></div>
+      <button class="btn btn-ghost btn-icon" style="color:var(--muted-fg)" onclick="${removeFn}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="list-card-body">${body}</div>
+  </div>`;
+}
+function emptyState(){
+  return `<div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.279-.035-.557-.1-.83L19.24 5.08a2.25 2.25 0 0 0-2.15-1.588H6.91a2.25 2.25 0 0 0-2.15 1.588L2.35 12.508c-.064.273-.1.55-.1.83Z"/></svg>
+    <p>Nothing here yet.</p>
+  </div>`;
+}
+function syncLbl(input, id){ const el=document.getElementById(id); if(el) el.textContent=input.value||'Untitled'; }
+function setThumb(id, url){
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML = url ? `<img src="${url}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:10px;padding:6px\\'>Error</span>'" />` : '<span style="padding:6px;font-size:10px">No image</span>';
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type='success'){
+  const t=document.getElementById('toast');
+  const icons={
+    success:`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>`,
+    error:`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>`,
+    info:`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>`,
+  };
+  document.getElementById('toast-icon').innerHTML = icons[type]||icons.success;
+  document.getElementById('toast-msg').textContent = msg;
+  t.className='show '+type;
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='', 3200);
+}
+
+// ── Stats ─────────────────────────────────────────────────────
+function updateStats(){
+  document.getElementById('stat-nav').textContent = (data.header?.nav||[]).length;
+  document.getElementById('stat-carousel').textContent = (data.content1?.carousel||[]).length;
+  document.getElementById('stat-spaces').textContent = (data.content2?.spaces||[]).length;
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function setVal(id,v){ const e=document.getElementById(id); if(e) e.value=v??''; }
+function getVal(id){ const e=document.getElementById(id); return e?e.value:''; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+document.addEventListener('input', ()=>{ markDirty(); updateStats(); });
+
+init();
+</script>
+</body>
+</html>""".replace('__CONTENT_JSON__', INITIAL_JSON)
+
+with open(OUT, "w", encoding="utf-8") as f:
+    f.write(HTML)
+
+print(f"✓ Export complete: {OUT}")
+print(f"  File size: {OUT.stat().st_size / 1024:.1f} KB")
+print(f"  Open in any browser — no server needed.")

@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloud 11 — CMS Admin</title>
+<style>
+/* ── Cloud 11 Design System — Brand Guidelines 1.0 ── */
+:root {
+  /* Brand Colors */
+  --brand-primary-light: #C3E3FF;  /* Ref/Primary — soft light blue */
+  --brand-neutral:       #D1D4D9;  /* Ref/Neutral */
+  --brand-white:         #FFFFFF;  /* Ref/Base/White */
+  --brand-black:         #000000;  /* Ref/Base/Black */
+
+  /* Interactive (UI) */
+  --primary:          #347FEE;
+  --primary-fg:       #ffffff;
+  --primary-hover:    #2563d4;
+  --primary-light:    #e8f2ff;
+
+  /* Surfaces */
+  --background:       #ffffff;
+  --foreground:       #09090b;
+  --card:             #ffffff;
+  --card-foreground:  #09090b;
+  --popover:          #ffffff;
+  --popover-fg:       #09090b;
+  --secondary:        #f4f4f5;
+  --secondary-fg:     #18181b;
+  --muted:            #f4f4f5;
+  --muted-fg:         #71717a;
+  --accent:           #C3E3FF;   /* brand primary-light as accent */
+  --accent-fg:        #09090b;
+  --destructive:      #dc2626;
+  --destructive-fg:   #fafafa;
+  --border:           #D1D4D9;   /* brand neutral as border */
+  --input:            #e4e4e7;
+  --ring:             #347FEE;
+  --radius:           0.375rem;
+  --sidebar-w:        256px;
+
+  /* Typography — Helvetica Neue scale */
+  --font-sans:        'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --text-h1:          28px; --weight-h1: 700;
+  --text-h2:          24px; --weight-h2: 700;
+  --text-h3:          20px; --weight-h3: 700;
+  --text-h4:          18px; --weight-h4: 700;
+  --text-h5:          16px; --weight-h5: 700;
+  --text-body-xl:     18px; --weight-body: 400;
+  --text-body-lg:     16px;
+  --text-body-md:     14px;
+  --text-body-sm:     12px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  border-right: 1px solid var(--brand-neutral);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 50;
+  background-color: var(--background);
+  padding: 0;
+}
+/* Brand accent line at top of sidebar */
+.sidebar::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--brand-primary-light) 100%);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 28px; height: 28px;
+  background-color: var(--primary);
+  color: var(--primary-fg);
+  box-shadow: 0 1px 6px rgba(52,127,238,0.3);
+  border-radius: var(--radius);
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+
+.logo-info { display: flex; flex-direction: column; }
+.logo-name { font-size: 13.5px; font-weight: 600; line-height: 1.2; }
+.logo-sub  { font-size: 11px; color: var(--muted-fg); line-height: 1.2; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 8px; }
+
+.nav-group { margin-bottom: 4px; }
+
+.nav-group-label {
+  padding: 6px 8px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted-fg);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--muted-fg);
+  transition: background-color 0.12s, color 0.12s;
+  user-select: none;
+  margin-bottom: 1px;
+}
+
+.nav-item:hover { background-color: var(--accent); color: var(--foreground); }
+
+/* ── Nav tree (parent + sub-items) ── */
+.nav-parent {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: var(--radius);
+  cursor: pointer; font-size: 13.5px; font-weight: 500;
+  color: var(--foreground);
+  transition: background-color 0.12s;
+  user-select: none; margin-bottom: 1px;
+}
+.nav-parent:hover { background-color: var(--secondary); }
+.nav-parent svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-parent-chevron {
+  margin-left: auto; width: 14px; height: 14px;
+  transition: transform 0.2s ease; color: var(--muted-fg);
+}
+.nav-tree.open .nav-parent-chevron { transform: rotate(90deg); }
+
+.nav-sub-list {
+  display: none;
+  flex-direction: column;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+  margin-left: 11px;
+  margin-bottom: 2px;
+}
+.nav-tree.open .nav-sub-list { display: flex; }
+
+.nav-sub-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px; border-radius: var(--radius);
+  cursor: pointer; font-size: 13px; font-weight: 400;
+  color: var(--muted-fg);
+  transition: background-color 0.12s, color 0.12s;
+  user-select: none; margin-bottom: 1px;
+}
+.nav-sub-item:hover { background-color: var(--secondary); color: var(--foreground); }
+.nav-sub-item.active {
+  background-color: var(--primary-light);
+  color: var(--primary); font-weight: 600;
+}
+.nav-sub-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.nav-item.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.nav-item .nav-badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: var(--muted);
+  color: var(--muted-fg);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-indicator {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.15);
+  flex-shrink: 0;
+}
+
+.sidebar-footer-text { font-size: 12px; color: var(--muted-fg); }
+.sidebar-footer-text strong { color: #22c55e; font-weight: 500; }
+
+/* ── Main ── */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ── Preview split-view ── */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  height: calc(100vh - 56px);
+}
+.edit-pane {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  transition: flex 0.25s ease;
+}
+.main.preview-open .edit-pane {
+  flex: 1 1 50%;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+.main.preview-open .preview-panel {
+  flex: 1 1 50%;
+  min-width: 0;
+}
+.preview-panel {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+.main.preview-open .preview-panel { display: flex; }
+
+.preview-toolbar {
+  height: 40px;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.preview-toolbar-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-fg);
+  flex: 1;
+}
+.preview-viewport-btns { display: flex; gap: 4px; }
+.preview-vp-btn {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted-fg);
+  transition: all .15s;
+}
+.preview-vp-btn:hover, .preview-vp-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.preview-vp-btn svg { width: 14px; height: 14px; }
+
+.preview-live-badge {
+  font-size: 10px; font-weight: 600;
+  background: #dcfce7; color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 2px 7px; border-radius: 9999px;
+  display: flex; align-items: center; gap: 4px;
+}
+.preview-live-badge::before {
+  content: ''; display: block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #16a34a;
+  animation: livepulse 2s infinite;
+}
+@keyframes livepulse {
+  0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+
+.preview-frame-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  overflow: auto;
+  background: #e9ebee;
+}
+#preview-scale-outer {
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  flex-shrink: 0;
+  background: white;
+}
+#preview-iframe {
+  background: white;
+  border: none;
+  display: block;
+  width: 1440px;
+  height: 1024px;
+  transform-origin: top left;
+}
+.preview-frame-wrap.vp-mobile #preview-iframe {
+  width: 390px;
+  height: 844px;
+}
+.preview-frame-wrap.vp-tablet #preview-iframe {
+  width: 768px;
+  height: 1024px;
+}
+
+/* Preview toggle button */
+.btn-preview {
+  display: flex; align-items: center; gap: 5px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+.btn-preview:hover { background: var(--secondary); }
+.btn-preview.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* ── Header bar ── */
+.header-bar {
+  position: sticky; top: 0; z-index: 40;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.header-left { display: flex; align-items: center; gap: 8px; }
+
+.breadcrumb { display: flex; align-items: center; gap: 6px; }
+.breadcrumb-sep { color: var(--muted-fg); font-size: 13px; }
+.breadcrumb-root { font-size: 13px; color: var(--muted-fg); }
+.breadcrumb-page { font-size: 13.5px; font-weight: 500; color: var(--foreground); }
+
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+.unsaved-pill {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #f59e0b;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.18);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-weight: 500;
+}
+.unsaved-pill.show { display: flex; }
+.unsaved-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+
+/* ── Content ── */
+.content { padding: 24px; max-width: 900px; padding-bottom: 80px; }
+
+/* ── shadcn Button ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background-color 0.15s, opacity 0.15s, box-shadow 0.15s;
+}
+.btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.btn:disabled { pointer-events: none; opacity: 0.5; }
+.btn svg { width: 14px; height: 14px; }
+
+/* Default — white */
+.btn-default { background: var(--primary); color: var(--primary-fg); padding: 8px 16px; }
+.btn-default:hover { background: var(--primary-hover); }
+
+/* Secondary */
+.btn-secondary { background: var(--secondary); color: var(--secondary-fg); padding: 8px 16px; }
+.btn-secondary:hover { background: rgba(39,39,42,0.8); }
+
+/* Ghost */
+.btn-ghost { background: transparent; color: var(--foreground); padding: 8px 16px; }
+.btn-ghost:hover { background: var(--accent); }
+
+/* Outline */
+.btn-outline { background: transparent; color: var(--foreground); border: 1px solid var(--border); padding: 7px 15px; }
+.btn-outline:hover { background: var(--accent); }
+
+/* Destructive */
+.btn-destructive { background: var(--destructive); color: var(--destructive-fg); padding: 8px 16px; }
+.btn-destructive:hover { background: #991b1b; }
+
+/* Sizes */
+.btn-sm  { padding: 5px 12px; font-size: 12.5px; }
+.btn-icon { padding: 7px; }
+.btn-icon svg { width: 15px; height: 15px; }
+
+/* ── shadcn Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  margin-bottom: 16px;
+}
+.card-header { padding: 20px 24px 0; }
+.card-body   { padding: 20px 24px; }
+.card-footer { padding: 0 24px 20px; }
+
+.card-title {
+  font-size: var(--text-h5);    /* 16px Bold — H5 from brand scale */
+  font-weight: var(--weight-h5);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.card-description { font-size: var(--text-body-sm); color: var(--muted-fg); }
+
+.card-header + .card-body { padding-top: 16px; }
+.card-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.card-header-row .card-title { margin: 0; }
+
+/* ── shadcn Input / Textarea ── */
+.shad-input, .shad-textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  font-size: 13.5px;
+  font-family: inherit;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.shad-input::placeholder, .shad-textarea::placeholder { color: var(--muted-fg); }
+.shad-input:focus, .shad-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(52,127,238,0.12);
+}
+.shad-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* ── Form field ── */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+.label-hint { font-weight: 400; color: var(--muted-fg); font-size: 12px; }
+.field-desc { font-size: 12px; color: var(--muted-fg); margin-top: 5px; }
+.field-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── shadcn Badge ── */
+.badge {
+  display: inline-flex; align-items: center;
+  border-radius: 9999px;
+  padding: 2px 9px;
+  font-size: 11px; font-weight: 600;
+  border: 1px solid transparent;
+}
+.badge-secondary { background: var(--secondary); color: var(--secondary-fg); border-color: var(--border); }
+.badge-outline   { background: transparent; border-color: var(--border); color: var(--muted-fg); }
+
+/* ── shadcn Separator ── */
+.separator { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* ── Image upload ── */
+.img-upload-wrap { display: flex; gap: 14px; align-items: flex-start; }
+
+.img-thumb {
+  width: 80px; height: 80px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--secondary);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+  cursor: pointer;
+  font-size: 10.5px; color: var(--muted-fg); text-align: center;
+  transition: border-color 0.15s;
+}
+.img-thumb:hover { border-color: var(--ring); }
+.img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.img-thumb-wide { width: 120px; height: 80px; }
+
+.img-upload-zone {
+  flex: 1; display: flex; flex-direction: column; gap: 8px;
+}
+
+.upload-trigger {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  cursor: pointer;
+  color: var(--muted-fg);
+  font-size: 12.5px; font-weight: 500;
+  transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+  background: transparent;
+}
+.upload-trigger:hover { border-color: var(--foreground); color: var(--foreground); background: var(--accent); }
+.upload-trigger svg { width: 15px; height: 15px; }
+
+/* ── List item card ── */
+.list-card {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.12s;
+}
+.list-card:hover { border-color: var(--ring); }
+
+.list-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.list-card-left { display: flex; align-items: center; gap: 8px; }
+.list-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 4px;
+  background: var(--muted); color: var(--muted-fg);
+  font-size: 11px; font-weight: 600;
+}
+.list-card-title { font-size: 13px; font-weight: 500; }
+.list-card-body { padding: 16px; }
+
+/* Add item button */
+.add-row {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 10px;
+  border: 1px dashed var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background: transparent;
+  color: var(--muted-fg);
+  font-size: 13px; font-weight: 500; font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+  margin-top: 8px;
+}
+.add-row:hover { border-color: var(--foreground); color: var(--foreground); background: var(--accent); }
+.add-row svg { width: 14px; height: 14px; }
+
+/* ── Page transition ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.15s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Page heading ── */
+.page-heading { margin-bottom: 24px; }
+.page-heading h1 { font-size: var(--text-h3); font-weight: var(--weight-h3); letter-spacing: -0.3px; }
+.page-heading p  { font-size: 13.5px; color: var(--muted-fg); margin-top: 4px; }
+
+/* ── Dashboard stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 16px; }
+
+.stat-card {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 16px 20px;
+  background: var(--card);
+  transition: border-color 0.12s;
+}
+.stat-card:hover { border-color: var(--muted-fg); }
+
+.stat-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stat-label-top { font-size: 12.5px; font-weight: 500; color: var(--muted-fg); }
+.stat-icon { color: var(--muted-fg); }
+.stat-icon svg { width: 15px; height: 15px; }
+.stat-value { font-size: var(--text-h1); font-weight: var(--weight-h1); letter-spacing: -1px; line-height: 1; }
+
+/* Quick links */
+.quick-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+
+.quick-card {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 18px 18px 16px;
+  background: var(--card);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+}
+.quick-card:hover {
+  background: var(--secondary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+.quick-card.disabled {
+  opacity: 0.55; cursor: default; pointer-events: none;
+}
+
+.quick-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.quick-icon {
+  width: 40px; height: 40px;
+  border-radius: calc(var(--radius) + 2px);
+  border: 1px solid var(--border);
+  background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.quick-icon svg { width: 18px; height: 18px; }
+.quick-icon.muted {
+  background: var(--secondary);
+  color: var(--muted-fg);
+}
+.quick-card-arrow { color: var(--muted-fg); }
+.quick-card-arrow svg { width: 14px; height: 14px; }
+
+.quick-card-bottom {}
+.quick-info .qname { font-size: 14px; font-weight: 600; color: var(--foreground); }
+.quick-info .qdesc { font-size: 12px; color: var(--muted-fg); margin-top: 3px; line-height: 1.5; }
+
+.quick-sections {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+}
+.quick-section-tag {
+  font-size: 11px; padding: 2px 7px;
+  border-radius: 99px;
+  background: var(--secondary);
+  color: var(--muted-fg);
+  border: 1px solid var(--border);
+}
+.quick-badge-soon {
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 99px;
+  background: var(--secondary);
+  color: var(--muted-fg);
+  border: 1px solid var(--border);
+  letter-spacing: 0.02em;
+}
+
+/* ── Hint cards ── */
+.hint-steps { display: flex; flex-direction: column; gap: 8px; }
+.hint-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px;
+  background: var(--secondary);
+  border-radius: var(--radius);
+}
+.hint-num {
+  width: 20px; height: 20px;
+  border-radius: 4px; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--muted-fg);
+  flex-shrink: 0; margin-top: 1px;
+}
+.hint-text { font-size: 13px; color: var(--muted-fg); line-height: 1.5; }
+.hint-text strong { color: var(--foreground); font-weight: 500; }
+code.inline { background: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; font-size: 11.5px; font-family: 'Geist Mono', monospace; }
+
+/* ── Save bar ── */
+.save-bar {
+  display: none;
+  position: fixed; bottom: 0; left: var(--sidebar-w); right: 0;
+  z-index: 100;
+  height: 52px;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  padding: 0 24px;
+  align-items: center; justify-content: space-between;
+  animation: slideUp 0.2s ease;
+}
+.save-bar.show { display: flex; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.save-bar-left { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-fg); }
+.save-bar-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+.save-bar-right { display: flex; gap: 8px; }
+
+/* ── Toast ── */
+#toast {
+  position: fixed; bottom: 68px; right: 24px; z-index: 999;
+  display: none; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  font-size: 13.5px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  min-width: 220px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+#toast.show { display: flex; opacity: 1; transform: translateY(0); }
+#toast .t-icon svg { width: 15px; height: 15px; }
+#toast.success .t-icon { color: #22c55e; }
+#toast.error   .t-icon { color: #f87171; }
+#toast.info    .t-icon { color: #60a5fa; }
+#toast .t-msg  { font-size: 13px; font-weight: 500; }
+
+/* ── Empty state ── */
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: var(--muted-fg);
+}
+.empty-state svg { width: 32px; height: 32px; margin: 0 auto 8px; display: block; opacity: 0.5; }
+.empty-state p { font-size: 13px; }
+
+/* ── Spinner ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { width: 13px; height: 13px; border: 2px solid rgba(24,24,27,0.3); border-top-color: var(--primary-fg); border-radius: 50%; animation: spin 0.6s linear infinite; }
+
+/* ── Section intro ── */
+.section-intro { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.section-intro-icon { color: var(--muted-fg); }
+.section-intro-icon svg { width: 18px; height: 18px; }
+.section-intro-title { font-size: 14px; font-weight: 600; }
+.section-intro-desc { font-size: 12.5px; color: var(--muted-fg); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ════ SIDEBAR ════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-mark">
+      <div class="logo-icon">c11</div>
+      <div class="logo-info">
+        <div class="logo-name">Cloud 11</div>
+        <div class="logo-sub">CMS Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+        Dashboard
+      </div>
+    </div>
+
+    <div class="nav-group" style="margin-top:4px">
+      <div class="nav-group-label">Pages</div>
+
+      <!-- Homepage tree -->
+      <div class="nav-tree open" id="tree-homepage">
+        <div class="nav-parent" onclick="toggleNavTree('homepage')">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+          Homepage
+          <svg class="nav-parent-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+        </div>
+        <div class="nav-sub-list">
+          <div class="nav-sub-item" id="subnav-header" onclick="showPage('header')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m-15 0-4.5-4.5m4.5 4.5-4.5 4.5"/></svg>
+            Header
+          </div>
+          <div class="nav-sub-item" id="subnav-hero_banner" onclick="showPage('hero_banner')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+            Hero Banner
+            <span class="nav-badge">Slides</span>
+          </div>
+          <div class="nav-sub-item" id="subnav-content1" onclick="showPage('content1')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+            Content 1
+            <span class="nav-badge">Spaces</span>
+          </div>
+          <div class="nav-sub-item" id="subnav-content2" onclick="showPage('content2')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h7.5c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-7.5 0h7.5"/></svg>
+            Content 2
+            <span class="nav-badge">Industry</span>
+          </div>
+          <div class="nav-sub-item" id="subnav-content3" onclick="showPage('content3')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+            Content 3
+            <span class="nav-badge">App</span>
+          </div>
+          <div class="nav-sub-item" id="subnav-footer" onclick="showPage('footer')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/></svg>
+            Footer
+          </div>
+        </div>
+      </div>
+
+      <!-- Information Page (coming soon) -->
+      <div class="nav-tree" id="tree-information">
+        <div class="nav-parent" style="opacity:.6;cursor:default">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+          Information
+          <span class="nav-badge" style="margin-left:auto;margin-right:0">Soon</span>
+        </div>
+      </div>
+
+      <!-- Event Page (coming soon) -->
+      <div class="nav-tree" id="tree-event">
+        <div class="nav-parent" style="opacity:.6;cursor:default">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+          Event
+          <span class="nav-badge" style="margin-left:auto;margin-right:0">Soon</span>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="status-indicator"></div>
+    <div class="sidebar-footer-text">Server <strong>Online</strong> · :8080</div>
+  </div>
+</aside>
+
+<!-- ════ MAIN ════ -->
+<main class="main">
+
+  <!-- Header bar -->
+  <div class="header-bar">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span class="breadcrumb-root">Cloud 11</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-page" id="page-title">Dashboard</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="unsaved-pill" id="unsaved-pill">Unsaved changes</div>
+      <!-- Preview toggle -->
+      <button class="btn btn-preview btn-sm" id="preview-btn" onclick="togglePreview()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.641 0-8.58-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+        Preview
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="loadContent()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        Reload
+      </button>
+      <button class="btn btn-ghost btn-sm" id="sharecms-btn" onclick="exportCMS()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"/></svg>
+        Share CMS
+      </button>
+      <button class="btn btn-ghost btn-sm" id="export-btn" onclick="exportSite()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Export
+      </button>
+      <button class="btn btn-default btn-sm" id="save-btn" onclick="saveContent()" disabled>
+        <span id="save-label">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a3.75 3.75 0 0 0-.1.83V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.279-.035-.557-.1-.83l-2.413-8.088a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 0 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3"/></svg>
+          Save
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content area (split-view wrapper) -->
+  <div class="content-area">
+  <div class="edit-pane">
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-heading">
+        <h1>Dashboard</h1>
+        <p>Manage all content sections for the Cloud 11 website.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label-top">Nav Links</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-nav">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label-top">Carousel Slides</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-carousel">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label-top">Space Cards</span>
+            <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"/></svg></span>
+          </div>
+          <div class="stat-value" id="stat-spaces">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div>
+            <div class="card-title">Quick Edit</div>
+            <div class="card-description" style="margin-top:3px">Jump directly to any section</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="quick-grid">
+
+            <!-- Homepage -->
+            <div class="quick-card" onclick="showPage('header'); document.getElementById('tree-homepage').classList.add('open')">
+              <div class="quick-card-top">
+                <div class="quick-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+                </div>
+                <div class="quick-card-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+              </div>
+              <div class="quick-card-bottom">
+                <div class="quick-info">
+                  <div class="qname">Homepage</div>
+                  <div class="qdesc">หน้าหลักของเว็บไซต์ Cloud 11</div>
+                </div>
+                <div class="quick-sections">
+                  <span class="quick-section-tag">Header</span>
+                  <span class="quick-section-tag">Hero Banner</span>
+                  <span class="quick-section-tag">Content 1–3</span>
+                  <span class="quick-section-tag">Footer</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Information Page -->
+            <div class="quick-card disabled">
+              <div class="quick-card-top">
+                <div class="quick-icon muted">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                </div>
+                <span class="quick-badge-soon">Coming soon</span>
+              </div>
+              <div class="quick-card-bottom">
+                <div class="quick-info">
+                  <div class="qname">Information</div>
+                  <div class="qdesc">ข้อมูลสถานที่ บริการ และการติดต่อ</div>
+                </div>
+                <div class="quick-sections">
+                  <span class="quick-section-tag">About</span>
+                  <span class="quick-section-tag">Facilities</span>
+                  <span class="quick-section-tag">Contact</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event Page -->
+            <div class="quick-card disabled">
+              <div class="quick-card-top">
+                <div class="quick-icon muted">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+                </div>
+                <span class="quick-badge-soon">Coming soon</span>
+              </div>
+              <div class="quick-card-bottom">
+                <div class="quick-info">
+                  <div class="qname">Event</div>
+                  <div class="qdesc">กิจกรรม แคมเปญ และโปรโมชั่น</div>
+                </div>
+                <div class="quick-sections">
+                  <span class="quick-section-tag">Happenings</span>
+                  <span class="quick-section-tag">Campaign</span>
+                  <span class="quick-section-tag">Promotion</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Getting started</div></div>
+        </div>
+        <div class="card-body">
+          <div class="hint-steps">
+            <div class="hint-step"><div class="hint-num">1</div><div class="hint-text">Click any section in the <strong>sidebar</strong> or use Quick Edit above.</div></div>
+            <div class="hint-step"><div class="hint-num">2</div><div class="hint-text">Edit fields, upload images, and manage list items with the <strong>+ / Remove</strong> controls.</div></div>
+            <div class="hint-step"><div class="hint-num">3</div><div class="hint-text">Click <strong>Save</strong> — changes are written to <code class="inline">data/content.json</code> immediately.</div></div>
+            <div class="hint-step"><div class="hint-num">4</div><div class="hint-text">Uploaded images are stored in <code class="inline">uploads/</code> and served at <code class="inline">/uploads/filename</code>.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HEADER ══ -->
+    <div class="page" id="page-header">
+      <div class="page-heading">
+        <h1>Header</h1>
+        <p>Logo, navigation links, and CTA button.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Logo</div></div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label class="label">Logo text</label>
+              <input class="shad-input" id="header-logo-text" placeholder="c11"
+                oninput="data.header.logo.text=this.value; markDirty()" />
+            </div>
+            <div class="field">
+              <label class="label">Logo image <span class="label-hint">(overrides text)</span></label>
+              <div class="img-upload-wrap" style="margin-top:2px">
+                <div class="img-thumb" id="prev-header-logo" onclick="document.getElementById('up-header-logo').click()">
+                  <span style="padding:6px;font-size:10px">No image</span>
+                </div>
+                <div class="img-upload-zone">
+                  <label class="upload-trigger" for="up-header-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                    Upload image
+                  </label>
+                  <input type="file" id="up-header-logo" accept="image/*" style="display:none" onchange="uploadImage(this,'header-logo-image','prev-header-logo')" />
+                  <input class="shad-input" id="header-logo-image" placeholder="or paste URL…" oninput="data.header.logo.image=this.value; updatePreview('header-logo-image','prev-header-logo')" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Navigation links</div><div class="card-description" style="margin-top:3px">Displayed inside the nav pill</div></div>
+        </div>
+        <div class="card-body">
+          <div id="nav-links-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">CTA button</div><div class="card-description" style="margin-top:3px">Dark pill button on the right side</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Label</label>
+              <input class="shad-input" id="header-cta-label" placeholder="Contact"
+                oninput="data.header.cta.label=this.value; markDirty()" /></div>
+            <div class="field"><label class="label">URL</label>
+              <input class="shad-input" id="header-cta-url" placeholder="#contact"
+                oninput="data.header.cta.url=this.value; markDirty()" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HERO BANNER ══ -->
+    <div class="page" id="page-hero_banner">
+      <div class="page-heading">
+        <h1>Hero Banner</h1>
+        <p>Full-width carousel. Taglines are shared across all slides — only the background image changes per slide.</p>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Taglines</div><div class="card-description" style="margin-top:3px">Shown on every slide</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label class="label">Tagline — left</label>
+              <textarea class="shad-textarea" id="hero-tagline-left" rows="3" placeholder="bangkok's&#10;new creative&#10;ecosystem"
+                oninput="data.hero_banner.tagline_left=this.value; markDirty()"></textarea>
+            </div>
+            <div class="field">
+              <label class="label">Tagline — right</label>
+              <textarea class="shad-textarea" id="hero-tagline-right" rows="3" placeholder="designed for creator,&#10;companies, and communities…"
+                oninput="data.hero_banner.tagline_right=this.value; markDirty()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Slides</div><div class="card-description" style="margin-top:3px">Each slide has a background image — add as many as needed</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addHeroSlide()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Add slide
+          </button>
+        </div>
+        <div class="card-body"><div id="hero-slides-list"></div></div>
+      </div>
+    </div>
+
+    <!-- ══ CONTENT 1 ══ -->
+    <div class="page" id="page-content1">
+      <div class="page-heading">
+        <h1>Content 1 — Spaces</h1>
+        <p>Full-width carousel showcasing Cloud 11 spaces.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field">
+            <label class="label">Heading</label>
+            <textarea class="shad-textarea" id="c1-heading" rows="2" placeholder="Snøhetta's design philosophy brought to life.&#10;A new kind of creative park"></textarea>
+          </div>
+          <div class="field-row">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c1-btn-text" placeholder="View full details" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c1-btn-url" placeholder="#" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Carousel slides</div><div class="card-description" style="margin-top:3px">Each slide shows one space</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addCarouselItem()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Add slide
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="c1-carousel-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTENT 2 ══ -->
+    <div class="page" id="page-content2">
+      <div class="page-heading">
+        <h1>Content 2 — Industry</h1>
+        <p>Horizontal scrolling grid of space cards with description.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="label">Heading</label><textarea class="shad-textarea" id="c2-heading" rows="2" placeholder="Design for the content industry"></textarea></div>
+            <div class="field"><label class="label">Description</label><textarea class="shad-textarea" id="c2-desc" rows="2" placeholder="Purpose-built infrastructure…"></textarea></div>
+          </div>
+          <div class="field-row" style="margin-top:16px">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c2-btn-text" placeholder="Discover all spaces" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c2-btn-url" placeholder="#" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Space cards</div><div class="card-description" style="margin-top:3px">Displayed in the horizontal scroll row</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addSpaceCard()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Add card
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="c2-spaces-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTENT 3 ══ -->
+    <div class="page" id="page-content3">
+      <div class="page-heading">
+        <h1>Content 3 — App Download</h1>
+        <p>App promo section with floating profile images.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Section text</div></div></div>
+        <div class="card-body">
+          <div class="field"><label class="label">Heading</label><textarea class="shad-textarea" id="c3-heading" rows="2" placeholder="Become part of our new creative culture"></textarea></div>
+          <div class="field" style="margin-top:16px"><label class="label">Description</label><textarea class="shad-textarea" id="c3-desc" rows="2" placeholder="Experiences and resources…"></textarea></div>
+          <div class="field-row" style="margin-top:16px">
+            <div class="field"><label class="label">Button text</label><input class="shad-input" id="c3-btn-text" placeholder="Download the app" /></div>
+            <div class="field"><label class="label">Button URL</label><input class="shad-input" id="c3-btn-url" placeholder="#" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">App icon</div><div class="card-description" style="margin-top:3px">Displayed in the center — recommended 512×512</div></div></div>
+        <div class="card-body">
+          <div class="img-upload-wrap">
+            <div class="img-thumb" id="prev-c3-icon" onclick="document.getElementById('up-c3-icon').click()">
+              <span style="padding:6px;font-size:10px">No icon</span>
+            </div>
+            <div class="img-upload-zone">
+              <label class="upload-trigger" for="up-c3-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                Upload app icon
+              </label>
+              <input type="file" id="up-c3-icon" accept="image/*" style="display:none" onchange="uploadImage(this,'c3-app-icon','prev-c3-icon')" />
+              <input class="shad-input" id="c3-app-icon" placeholder="or paste URL…" oninput="data.content3.app_icon=this.value; updatePreview('c3-app-icon','prev-c3-icon')" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Profile images</div><div class="card-description" style="margin-top:3px">Float around the app icon</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addProfileImage()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Add image
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="c3-profiles-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FOOTER ══ -->
+    <div class="page" id="page-footer">
+      <div class="page-heading">
+        <h1>Footer</h1>
+        <p>Site links, social media, contact info, and branding.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div><div class="card-title">Branding</div></div></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label class="label">Tagline</label>
+              <textarea class="shad-textarea" id="footer-tagline" rows="3" placeholder="Bangkok's&#10;new creative&#10;ecosystem"></textarea>
+            </div>
+            <div class="field">
+              <label class="label">Large decorative text</label>
+              <input class="shad-input" id="footer-logo-text" placeholder="cloud 11" />
+              <div class="field-desc">The oversized text shown at the bottom of the footer</div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label class="label">Copyright</label>
+            <input class="shad-input" id="footer-copyright" placeholder="©2026 Cloud11. All Rights Reserved." />
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label class="label">Logo image <span class="label-hint">(optional)</span></label>
+            <div class="img-upload-wrap" style="margin-top:2px">
+              <div class="img-thumb" id="prev-footer-logo" onclick="document.getElementById('up-footer-logo').click()">
+                <span style="padding:6px;font-size:10px">No image</span>
+              </div>
+              <div class="img-upload-zone">
+                <label class="upload-trigger" for="up-footer-logo">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                  Upload footer logo
+                </label>
+                <input type="file" id="up-footer-logo" accept="image/*" style="display:none" onchange="uploadImage(this,'footer-logo-image','prev-footer-logo')" />
+                <input class="shad-input" id="footer-logo-image" placeholder="or paste URL…" oninput="data.footer.logo_image=this.value; updatePreview('footer-logo-image','prev-footer-logo')" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Sitemap</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addFooterLink('sitemap')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="footer-sitemap-list"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Facility service</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addFooterLink('facility')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="footer-facility-list"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Your visit</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addFooterLink('visit')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="footer-visit-list"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Information &amp; assistance</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addFooterLink('info')"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="footer-info-list"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div><div class="card-title">Social links</div></div>
+          <button class="btn btn-outline btn-sm" onclick="addSocialLink()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add</button>
+        </div>
+        <div class="card-body"><div id="footer-social-list"></div></div>
+      </div>
+    </div>
+
+  </div><!-- /.content -->
+  </div><!-- /.edit-pane -->
+
+  <!-- Preview panel -->
+  <div class="preview-panel" id="preview-panel">
+    <div class="preview-toolbar">
+      <span class="preview-toolbar-title">Live Preview</span>
+      <div class="preview-viewport-btns">
+        <!-- Desktop -->
+        <button class="preview-vp-btn active" id="vp-desktop" onclick="setViewport('desktop')" title="Desktop">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3"/></svg>
+        </button>
+        <!-- Tablet -->
+        <button class="preview-vp-btn" id="vp-tablet" onclick="setViewport('tablet')" title="Tablet">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5h3m-6.75 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-15a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v15a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        </button>
+        <!-- Mobile -->
+        <button class="preview-vp-btn" id="vp-mobile" onclick="setViewport('mobile')" title="Mobile">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+        </button>
+      </div>
+      <div class="preview-live-badge">LIVE</div>
+    </div>
+    <div class="preview-frame-wrap" id="preview-frame-wrap">
+      <div id="preview-scale-outer">
+        <iframe id="preview-iframe" title="Website Preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /.content-area -->
+</main>
+
+<!-- Save bar -->
+<div class="save-bar" id="save-bar">
+  <div class="save-bar-left"><div class="save-bar-dot"></div>You have unsaved changes</div>
+  <div class="save-bar-right">
+    <button class="btn btn-ghost btn-sm" onclick="discardChanges()">Discard</button>
+    <button class="btn btn-default btn-sm" onclick="saveContent()">
+      <span id="save-bar-label">Save changes</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <div class="t-icon" id="toast-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+  </div>
+  <div class="t-msg" id="toast-msg">Saved!</div>
+</div>
+
+<script>
+let data = {};
+let dirty = false;
+let snapshot = '';
+
+const ICONS = {
+  check: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>`,
+  x:     `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>`,
+  info:  `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>`,
+  upload:`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>`,
+};
+
+// ── Toast ─────────────────────────────────────────────────────
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  const iconMap = { success: ICONS.check, error: ICONS.x, info: ICONS.info };
+  document.getElementById('toast-icon').innerHTML = iconMap[type] || ICONS.check;
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.className = ''; }, 3000);
+}
+
+// ── Preview ────────────────────────────────────────────────────
+
+let previewOpen = false;
+let previewTimer = null;
+
+function scalePreviewFrame() {
+  const wrap   = document.getElementById('preview-frame-wrap');
+  const outer  = document.getElementById('preview-scale-outer');
+  const iframe = document.getElementById('preview-iframe');
+  if (!wrap || !outer || !iframe) return;
+
+  const isMobile = wrap.classList.contains('vp-mobile');
+  const isTablet = wrap.classList.contains('vp-tablet');
+  const iframeW  = isMobile ? 390 : isTablet ? 768 : 1440;
+  const iframeH  = isMobile ? 844 : isTablet ? 1024 : 1024;
+
+  const availW = wrap.clientWidth - 40;
+  const availH = wrap.clientHeight - 40;
+  const scale  = Math.min(availW / iframeW, availH / iframeH, 1);
+
+  iframe.style.transform = 'scale(' + scale + ')';
+  outer.style.width  = Math.round(iframeW * scale) + 'px';
+  outer.style.height = Math.round(iframeH * scale) + 'px';
+}
+
+function togglePreview() {
+  previewOpen = !previewOpen;
+  document.querySelector('.main').classList.toggle('preview-open', previewOpen);
+  document.getElementById('preview-btn').classList.toggle('active', previewOpen);
+  if (previewOpen) {
+    refreshPreview();
+    requestAnimationFrame(scalePreviewFrame);
+  }
+}
+
+function setViewport(vp) {
+  const wrap = document.getElementById('preview-frame-wrap');
+  wrap.className = 'preview-frame-wrap' + (vp !== 'desktop' ? ' vp-' + vp : '');
+  ['desktop','tablet','mobile'].forEach(v => {
+    document.getElementById('vp-' + v).classList.toggle('active', v === vp);
+  });
+  requestAnimationFrame(scalePreviewFrame);
+}
+
+function schedulePreviewRefresh() {
+  if (!previewOpen) return;
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(refreshPreview, 400);
+}
+
+function refreshPreview() {
+  if (!previewOpen) return;
+  collectHeader(); collectHeroBanner(); collectContent1(); collectContent2(); collectContent3(); collectFooter();
+  const html = buildSectionHTML(currentSection, data);
+  const blob = new Blob([html], { type: 'text/html' });
+  const blobUrl = URL.createObjectURL(blob);
+  const iframe = document.getElementById('preview-iframe');
+  const prev = iframe.src;
+  iframe.src = blobUrl;
+  // Revoke old blob URL after iframe loads to free memory
+  iframe.onload = () => { if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev); };
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function nl2br(s) { return esc(s).replace(/\n/g,'<br>'); }
+// Convert /uploads/... → http://localhost:8080/uploads/... for srcdoc iframe
+function absUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+  if (url.startsWith('/')) return location.origin + url;
+  return url;
+}
+
+function imgOrPlaceholder(url, label) {
+  const src = absUrl(url);
+  if (src) return `<img src="${esc(src)}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${esc(label||'')}">`;
+  return `<div style="width:100%;height:100%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:11px;color:#9ca3af;font-family:Helvetica Neue,sans-serif">${esc(label||'Image')}</div>`;
+}
+
+function wrapPreview(bodyHTML, bg) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;background:${bg||'#fff'}}
+  ::-webkit-scrollbar{width:0;height:0}
+</style>
+</head>
+<body>${bodyHTML}</body>
+</html>`;
+}
+
+function buildSectionHTML(section, d) {
+  if (!d || !d.header) return wrapPreview('<p style="padding:2rem;color:#999">Loading…</p>');
+  switch (section) {
+    case 'header':      return wrapPreview(buildHeaderSection(d.header), '#111');
+    case 'hero_banner': return wrapPreview(buildHeroBannerSection(d.hero_banner), '#0a0a0f');
+    case 'content1':    return wrapPreview(buildContent1Section(d.content1));
+    case 'content2':    return wrapPreview(buildContent2Section(d.content2));
+    case 'content3':    return wrapPreview(buildContent3Section(d.content3), '#f0f8ff');
+    case 'footer':      return wrapPreview(buildFooterSection(d.footer));
+    default:            return wrapPreview(buildDashboardPreview(d));
+  }
+}
+
+/* ── Section builders ─────────────────────────────────────── */
+
+function buildHeaderSection(h) {
+  const navLinks = (h.nav||[]).map(n =>
+    `<a href="${esc(n.url)}" style="color:#111;text-decoration:none;font-size:26px;font-weight:500;white-space:nowrap;padding:4px 4px">${esc(n.label)}</a>`
+  ).join('');
+  return `
+  <div style="background:#111;padding:36px 60px;min-height:100vh;display:flex;flex-direction:column;gap:0">
+    <!-- Navbar pill -->
+    <nav style="display:flex;align-items:center;gap:0;background:#d9d9d9;border-radius:9999px;padding:18px 18px 18px 40px;width:100%">
+      <!-- Logo -->
+      <div style="flex-shrink:0;margin-right:40px">
+        ${h.logo.image
+          ? `<img src="${esc(absUrl(h.logo.image))}" style="height:60px;display:block">`
+          : `<span style="font-size:36px;font-weight:900;letter-spacing:-1px;color:#111">${esc(h.logo.text||'c11')}</span>`}
+      </div>
+      <!-- Nav links -->
+      <div style="display:flex;align-items:center;gap:48px;flex:1">
+        ${navLinks}
+      </div>
+      <!-- CTA -->
+      <a href="${esc(h.cta.url)}" style="background:#111;color:#fff;text-decoration:none;font-size:22px;font-weight:600;padding:18px 44px;border-radius:9999px;white-space:nowrap;margin-left:20px">${esc(h.cta.label||'Contact')}</a>
+      <!-- Dark mode icon -->
+      <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-left:10px;cursor:pointer">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+    </nav>
+  </div>`;
+}
+
+function buildHeroBannerSection(hb) {
+  const slides = (hb?.slides || []);
+  if (!slides.length) {
+    return `<div style="background:#0a0a0f;min-height:500px;display:flex;align-items:center;justify-content:center;color:#555;font-family:Helvetica Neue,sans-serif">No slides yet — add slides in the Hero Banner section</div>`;
+  }
+
+  /*
+   * Animation: Cloud / Smoke Dissolve
+   * SVG feTurbulence fractalNoise → feColorMatrix threshold → feComposite mask
+   * ค่อยๆ reveal รูปใหม่ผ่าน texture ที่มีลักษณะเป็นก้อนเมฆ
+   */
+
+  const slideHTML = slides.map((s, i) => `
+    <div class="hero-slide" data-idx="${i}"
+         style="position:absolute;inset:0;z-index:${i===0?1:0}">
+      <div style="position:absolute;inset:0;overflow:hidden">
+        ${s.image
+          ? `<img src="${esc(absUrl(s.image))}"
+                  style="width:100%;height:100%;object-fit:cover;display:block">`
+          : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1525,#111827)"></div>`}
+      </div>
+      <div style="position:absolute;inset:0;background:
+        linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.38) 55%,rgba(0,0,0,.72) 100%)"></div>
+      <div style="position:absolute;top:38%;left:0;right:0;
+                  display:flex;justify-content:space-between;align-items:flex-start;
+                  padding:20px 120px 20px 20px;gap:32px;z-index:2">
+        <p style="color:#fff;font-size:42px;font-weight:700;line-height:1.2;
+                  white-space:pre-line;max-width:320px;margin:0;text-align:left">${nl2br(hb.tagline_left)}</p>
+        <p style="color:#fff;font-size:42px;font-weight:700;line-height:1.2;
+                  white-space:pre-line;max-width:720px;margin:0;text-align:left">${nl2br(hb.tagline_right)}</p>
+      </div>
+      <div style="position:absolute;bottom:-16px;left:0;right:0;z-index:2">
+        <svg width="100%" viewBox="0 0 1280 312" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" style="display:block">
+          <path d="M1269.98 0.445176C1261.29 0.445176 1239.52 0.3521 1230.92 0.445176C1228.93 0.468445 1225.72 0.274536 1222.28 2.35324C1217.72 5.09898 1215.95 12.103 1214.01 17.5014C1209.99 28.7093 1199.4 39.0717 1186.59 46.0137C1177.01 51.2104 1161.3 56.0814 1153.73 53.483C1138.89 48.3716 1142.41 35.6357 1141.66 9.00042C1141.53 4.25354 1137.51 0.445176 1132.46 0.445176C1121.29 0.445176 1100.71 0.406394 1090 0.445176C1080.53 0.476201 1079.45 10.5284 1076.36 17.5014C1068.03 36.2717 1051.66 46.8746 1032.33 52.4204C1027.53 53.801 1021.8 54.7163 1017.25 56.221C1010.87 58.3307 1009.45 61.4333 1009.47 67.6926C1009.49 79.3892 1009.29 98.9041 1009.21 111.159C1009.16 120.056 1013.91 122.235 1021.81 121.809C1026.08 121.576 1032.56 120.529 1036.77 119.536C1044.74 117.659 1053.39 113.889 1061.1 115.022C1067.97 116.038 1073.16 121.871 1073.16 131.869C1073.16 187.513 1073.25 240.294 1073.5 295.046C1073.91 299.762 1076.99 302.655 1081.55 303.291L1132.59 303.307C1135.85 303.051 1138.28 302.05 1139.88 299.731C1140.83 298.358 1141.83 295.706 1141.82 293.728C1141.73 245.445 1141.9 192.453 1141.97 142.208C1143.32 121.467 1158.08 123.104 1173.72 119.761C1188.96 116.503 1207.8 106.583 1210.92 130.767C1211.45 185.55 1211.12 240.294 1211.37 295.046C1211.79 299.747 1214.84 302.655 1219.43 303.291C1219.43 303.291 1254.92 303.291 1271.36 303.291C1274.13 303.291 1279.77 300.716 1279.81 294.069C1280.2 230.118 1279.86 10.1173 1279.86 10.1173C1279.86 3.60201 1274.2 0.460688 1269.96 0.460688L1269.98 0.445176Z" fill="white"/>
+          <path d="M966.613 0.480676L918.441 0.457407C913.927 0.457407 908.962 3.64526 908.962 8.9506V8.98163C908.955 22.9741 908.939 50.5711 908.962 63.7724C909.048 97.1402 882.301 81.9688 865.096 80.9682C831.314 79.0059 798.556 92.8587 778.349 121.72C773.501 128.646 765.883 146.502 757.924 148.813C753.356 150.139 750.912 147.727 747.933 144.493C742.496 138.606 745.195 107.836 744.156 95.3485C744.156 90.0432 739.191 86.8475 734.684 86.8475L695.232 86.832C693.324 86.7622 691.4 86.7545 689.476 86.832H686.684C682.696 86.832 678.368 89.3141 677.398 93.5568C677.034 94.7668 676.855 96.1474 676.855 97.7297V214.222C676.855 231.294 668.09 248.179 649.9 251.561C626.815 255.85 615.303 236.157 615.303 216.371V98.2106C615.233 97.21 615.187 96.2094 615.055 95.3485C615.055 90.0432 610.09 86.8475 605.583 86.8475L557.195 86.8243C552.68 86.8243 547.716 90.0121 547.716 95.3175V95.3485C546.715 111.04 549.888 147.758 542.868 157.298C536.049 166.559 528.028 155.483 524.941 149.658C519.115 138.652 515.501 129.95 507.736 120.029C466.205 66.9525 378.216 69.2096 338.655 115.383C332.069 123.07 327.57 130.182 322.04 138.939C318.805 144.074 311.156 149.783 305.377 145.866C299.622 141.964 298.892 130.663 298.892 124.349C298.892 86.4132 298.892 46.6619 298.714 8.96611C298.714 3.66078 293.749 0.465164 289.243 0.465164L240.978 0.441895C236.464 0.441895 231.499 3.62975 231.499 8.93509V8.96611C231.499 46.4292 231.499 89.1822 231.569 128.895C231.577 133.742 231.103 137.574 229.986 142.453C227.923 151.427 222.578 159.517 214.123 150.256C209.05 144.702 206.258 136.814 202.651 130.283C186.71 101.468 162.965 86.2193 130.657 81.9533C61.2858 72.8008 5.68312 113.731 0.183364 184.453C-0.0726187 187.727 -0.0493475 201.494 0.183364 206.931C2.10712 251.569 27.7209 302.8 93.2449 309.71C132.946 313.899 176.455 302.482 199.23 267.787C203.907 260.667 208.616 247.148 216.233 242.401C221.865 238.895 228.42 241.998 230.103 252.965C232.259 267.004 231.476 281.221 231.476 295.447C231.476 298.991 235.362 303.296 238.899 303.304C255.492 303.343 273.566 303.513 290.181 303.304C295.324 303.242 298.249 299.806 298.605 294.562C299.792 277.39 296.046 255.129 304.625 247.295C307.798 244.402 311.133 244.736 314.748 246.682C322.055 250.615 326.608 261.575 331.495 268.299C373.453 326.084 472.907 324.773 512.809 264.654C518.417 256.207 521.823 247.365 526.105 238.818C528.16 234.707 534.94 226.733 541.355 231.015C548.53 235.793 549.771 247.59 552.215 255.222C566.069 298.603 604.048 316.87 647.479 308.338C653.297 307.197 657.866 305.445 663.707 304.328C674.831 302.21 712.879 303.451 735.949 303.296C741.813 303.257 743.768 299.108 744.35 293.546C745.606 281.516 741.472 256.122 749.485 247.07C755.838 239.896 763.944 248.265 767.373 253.764C771.336 260.124 774.68 266.841 778.985 272.914C800.2 302.815 838.326 314.962 874.125 309.113C883.17 307.632 891.68 304.095 900.918 303.513C913.12 302.745 946.204 304.025 968.35 303.156C973.043 302.97 975.836 298.704 976.069 294.113V8.98163C976.069 3.67629 971.112 0.480676 966.597 0.480676H966.613ZM221.935 207.179C213.123 212.368 186.942 208.746 158.482 210.127C146.319 210.716 148.413 221.862 144.829 230.681C137.786 248.024 120.969 256.099 102.639 252.376C55.0568 242.688 55.7239 143.639 106.463 138.474C123.521 136.736 137.266 143.748 143.332 160.122C146.032 167.42 144.643 178.799 154.789 179.195C171.397 179.838 197.329 179.233 206.048 179.412C212.137 179.536 218.847 179.807 223.734 183.779C232.484 190.883 229.094 202.96 221.919 207.187L221.935 207.179ZM458.486 225.872C444.252 262.343 397.57 263.087 383.336 226.33C372.352 197.973 377.89 142.422 416.226 138.706C461.961 134.27 471.231 193.226 458.494 225.872H458.486ZM870.611 253.074C813.116 256.161 810.067 143.841 865.212 138.714C925.105 133.145 926.54 250.072 870.611 253.074Z" fill="white"/>
+        </svg>
+      </div>
+    </div>`).join('');
+
+  const dots = slides.length > 1 ? `
+    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+                display:flex;gap:6px;z-index:10">
+      ${slides.map((_,i) => `
+        <div class="hero-dot" data-idx="${i}"
+             style="width:${i===0?'20px':'6px'};height:6px;border-radius:9999px;
+                    background:${i===0?'#fff':'rgba(255,255,255,.4)'};
+                    cursor:pointer;transition:all .4s ease"></div>`).join('')}
+    </div>` : '';
+
+  return `
+  <div style="position:relative;width:100%;height:100vh;overflow:hidden;background:#0a0a0f">
+    ${slideHTML}
+    ${dots}
+  </div>
+
+  <script>
+  (function(){
+    const slides = Array.from(document.querySelectorAll('.hero-slide'));
+    const dots   = Array.from(document.querySelectorAll('.hero-dot'));
+    let cur = 0, busy = false, timer;
+
+    /* ─── Cloud Dissolve via SVG feTurbulence ────────────────────────────
+       Pipeline: feTurbulence → feColorMatrix (animated bias) → feComposite
+       Bias animates: -SCALE (fully hidden) → +SCALE*0.5 (fully visible)
+    ────────────────────────────────────────────────────────────────────── */
+    function cloudDissolve(incoming, outgoing, onDone) {
+      var seed  = (Math.random() * 999) | 0;
+      var uid   = 'hcf' + Date.now();
+      var SCALE = 5;
+      var DUR   = 4500;
+      var NS    = 'http://www.w3.org/2000/svg';
+
+      var svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('style', 'position:fixed;top:0;left:0;width:0;height:0;overflow:visible;pointer-events:none');
+
+      var defs   = document.createElementNS(NS, 'defs');
+      var filter = document.createElementNS(NS, 'filter');
+      filter.setAttribute('id', uid);
+      filter.setAttribute('x', '-2%'); filter.setAttribute('y', '-2%');
+      filter.setAttribute('width', '104%'); filter.setAttribute('height', '104%');
+      filter.setAttribute('color-interpolation-filters', 'sRGB');
+
+      var turb = document.createElementNS(NS, 'feTurbulence');
+      turb.setAttribute('type', 'fractalNoise');
+      turb.setAttribute('baseFrequency', '0.012 0.009');
+      turb.setAttribute('numOctaves', '4');
+      turb.setAttribute('seed', String(seed));
+      turb.setAttribute('result', 'NOISE');
+
+      var cm = document.createElementNS(NS, 'feColorMatrix');
+      cm.setAttribute('in', 'NOISE'); cm.setAttribute('type', 'matrix');
+      cm.setAttribute('result', 'MASK');
+      cm.setAttribute('values', '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ' + SCALE + ' 0 0 0 ' + (-SCALE));
+
+      var comp = document.createElementNS(NS, 'feComposite');
+      comp.setAttribute('in', 'SourceGraphic');
+      comp.setAttribute('in2', 'MASK');
+      comp.setAttribute('operator', 'in');
+
+      filter.appendChild(turb); filter.appendChild(cm); filter.appendChild(comp);
+      defs.appendChild(filter); svg.appendChild(defs);
+      document.documentElement.appendChild(svg);
+
+      outgoing.style.zIndex = '1';
+      incoming.style.zIndex = '2';
+      incoming.style.filter = 'url(#' + uid + ')';
+
+      var start = performance.now();
+      function tick(now) {
+        var t = Math.min((now - start) / DUR, 1);
+        var e = t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+        var bias = -SCALE + e * (SCALE * 1.5);
+        cm.setAttribute('values', '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ' + SCALE + ' 0 0 0 ' + bias.toFixed(4));
+        if (t < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          incoming.style.filter = '';
+          incoming.style.zIndex = '1';
+          outgoing.style.zIndex = '0';
+          svg.remove();
+          if (onDone) onDone();
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* init: first slide visible, rest behind */
+    slides.forEach((s, i) => { s.style.zIndex = i === 0 ? '1' : '0'; });
+
+    function go(n) {
+      if (busy || slides.length < 2) return;
+      const prev = cur;
+      cur = (n + slides.length) % slides.length;
+      if (prev === cur) return;
+      busy = true;
+
+      if (dots[prev]) { dots[prev].style.width = '6px';  dots[prev].style.background = 'rgba(255,255,255,.4)'; }
+      if (dots[cur])  { dots[cur].style.width  = '20px'; dots[cur].style.background  = '#fff'; }
+
+      cloudDissolve(slides[cur], slides[prev], () => { busy = false; });
+    }
+
+    dots.forEach(d => d.addEventListener('click', () => {
+      clearInterval(timer);
+      go(+d.dataset.idx);
+      timer = setInterval(() => go(cur + 1), 7000);
+    }));
+
+    if (slides.length > 1) timer = setInterval(() => go(cur + 1), 7000);
+  })();
+  <\/script>`;
+}
+
+function buildContent1Section(c1) {
+  const slides   = (c1.carousel||[]);
+  /* Figma sizes: center 1200×600, side 923.52×500 */
+  const CW = 1200, CH = 600, SW = 924, SH = 500, GAP = 16, PAD_L = 120;
+  const SHADOW = '0 18px 36px -9px rgba(0,0,0,.25)';
+  const bg = 'background:url(' + absUrl('/uploads/bgspace.png') + ') center/cover no-repeat';
+
+  const glassArrow = [
+    'width:52px;height:52px;border-radius:50%;cursor:pointer;',
+    'background:rgba(255,255,255,.18);',
+    'backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);',
+    'border:1px solid rgba(255,255,255,.45);color:#fff;',
+    'display:inline-flex;align-items:center;justify-content:center;',
+    'box-shadow:0 4px 20px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.32);',
+    'flex-shrink:0;'
+  ].join('');
+
+  /* initial HTML: card[0] = center size, rest = side size */
+  const cards = slides.map((s, i) => {
+    const w = i === 0 ? CW : SW, h = i === 0 ? CH : SH;
+    return `
+    <div class="c1card" data-i="${i}"
+         style="flex:0 0 ${w}px;width:${w}px;height:${h}px;border-radius:24px;overflow:hidden;
+                position:relative;background:#b8d4e0;
+                box-shadow:${SHADOW};
+                transition:flex-basis .5s ease,width .5s ease,height .5s ease,opacity .4s;">
+      ${imgOrPlaceholder(s.image, s.title)}
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,rgba(0,0,0,.68) 100%)"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 28px;
+                  display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
+        <div>
+          <div style="color:#fff;font-size:20px;font-weight:700;margin-bottom:5px">${esc(s.title)}</div>
+          <div style="color:rgba(255,255,255,.75);font-size:14px">${esc(s.subtitle)}</div>
+        </div>
+        <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;
+                     background:rgba(255,255,255,.15);
+                     backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);
+                     border:1px solid rgba(255,255,255,.38);border-radius:9999px;padding:10px 22px;
+                     color:#fff;font-size:14px;font-weight:600;white-space:nowrap;
+                     box-shadow:0 4px 20px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);">
+          Explore
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const arrowSvgL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>';
+  const arrowSvgR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>';
+
+  return `
+  <section style="${bg};padding:60px 0 60px;min-height:100vh">
+    ${slides.length ? `
+    <div style="position:relative;height:${CH}px;margin-bottom:40px">
+      <div style="overflow:hidden;width:100%;height:100%;padding:18px 0">
+        <div id="c1t" style="display:flex;gap:${GAP}px;padding-left:${PAD_L}px;align-items:center;height:100%;
+                             transition:transform .5s cubic-bezier(.25,.46,.45,.94)">
+          ${cards}
+        </div>
+      </div>
+      ${slides.length > 1 ? `
+      <div style="position:absolute;top:${(CH/2)-26}px;left:0;right:0;
+                  display:flex;justify-content:space-between;padding:0 36px;pointer-events:none">
+        <button id="c1p" style="${glassArrow}pointer-events:auto">${arrowSvgL}</button>
+        <button id="c1n" style="${glassArrow}pointer-events:auto">${arrowSvgR}</button>
+      </div>` : ''}
+    </div>
+    <script>
+    (function(){
+      var CW=${CW}, CH=${CH}, SW=${SW}, SH=${SH}, GAP=${GAP}, PAD_L=${PAD_L}, VW=1440;
+      var cur = 0;
+      var cards = Array.from(document.querySelectorAll('.c1card'));
+      var track = document.getElementById('c1t');
+      var total = cards.length;
+      var bp = document.getElementById('c1p');
+      var bn = document.getElementById('c1n');
+      function upd() {
+        /* resize each card */
+        var xPos = 0, activeX = 0, activeW = CW;
+        cards.forEach(function(c, i) {
+          var isActive = i === cur;
+          var w = isActive ? CW : SW, h = isActive ? CH : SH;
+          c.style.flexBasis = w + 'px'; c.style.width = w + 'px'; c.style.height = h + 'px';
+          c.style.opacity = isActive ? '1' : '0.65';
+          if (isActive) { activeX = xPos; activeW = w; }
+          xPos += w + GAP;
+        });
+        /* center active card */
+        var tx = PAD_L + activeX + activeW/2 - VW/2;
+        if (tx < 0) tx = 0;
+        track.style.transform = 'translateX(-' + tx + 'px)';
+        if (bp) bp.style.opacity = cur > 0 ? '1' : '0.3';
+        if (bn) bn.style.opacity = cur < total-1 ? '1' : '0.3';
+      }
+      if (bp) bp.addEventListener('click', function(){ if(cur>0){cur--;upd();} });
+      if (bn) bn.addEventListener('click', function(){ if(cur<total-1){cur++;upd();} });
+      upd();
+    })();
+    <\/script>` : '<div style="padding:80px 40px;text-align:center;color:rgba(0,0,0,.5);font-size:14px">No slides yet</div>'}
+    <div style="text-align:center;padding:32px 40px 0">
+      <h2 style="font-size:38px;font-weight:700;line-height:1.35;max-width:640px;margin:0 auto 28px;color:#111;white-space:pre-line">${nl2br(c1.heading)}</h2>
+      <a href="${esc(c1.button_url)}" style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:#111;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:9999px;border:1px solid rgba(0,0,0,.12);box-shadow:0 1px 6px rgba(0,0,0,.1)">
+        ${esc(c1.button_text)}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>`;
+}
+
+function buildContent2Section(c2) {
+  const CARD_SHADOW = '0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)';
+  const DEFAULT_DESC = 'Purpose-built infrastructure for creators and storytellers. From production studios to cultural anchors, Cloud 11 is built for the people who shape what the world watches, listens to, and shares.';
+  const spaces = c2.spaces || [];
+  const n = spaces.length;
+  const STEP = 424; // card 400px + gap 24px
+  const desc    = c2.description  || DEFAULT_DESC;
+  const btnText = c2.button_text  || 'Discover all spaces';
+  const btnUrl  = c2.button_url   || '#';
+  const heading = c2.heading      || 'Design for the\ncontent industry';
+
+  const cards = spaces.map(s => `
+    <div style="flex:0 0 400px;width:400px;border-radius:32px;overflow:hidden;background:#347FEE;padding:32px 32px 24px;box-shadow:${CARD_SHADOW};display:flex;flex-direction:column">
+      <div style="height:300px;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0">
+        ${imgOrPlaceholder(s.image, s.name)}
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.2);border-radius:12px"></div>
+      </div>
+      <div style="margin-top:20px;flex:1;display:flex;flex-direction:column">
+        <div style="font-size:14px;color:rgba(255,255,255,.8);font-weight:400;margin-bottom:6px">${esc(s.category)}</div>
+        <div style="font-size:20px;font-weight:700;color:#fff;line-height:1.3">${esc(s.name)}</div>
+        <div style="margin-top:16px;display:flex;justify-content:flex-end">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+  const NAV_BTN = (dir) => `
+    <button onclick="c2nav(${dir==='left'?-1:1})" style="width:48px;height:48px;border-radius:50%;border:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.12)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2">${dir==='left'?'<path d="M15 18l-6-6 6-6"/>':'<path d="M9 18l6-6-6-6"/>'}</svg>
+    </button>`;
+  return `
+  <section style="background:#fff;padding:72px 80px;min-height:100vh">
+    <div style="display:flex;align-items:flex-start;gap:48px;margin-bottom:69px">
+      <div style="flex:1">
+        <h2 style="font-size:52px;font-weight:700;line-height:1.15;color:#0f172a">${nl2br(heading)}</h2>
+      </div>
+      <div style="flex:1;padding-top:10px">
+        <p style="font-size:18px;color:#334155;line-height:1.75;margin-bottom:24px">${esc(desc)}</p>
+        <a href="${esc(btnUrl)}" style="display:inline-block;background:#347FEE;color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 32px;border-radius:8px">${esc(btnText)}</a>
+      </div>
+    </div>
+    <div style="overflow:hidden;margin:0 -80px">
+      <div id="c2track" style="display:flex;gap:24px;padding:16px 80px 48px;transition:transform 0.45s cubic-bezier(.4,0,.2,1);will-change:transform">
+        ${cards||'<div style="color:#94a3b8;font-size:15px;padding:20px 0">No spaces yet</div>'}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px">
+      ${NAV_BTN('left')}${NAV_BTN('right')}
+    </div>
+  </section>
+  \x3cscript>
+  var c2tx=0;
+  function c2nav(dir){
+    var maxTx=Math.max(0,${n}*${STEP}-24-1280);
+    c2tx=Math.max(0,Math.min(maxTx,c2tx+dir*${STEP}));
+    document.getElementById('c2track').style.transform='translateX(-'+c2tx+'px)';
+  }
+  \x3c/script>`;
+}
+
+function buildContent3Section(c3) {
+  /* [top, left, width, height, rotate, borderRadius, floatDur, floatDelay] */
+  const pos = [
+    ['5%',  '3%',  '110px','145px', '-7deg', '14px',  '6s',   '0s'   ],
+    ['3%',  '73%', '90px', '90px',  '6deg',  '50%',   '7s',   '-1.5s'],
+    ['50%', '1%',  '115px','135px', '4deg',  '14px',  '5.5s', '-2s'  ],
+    ['53%', '73%', '105px','130px', '-5deg', '14px',  '6.5s', '-3s'  ],
+    ['72%', '20%', '130px','95px',  '-3deg', '14px',  '7.5s', '-1s'  ],
+    ['66%', '55%', '95px', '135px', '8deg',  '14px',  '5s',   '-4s'  ],
+  ];
+  const imgs = c3.profile_images || [];
+  const floats = pos.map((p, i) => `
+    <div style="position:absolute;top:${p[0]};left:${p[1]};z-index:1;
+                animation:c3fl ${p[6]} ease-in-out ${p[7]} infinite">
+      <div style="width:${p[2]};height:${p[3]};border-radius:${p[5]};overflow:hidden;
+                  transform:rotate(${p[4]});box-shadow:0 8px 28px rgba(0,0,0,.14)">
+        ${imgOrPlaceholder(imgs[i]||'','Photo')}
+      </div>
+    </div>`).join('');
+
+  const heading = c3.heading   || 'Download the\nCloud 11 App';
+  const desc    = c3.description || "Stay connected with Bangkok's creative ecosystem. Book spaces, discover events, and connect with creators — all in one place.";
+  const btnText = c3.button_text || 'Download on App Store';
+  const btnUrl  = c3.button_url  || '#';
+
+  return `
+  <style>@keyframes c3fl{0%,100%{transform:translateY(0px)}50%{transform:translateY(-14px)}}</style>
+  <section style="background:#fff;padding:80px 40px 90px;text-align:center;position:relative;min-height:100vh;overflow:hidden">
+    ${floats}
+    <div style="position:relative;z-index:2;max-width:400px;margin:0 auto;padding-top:60px">
+      ${c3.app_icon
+        ? `<img src="${esc(absUrl(c3.app_icon))}" style="width:58px;height:58px;border-radius:14px;margin:0 auto 18px;display:block;box-shadow:0 4px 16px rgba(52,127,238,.25)">`
+        : `<div style="width:58px;height:58px;background:linear-gradient(135deg,#347FEE,#5fa8ff);border-radius:14px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(52,127,238,.25)"><span style="color:#fff;font-weight:800;font-size:17px">c11</span></div>`}
+      <h2 style="font-size:30px;font-weight:800;line-height:1.25;color:#347FEE;margin:0 auto 16px;white-space:pre-line">${nl2br(heading)}</h2>
+      <p style="font-size:14px;color:#6b7280;line-height:1.75;margin:0 auto 28px">${esc(desc)}</p>
+      <a href="${esc(btnUrl)}" style="display:inline-block;background:#347FEE;color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:12px 28px;border-radius:8px;box-shadow:0 4px 14px rgba(52,127,238,.3)">${esc(btnText)}</a>
+    </div>
+  </section>`;
+}
+
+function buildFooterSection(f) {
+  const TGRAD = 'background:linear-gradient(90deg,#347FEE 0%,#76BAF2 55%,#A1D6F5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;';
+  const col = (c) => `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:4px">${esc(c.title)}</div>
+      ${(c.links||c.items||[]).map(l=>`<a href="${esc(l.url)}" style="font-size:14px;color:#475569;text-decoration:none;line-height:1.4">${esc(l.label)}</a>`).join('')}
+    </div>`;
+  const social = (f.social||[]).map(s=>`<a href="${esc(s.url)}" style="font-size:12px;color:#64748b;text-decoration:none">${esc(s.label)}</a>`).join('');
+  const tagline = f.tagline || "Bangkok's\nnew creative\necosystem";
+  const copyright = f.copyright || '@2026 Cloud11. All Right Reserved';
+  const logoSrc = f.logo_image ? absUrl(f.logo_image) : absUrl('/uploads/logo-gradient.svg');
+  return `
+  <footer style="background:linear-gradient(145deg,rgba(255,255,255,.72) 0%,rgba(210,230,255,.55) 50%,rgba(255,255,255,.65) 100%);backdrop-filter:blur(40px) saturate(180%) brightness(1.06);-webkit-backdrop-filter:blur(40px) saturate(180%) brightness(1.06);padding:40px 60px;min-height:100vh">
+    <div style="background:rgba(255,255,255,.4);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.5);border-radius:32px;padding:49px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)">
+      <div style="display:flex;gap:48px;margin-bottom:48px;align-items:flex-start">
+        <div style="flex-shrink:0;width:220px">
+          <p style="font-size:42px;font-weight:700;line-height:1.1;white-space:pre-line;${TGRAD}">${nl2br(tagline)}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;flex:1">
+          ${col(f.sitemap||{})}${col(f.facility||{})}${col(f.visit||{})}${col(f.info||{})}
+        </div>
+      </div>
+      <div style="margin-bottom:28px">
+        <img src="${esc(logoSrc)}" style="width:100%;height:auto;display:block" />
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(0,0,0,.08);padding-top:20px">
+        <span style="font-size:12px;color:#64748b">${esc(copyright)}</span>
+        <div style="display:flex;gap:16px">${social}</div>
+      </div>
+    </div>
+  </footer>`;
+}
+
+function buildDashboardPreview(d) {
+  return [
+    buildHeaderSection(d.header),
+    buildHeroBannerSection(d.hero_banner),
+    buildContent1Section(d.content1),
+    buildContent2Section(d.content2),
+    buildContent3Section(d.content3),
+    buildFooterSection(d.footer),
+  ].join('');
+}
+
+// ── Dirty state ───────────────────────────────────────────────
+
+function markDirty() {
+  dirty = true;
+  document.getElementById('save-btn').disabled = false;
+  document.getElementById('unsaved-pill').classList.add('show');
+  document.getElementById('save-bar').classList.add('show');
+  schedulePreviewRefresh();
+}
+
+function clearDirty() {
+  dirty = false;
+  document.getElementById('save-btn').disabled = true;
+  document.getElementById('unsaved-pill').classList.remove('show');
+  document.getElementById('save-bar').classList.remove('show');
+}
+
+// ── Navigation ────────────────────────────────────────────────
+
+let currentSection = 'dashboard';
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id)?.classList.add('active');
+
+  // top-level nav items (dashboard)
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('onclick')?.includes(`'${id}'`) ?? false);
+  });
+  // sub-items
+  document.querySelectorAll('.nav-sub-item').forEach(n => n.classList.remove('active'));
+  const sub = document.getElementById('subnav-' + id);
+  if (sub) sub.classList.add('active');
+
+  const labels = { dashboard:'Dashboard', header:'Header', hero_banner:'Hero Banner', content1:'Content 1', content2:'Content 2', content3:'Content 3', footer:'Footer' };
+  document.getElementById('page-title').textContent = labels[id] || id;
+  currentSection = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  refreshPreview();
+}
+
+function toggleNavTree(name) {
+  document.getElementById('tree-' + name)?.classList.toggle('open');
+}
+
+// ── Preview helpers ───────────────────────────────────────────
+
+function updatePreview(inputId, previewId) {
+  const url = document.getElementById(inputId)?.value || '';
+  const el  = document.getElementById(previewId);
+  if (!el) return;
+  el.innerHTML = url
+    ? `<img src="${url}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:10px;padding:6px\\'>Load error</span>'" />`
+    : `<span style="padding:6px;font-size:10px">No image</span>`;
+  markDirty();
+}
+
+async function uploadImage(input, targetId, previewId) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData();
+  fd.append('file', input.files[0]);
+  showToast('Uploading…', 'info');
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.url) {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.value = j.url;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (previewId) setThumb(previewId, j.url);
+      markDirty();
+      showToast('Image uploaded');
+    } else showToast(j.error || 'Upload failed', 'error');
+  } catch (e) { showToast('Upload error: ' + e.message, 'error'); }
+  input.value = '';
+}
+
+// ── Load ──────────────────────────────────────────────────────
+
+async function loadContent() {
+  try {
+    const r = await fetch('/api/content');
+    data = await r.json();
+    snapshot = JSON.stringify(data);
+    populateAll();
+    clearDirty();
+    refreshPreview();
+    showToast('Content loaded');
+  } catch (e) { showToast('Failed to load: ' + e.message, 'error'); }
+}
+
+function populateAll() {
+  populateHeader(); populateHeroBanner();
+  populateContent1(); populateContent2();
+  populateContent3(); populateFooter(); updateStats();
+}
+
+function discardChanges() {
+  if (!confirm('Discard all unsaved changes?')) return;
+  data = JSON.parse(snapshot);
+  populateAll(); clearDirty();
+  refreshPreview();
+  showToast('Changes discarded');
+}
+
+// ── Header ────────────────────────────────────────────────────
+
+function populateHeader() {
+  setVal('header-logo-text', data.header.logo.text);
+  setVal('header-logo-image', data.header.logo.image);
+  updatePreview('header-logo-image', 'prev-header-logo');
+  setVal('header-cta-label', data.header.cta.label);
+  setVal('header-cta-url', data.header.cta.url);
+  renderNavLinks();
+}
+
+function renderNavLinks() {
+  const c = data.header.nav || [];
+  render('nav-links-list', c, (lnk, i) => linkCard(lnk, i, {
+    title: lnk.label || 'Untitled',
+    remove: `removeNavLink(${i})`,
+    fields: `
+      <div class="field-row">
+        <div class="field"><label class="label">Label</label>
+          <input class="shad-input" value="${esc(lnk.label)}" placeholder="Page name"
+            oninput="data.header.nav[${i}].label=this.value; syncTitle(this,'list-title-nav-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">URL</label>
+          <input class="shad-input" value="${esc(lnk.url)}" placeholder="/about or #section"
+            oninput="data.header.nav[${i}].url=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+function removeNavLink(i) { data.header.nav.splice(i,1); renderNavLinks(); markDirty(); }
+function addNavLink() { data.header.nav.push({label:'New Link',url:'#'}); renderNavLinks(); markDirty(); }
+
+function collectHeader() {
+  data.header.logo.text  = getVal('header-logo-text');
+  data.header.logo.image = getVal('header-logo-image');
+  data.header.cta.label  = getVal('header-cta-label');
+  data.header.cta.url    = getVal('header-cta-url');
+}
+
+// ── Hero Banner ────────────────────────────────────────────────
+
+function populateHeroBanner() {
+  if (!data.hero_banner) data.hero_banner = { tagline_left:'', tagline_right:'', slides: [] };
+  setVal('hero-tagline-left',  data.hero_banner.tagline_left  || '');
+  setVal('hero-tagline-right', data.hero_banner.tagline_right || '');
+  renderHeroSlides();
+}
+
+function renderHeroSlides() {
+  const slides = data.hero_banner.slides || [];
+  render('hero-slides-list', slides, (slide, i) => linkCard(slide, i, {
+    title: `Slide ${i+1}`,
+    remove: `removeHeroSlide(${i})`,
+    fields: `
+      <div class="field">
+        <label class="label">Background image</label>
+        <div class="img-upload-wrap">
+          <div class="img-thumb img-thumb-wide" id="prev-hero-${i}" onclick="document.getElementById('up-hero-${i}').click()">
+            ${slide.image ? `<img src="${esc(slide.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
+          </div>
+          <div class="img-upload-zone">
+            <label class="upload-trigger" for="up-hero-${i}">${ICONS.upload} Upload image — recommended 1920×1080</label>
+            <input type="file" id="up-hero-${i}" accept="image/*" style="display:none" onchange="uploadHeroSlide(this,${i})" />
+            <input class="shad-input" id="hero-img-${i}" value="${esc(slide.image)}" placeholder="or paste URL…"
+              oninput="data.hero_banner.slides[${i}].image=this.value; setThumb('prev-hero-${i}',this.value); markDirty()" />
+          </div>
+        </div>
+      </div>`
+  }));
+}
+
+async function uploadHeroSlide(input, i) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  showToast('Uploading…', 'info');
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error(`Server error ${r.status}`);
+    const j = await r.json();
+    if (j.url) {
+      data.hero_banner.slides[i].image = j.url;
+      const inp = document.getElementById(`hero-img-${i}`);
+      if (inp) { inp.value = j.url; inp.dispatchEvent(new Event('input', { bubbles: true })); }
+      setThumb(`prev-hero-${i}`, j.url);
+      markDirty(); showToast('Image uploaded');
+    } else showToast(j.error || 'Upload failed', 'error');
+  } catch (e) { showToast('Upload error: ' + e.message, 'error'); console.error('[upload hero]', e); }
+  input.value = '';
+}
+
+function removeHeroSlide(i) { data.hero_banner.slides.splice(i,1); renderHeroSlides(); markDirty(); }
+function addHeroSlide() {
+  if ((data.hero_banner.slides||[]).length >= 5) { alert('Maximum 5 slides allowed.'); return; }
+  data.hero_banner.slides.push({ id: Date.now(), image:'' });
+  renderHeroSlides(); markDirty();
+}
+
+function collectHeroBanner() { /* slides updated live via oninput */ }
+
+// ── Content 1 ─────────────────────────────────────────────────
+
+function populateContent1() {
+  setVal('c1-heading', data.content1.heading);
+  setVal('c1-btn-text', data.content1.button_text);
+  setVal('c1-btn-url', data.content1.button_url);
+  setVal('c1-bg-image', data.content1.bg_image || '');
+  setThumb('prev-c1-bg', data.content1.bg_image || '');
+  renderCarousel();
+}
+
+function renderCarousel() {
+  const c = data.content1.carousel || [];
+  render('c1-carousel-list', c, (item, i) => linkCard(item, i, {
+    title: item.title || 'Untitled slide',
+    remove: `removeCarouselItem(${i})`,
+    fields: `
+      <div class="field">
+        <label class="label">Slide image</label>
+        <div class="img-upload-wrap">
+          <div class="img-thumb img-thumb-wide" id="prev-c1-${i}" onclick="document.getElementById('up-c1-${i}').click()">
+            ${item.image ? `<img src="${esc(item.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
+          </div>
+          <div class="img-upload-zone">
+            <label class="upload-trigger" for="up-c1-${i}">${ICONS.upload} Upload image</label>
+            <input type="file" id="up-c1-${i}" accept="image/*" style="display:none" onchange="uploadDynamic(this,${i},'c1','carousel','image','prev-c1-')" />
+            <input class="shad-input" id="c1-img-${i}" value="${esc(item.image)}" placeholder="or paste URL…"
+              oninput="data.content1.carousel[${i}].image=this.value; setThumb('prev-c1-${i}',this.value); markDirty()" />
+          </div>
+        </div>
+      </div>
+      <div class="field-row" style="margin-top:14px">
+        <div class="field"><label class="label">Title</label>
+          <input class="shad-input" value="${esc(item.title)}" placeholder="Space name"
+            oninput="data.content1.carousel[${i}].title=this.value; syncTitle(this,'list-title-c1-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">Subtitle</label>
+          <input class="shad-input" value="${esc(item.subtitle)}" placeholder="Short description"
+            oninput="data.content1.carousel[${i}].subtitle=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+function removeCarouselItem(i) { data.content1.carousel.splice(i,1); renderCarousel(); markDirty(); }
+function addCarouselItem() {
+  if ((data.content1.carousel||[]).length >= 10) { alert('Maximum 10 cards allowed.'); return; }
+  data.content1.carousel.push({id:Date.now(),image:'',title:'New Slide',subtitle:''});
+  renderCarousel(); markDirty();
+}
+function collectContent1() {
+  data.content1.heading = getVal('c1-heading');
+  data.content1.button_text = getVal('c1-btn-text');
+  data.content1.button_url = getVal('c1-btn-url');
+  data.content1.bg_image = getVal('c1-bg-image');
+}
+async function uploadC1Bg(input) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  showToast('Uploading…', 'info');
+  try {
+    const r = await fetch('/api/upload', {method:'POST', body:fd});
+    if (!r.ok) throw new Error(await r.text());
+    const j = await r.json();
+    setVal('c1-bg-image', j.url);
+    data.content1.bg_image = j.url;
+    setThumb('prev-c1-bg', j.url);
+    markDirty();
+    refreshPreview();
+    showToast('Background updated');
+  } catch(e) { showToast('Upload failed: ' + e.message, 'error'); }
+  input.value = '';
+}
+
+// ── Content 2 ─────────────────────────────────────────────────
+
+function populateContent2() {
+  setVal('c2-heading', data.content2.heading);
+  setVal('c2-desc', data.content2.description);
+  setVal('c2-btn-text', data.content2.button_text);
+  setVal('c2-btn-url', data.content2.button_url);
+  renderSpaces();
+}
+
+function renderSpaces() {
+  const c = data.content2.spaces || [];
+  render('c2-spaces-list', c, (item, i) => linkCard(item, i, {
+    title: item.name || 'Untitled space',
+    remove: `removeSpace(${i})`,
+    fields: `
+      <div class="field">
+        <label class="label">Card image</label>
+        <div class="img-upload-wrap">
+          <div class="img-thumb img-thumb-wide" id="prev-c2-${i}" onclick="document.getElementById('up-c2-${i}').click()">
+            ${item.image ? `<img src="${esc(item.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
+          </div>
+          <div class="img-upload-zone">
+            <label class="upload-trigger" for="up-c2-${i}">${ICONS.upload} Upload image</label>
+            <input type="file" id="up-c2-${i}" accept="image/*" style="display:none" onchange="uploadDynamic(this,${i},'c2','spaces','image','prev-c2-')" />
+            <input class="shad-input" id="c2-img-${i}" value="${esc(item.image)}" placeholder="or paste URL…"
+              oninput="data.content2.spaces[${i}].image=this.value; setThumb('prev-c2-${i}',this.value); markDirty()" />
+          </div>
+        </div>
+      </div>
+      <div class="field-row-3" style="margin-top:14px">
+        <div class="field"><label class="label">Name</label>
+          <input class="shad-input" value="${esc(item.name)}" placeholder="Space name"
+            oninput="data.content2.spaces[${i}].name=this.value; syncTitle(this,'list-title-c2-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">Category</label>
+          <input class="shad-input" value="${esc(item.category)}" placeholder="Audio Production"
+            oninput="data.content2.spaces[${i}].category=this.value; markDirty()" /></div>
+        <div class="field"><label class="label">Sub-category</label>
+          <input class="shad-input" value="${esc(item.subcategory)}" placeholder="Effects"
+            oninput="data.content2.spaces[${i}].subcategory=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+function removeSpace(i) { data.content2.spaces.splice(i,1); renderSpaces(); markDirty(); }
+function addSpaceCard() {
+  if ((data.content2.spaces||[]).length >= 10) { alert('Maximum 10 spaces allowed.'); return; }
+  data.content2.spaces.push({id:Date.now(),image:'',name:'New Space',category:'',subcategory:''});
+  renderSpaces(); markDirty();
+}
+function collectContent2() {
+  data.content2.heading = getVal('c2-heading');
+  data.content2.description = getVal('c2-desc');
+  data.content2.button_text = getVal('c2-btn-text');
+  data.content2.button_url = getVal('c2-btn-url');
+}
+
+// ── Content 3 ─────────────────────────────────────────────────
+
+function populateContent3() {
+  setVal('c3-heading', data.content3.heading);
+  setVal('c3-desc', data.content3.description);
+  setVal('c3-btn-text', data.content3.button_text);
+  setVal('c3-btn-url', data.content3.button_url);
+  setVal('c3-app-icon', data.content3.app_icon);
+  updatePreview('c3-app-icon','prev-c3-icon');
+  renderProfiles();
+}
+
+function renderProfiles() {
+  const c = data.content3.profile_images || [];
+  render('c3-profiles-list', c, (url, i) => linkCard({}, i, {
+    title: `Profile image ${i + 1}`,
+    remove: `removeProfile(${i})`,
+    fields: `
+      <div class="img-upload-wrap">
+        <div class="img-thumb" id="prev-c3p-${i}" onclick="document.getElementById('up-c3p-${i}').click()">
+          ${url ? `<img src="${esc(url)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
+        </div>
+        <div class="img-upload-zone">
+          <label class="upload-trigger" for="up-c3p-${i}">${ICONS.upload} Upload photo</label>
+          <input type="file" id="up-c3p-${i}" accept="image/*" style="display:none" onchange="uploadProfileImg(this,${i})" />
+          <input class="shad-input" value="${esc(url)}" placeholder="or paste URL…"
+            oninput="data.content3.profile_images[${i}]=this.value; setThumb('prev-c3p-${i}',this.value); markDirty()" />
+        </div>
+      </div>`
+  }));
+}
+async function uploadProfileImg(input, i) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  showToast('Uploading…', 'info');
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error(`Server error ${r.status}`);
+    const j = await r.json();
+    if (j.url) {
+      data.content3.profile_images[i] = j.url;
+      setThumb(`prev-c3p-${i}`, j.url);
+      markDirty(); showToast('Image uploaded');
+    } else showToast(j.error || 'Upload failed', 'error');
+  } catch (e) { showToast('Upload error: ' + e.message, 'error'); console.error('[upload profile]', e); }
+  input.value = '';
+}
+function removeProfile(i) { data.content3.profile_images.splice(i,1); renderProfiles(); markDirty(); }
+function addProfileImage() { data.content3.profile_images.push(''); renderProfiles(); markDirty(); }
+function collectContent3() {
+  data.content3.heading = getVal('c3-heading');
+  data.content3.description = getVal('c3-desc');
+  data.content3.button_text = getVal('c3-btn-text');
+  data.content3.button_url = getVal('c3-btn-url');
+  data.content3.app_icon = getVal('c3-app-icon');
+}
+
+// ── Footer ────────────────────────────────────────────────────
+
+function populateFooter() {
+  const f = data.footer;
+  setVal('footer-tagline', f.tagline);
+  setVal('footer-logo-text', f.logo_text);
+  setVal('footer-logo-image', f.logo_image);
+  updatePreview('footer-logo-image','prev-footer-logo');
+  setVal('footer-copyright', f.copyright);
+  renderFooterLinks('sitemap', f.sitemap.links);
+  renderFooterLinks('facility', f.facility.links);
+  renderFooterLinks('visit', f.visit.links);
+  renderFooterInfo(f.info.items);
+  renderSocial(f.social);
+}
+
+function renderFooterLinks(key, links) {
+  render(`footer-${key}-list`, links||[], (lnk,i) => linkCard(lnk,i,{
+    title: lnk.label||'Untitled',
+    remove: `removeFooterLink('${key}',${i})`,
+    fields: `
+      <div class="field-row">
+        <div class="field"><label class="label">Label</label>
+          <input class="shad-input" value="${esc(lnk.label)}" placeholder="Link text"
+            oninput="data.footer.${key}.links[${i}].label=this.value; syncTitle(this,'list-title-f${key}-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">URL</label>
+          <input class="shad-input" value="${esc(lnk.url)}" placeholder="/page or #"
+            oninput="data.footer.${key}.links[${i}].url=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+
+function renderFooterInfo(items) {
+  render('footer-info-list', items||[], (item,i) => linkCard(item,i,{
+    title: item.label||'Untitled',
+    remove: `removeFooterLink('info',${i})`,
+    fields: `
+      <div class="field-row">
+        <div class="field"><label class="label">Label</label>
+          <input class="shad-input" value="${esc(item.label)}" placeholder="Contact text"
+            oninput="data.footer.info.items[${i}].label=this.value; syncTitle(this,'list-title-finfo-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">URL</label>
+          <input class="shad-input" value="${esc(item.url)}" placeholder="mailto: or https://"
+            oninput="data.footer.info.items[${i}].url=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+
+function renderSocial(links) {
+  render('footer-social-list', links||[], (lnk,i) => linkCard(lnk,i,{
+    title: lnk.label||'Platform',
+    remove: `removeSocialLink(${i})`,
+    fields: `
+      <div class="field-row">
+        <div class="field"><label class="label">Platform</label>
+          <input class="shad-input" value="${esc(lnk.label)}" placeholder="Instagram"
+            oninput="data.footer.social[${i}].label=this.value; syncTitle(this,'list-title-fsoc-${i}'); markDirty()" /></div>
+        <div class="field"><label class="label">Profile URL</label>
+          <input class="shad-input" value="${esc(lnk.url)}" placeholder="https://instagram.com/…"
+            oninput="data.footer.social[${i}].url=this.value; markDirty()" /></div>
+      </div>`
+  }));
+}
+
+function removeFooterLink(key,i) {
+  if(key==='info'){ data.footer.info.items.splice(i,1); renderFooterInfo(data.footer.info.items); }
+  else { data.footer[key].links.splice(i,1); renderFooterLinks(key,data.footer[key].links); }
+  markDirty();
+}
+function addFooterLink(key) {
+  if(key==='info'){ data.footer.info.items.push({label:'New Item',url:'#'}); renderFooterInfo(data.footer.info.items); }
+  else { data.footer[key].links.push({label:'New Link',url:'#'}); renderFooterLinks(key,data.footer[key].links); }
+  markDirty();
+}
+function removeSocialLink(i) { data.footer.social.splice(i,1); renderSocial(data.footer.social); markDirty(); }
+function addSocialLink() { data.footer.social.push({label:'Platform',url:'#'}); renderSocial(data.footer.social); markDirty(); }
+
+function collectFooter() {
+  data.footer.tagline = getVal('footer-tagline');
+  data.footer.logo_text = getVal('footer-logo-text');
+  data.footer.logo_image = getVal('footer-logo-image');
+  data.footer.copyright = getVal('footer-copyright');
+}
+
+// ── Save ─────────────────────────────────────────────────────
+
+async function saveContent() {
+  collectHeader(); collectHeroBanner(); collectContent1(); collectContent2(); collectContent3(); collectFooter();
+  const btn = document.getElementById('save-btn');
+  const lbl = document.getElementById('save-label');
+  const blbl = document.getElementById('save-bar-label');
+  btn.disabled = true;
+  lbl.innerHTML = '<div class="spinner" style="border-top-color:#18181b"></div>';
+  blbl.textContent = 'Saving…';
+  try {
+    const r = await fetch('/api/content',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const j = await r.json();
+    if(j.ok){ snapshot=JSON.stringify(data); clearDirty(); showToast('All changes saved'); }
+    else throw new Error(j.error||'Save failed');
+  } catch(e) { showToast('Save failed: '+e.message,'error'); btn.disabled=false; markDirty(); }
+  lbl.innerHTML = `${ICONS.check.replace('stroke-width="1.5"','stroke-width="2"')} Save`;
+  blbl.textContent = 'Save changes';
+}
+
+// ── Export standalone ─────────────────────────────────────────
+
+async function exportSite() {
+  const btn = document.getElementById('export-btn');
+  btn.disabled = true;
+  btn.textContent = 'Exporting…';
+  try {
+    // Collect all /uploads/ paths from data + hardcoded
+    function collectPaths(obj) {
+      const s = new Set();
+      if (typeof obj === 'string') { if (obj.startsWith('/uploads/')) s.add(obj); }
+      else if (Array.isArray(obj)) { obj.forEach(v => collectPaths(v).forEach(p => s.add(p))); }
+      else if (obj && typeof obj === 'object') { Object.values(obj).forEach(v => collectPaths(v).forEach(p => s.add(p))); }
+      return s;
+    }
+    const paths = collectPaths(data);
+    paths.add('/uploads/bgspace.png');
+    paths.add('/uploads/logo-gradient.svg');
+
+    // Fetch each image and convert to base64
+    const imgMap = {};
+    await Promise.all([...paths].map(async path => {
+      try {
+        const url = absUrl(path);
+        // Already a data URI (previously embedded) — use as-is
+        if (url.startsWith('data:')) { imgMap['http://localhost:8080' + path] = url; return; }
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const b64 = await new Promise(resolve => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.readAsDataURL(blob);
+        });
+        imgMap['http://localhost:8080' + path] = b64;
+      } catch(e) { /* skip missing */ }
+    }));
+
+    // Get all script blocks from current page (section builders)
+    const scripts = [...document.querySelectorAll('script')];
+    const mainScript = scripts.reduce((a, s) => s.textContent.length > a.length ? s.textContent : a, '');
+
+    const dataJson   = JSON.stringify(data);
+    const imgMapJson = JSON.stringify(imgMap);
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloud 11</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5; overflow-x: hidden; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { cursor: pointer; }
+</style>
+</head>
+<body>
+<script>
+${mainScript}
+<\/script>
+<script>
+(function() {
+  var _IMG = ${imgMapJson};
+  window.absUrl = function(u) {
+    if (!u) return '';
+    var full = u.startsWith('http') ? u : 'http://localhost:8080' + u;
+    return _IMG[full] || full;
+  };
+  var _noop = function() {};
+  window.loadContent    = async function() {};
+  window.showPage       = _noop;
+  window.markDirty      = _noop;
+  window.schedulePreviewRefresh = _noop;
+  window.refreshPreview = _noop;
+  window.populateAll    = _noop;
+  window.clearDirty     = _noop;
+  data = ${dataJson};
+  function renderWithScripts(container, html) {
+    container.innerHTML = html;
+    container.querySelectorAll('script').forEach(function(old) {
+      var s = document.createElement('script');
+      s.textContent = old.textContent;
+      old.parentNode.replaceChild(s, old);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      var html = buildDashboardPreview(data);
+      renderWithScripts(document.body, html);
+    } catch(e) {
+      document.body.innerHTML = '<div style="padding:40px;font-family:monospace;color:red"><b>Export render error:</b><br>' + e.message + '</div>';
+      console.error(e);
+    }
+  });
+})();
+<\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'site.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Exported site.html');
+  } catch(e) {
+    showToast('Export failed: ' + e.message, 'error');
+    console.error(e);
+  }
+  btn.disabled = false;
+  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> Export`;
+}
+
+// ── Export CMS standalone ─────────────────────────────────────
+
+async function exportCMS() {
+  const btn = document.getElementById('sharecms-btn');
+  btn.disabled = true;
+  btn.textContent = 'Building…';
+  try {
+    // 1. Collect all /uploads/ image paths
+    function collectPaths(obj) {
+      const s = new Set();
+      if (typeof obj === 'string') { if (obj.startsWith('/uploads/')) s.add(obj); }
+      else if (Array.isArray(obj)) { obj.forEach(v => collectPaths(v).forEach(p => s.add(p))); }
+      else if (obj && typeof obj === 'object') { Object.values(obj).forEach(v => collectPaths(v).forEach(p => s.add(p))); }
+      return s;
+    }
+    const paths = collectPaths(data);
+    paths.add('/uploads/bgspace.png');
+    paths.add('/uploads/logo-gradient.svg');
+
+    // 2. Fetch images → base64
+    const embeddedImgs = {};
+    await Promise.all([...paths].map(async path => {
+      try {
+        const res = await fetch(absUrl(path));
+        if (!res.ok) return;
+        const blob = await res.blob();
+        embeddedImgs[path] = await new Promise(resolve => {
+          const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob);
+        });
+      } catch(e) {}
+    }));
+
+    // 3. Fetch admin HTML source
+    const adminHtml = await (await fetch(location.href)).text();
+
+    // 4. Build override script
+    const overrideScript = `
+<script>
+(function() {
+  var EDATA = ${JSON.stringify(data)};
+  var EIMGS = ${JSON.stringify(embeddedImgs)};
+  var LS_D = 'c11_cms_data';
+  var LS_I = 'c11_cms_imgs';
+  function getImgs() { try { return JSON.parse(localStorage.getItem(LS_I)||'{}'); } catch(e) { return {}; } }
+
+  window.absUrl = function(u) {
+    if (!u) return '';
+    if (u.startsWith('data:') || u.startsWith('http://') || u.startsWith('https://')) return u;
+    var store = getImgs();
+    if (store[u]) return store[u];
+    if (EIMGS[u]) return EIMGS[u];
+    return u;
+  };
+  window.setThumb = function(id, url) {
+    var el = document.getElementById(id); if (!el) return;
+    var src = window.absUrl(url);
+    el.innerHTML = src ? '<img src="' + src + '" onerror="this.parentElement.innerHTML=\\\'<span style=\\\\\\'font-size:10px;padding:6px\\\\\\'>&nbsp;</span>\\\'" />' : '<span style="padding:6px;font-size:10px">No image</span>';
+  };
+  function toB64(file) { return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){res(r.result);}; r.onerror=rej; r.readAsDataURL(file); }); }
+  async function storeFile(file) {
+    var b64 = await toB64(file);
+    var key = '/uploads/local_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    var store = getImgs(); store[key] = b64; localStorage.setItem(LS_I, JSON.stringify(store));
+    return key;
+  }
+  window.uploadImage = async function(input, targetId, previewId) {
+    if (!input.files?.[0]) return; showToast('Processing…','info');
+    try { var u = await storeFile(input.files[0]); var el=document.getElementById(targetId); if(el){el.value=u;el.dispatchEvent(new Event('input',{bubbles:true}));} if(previewId) setThumb(previewId,u); markDirty(); showToast('Image ready'); } catch(e){ showToast('Error: '+e.message,'error'); } input.value='';
+  };
+  window.uploadHeroSlide = async function(input, i) {
+    if (!input.files?.[0]) return; showToast('Processing…','info');
+    try { var u=await storeFile(input.files[0]); data.hero_banner.slides[i].image=u; var inp=document.getElementById('hero-img-'+i); if(inp){inp.value=u;inp.dispatchEvent(new Event('input',{bubbles:true}));} setThumb('prev-hero-'+i,u); markDirty(); showToast('Image ready'); } catch(e){ showToast('Error: '+e.message,'error'); } input.value='';
+  };
+  window.uploadC1Bg = async function(input) {
+    if (!input.files?.[0]) return; showToast('Processing…','info');
+    try { var u=await storeFile(input.files[0]); setVal('c1-bg-image',u); data.content1.bg_image=u; setThumb('prev-c1-bg',u); markDirty(); refreshPreview(); showToast('Background updated'); } catch(e){ showToast('Error: '+e.message,'error'); } input.value='';
+  };
+  window.uploadProfileImg = async function(input, i) {
+    if (!input.files?.[0]) return; showToast('Processing…','info');
+    try { var u=await storeFile(input.files[0]); data.content3.profile_images[i]=u; setThumb('prev-c3p-'+i,u); markDirty(); showToast('Image ready'); } catch(e){ showToast('Error: '+e.message,'error'); } input.value='';
+  };
+  window.uploadDynamic = async function(input, i, section, arr, field, prevPrefix) {
+    if (!input.files?.[0]) return; showToast('Processing…','info');
+    try { var u=await storeFile(input.files[0]); var map={c1:'content1',c2:'content2'}; data[map[section]][arr][i][field]=u; var inp=document.getElementById(section+'-img-'+i); if(inp){inp.value=u;inp.dispatchEvent(new Event('input',{bubbles:true}));} setThumb(prevPrefix+i,u); markDirty(); showToast('Image ready'); } catch(e){ showToast('Error: '+e.message,'error'); } input.value='';
+  };
+  window.loadContent = async function() {
+    try { var s=localStorage.getItem(LS_D); data=s?JSON.parse(s):JSON.parse(JSON.stringify(EDATA)); snapshot=JSON.stringify(data); populateAll(); clearDirty(); refreshPreview(); } catch(e){ showToast('Load error: '+e.message,'error'); }
+  };
+  window.saveContent = async function() {
+    collectHeader();collectHeroBanner();collectContent1();collectContent2();collectContent3();collectFooter();
+    var btn=document.getElementById('save-btn'),lbl=document.getElementById('save-label'),blbl=document.getElementById('save-bar-label');
+    btn.disabled=true; lbl.innerHTML='<div class="spinner" style="border-top-color:#18181b"></div>'; blbl.textContent='Saving…';
+    try { localStorage.setItem(LS_D,JSON.stringify(data)); snapshot=JSON.stringify(data); clearDirty(); showToast('All changes saved'); }
+    catch(e){ showToast('Save failed: '+e.message,'error'); btn.disabled=false; markDirty(); }
+    lbl.innerHTML=ICONS.check.replace('stroke-width="1.5"','stroke-width="2"')+' Save'; blbl.textContent='Save changes';
+  };
+  // Hide Share CMS button (not needed in standalone)
+  document.addEventListener('DOMContentLoaded',function(){
+    var b=document.getElementById('sharecms-btn'); if(b) b.style.display='none';
+  });
+})();
+\x3c/script>
+</body>
+</html>`;
+
+    // 5. Replace </body></html> with override script
+    const finalHtml = adminHtml.replace(/<\/body>\s*<\/html>\s*$/i, overrideScript);
+
+    const blob = new Blob([finalHtml], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cms-standalone.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('cms-standalone.html ready to share!');
+  } catch(e) {
+    showToast('Failed: ' + e.message, 'error');
+    console.error(e);
+  }
+  btn.disabled = false;
+  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"/></svg> Share CMS`;
+}
+
+// ── Render helpers ────────────────────────────────────────────
+
+function render(containerId, arr, tplFn) {
+  const el = document.getElementById(containerId);
+  if (!arr.length) { el.innerHTML = emptyState(); return; }
+  el.innerHTML = arr.map((item,i) => tplFn(item,i)).join('');
+}
+
+function linkCard(item, i, {title, remove, fields}) {
+  const safeKey = ((remove||title||'item'+i).replace(/[^a-z0-9]/gi,'').slice(0,20)) || ('item'+i);
+  return `
+    <div class="list-card">
+      <div class="list-card-header">
+        <div class="list-card-left">
+          <span class="list-num">${i+1}</span>
+          <span class="list-card-title" id="list-title-${safeKey}">${esc(title)}</span>
+        </div>
+        ${remove ? `<button class="btn btn-ghost btn-icon" style="color:var(--muted-fg)" onclick="${remove}" title="Remove">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        </button>` : ''}
+      </div>
+      <div class="list-card-body">${fields}</div>
+    </div>`;
+}
+
+function emptyState() {
+  return `<div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.279-.035-.557-.1-.83L19.24 5.08a2.25 2.25 0 0 0-2.15-1.588H6.91a2.25 2.25 0 0 0-2.15 1.588L2.35 12.508c-.064.273-.1.55-.1.83Z"/></svg>
+    <p>Nothing here yet — click Add above.</p>
+  </div>`;
+}
+
+function syncTitle(input, id) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = input.value || 'Untitled';
+}
+
+function setThumb(id, url) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = url
+    ? `<img src="${url}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:10px;padding:6px\\'>Error</span>'" />`
+    : `<span style="padding:6px;font-size:10px">No image</span>`;
+}
+
+async function uploadDynamic(input, i, section, arr, field, prevPrefix) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  showToast('Uploading…', 'info');
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error(`Server error ${r.status}`);
+    const j = await r.json();
+    if (j.url) {
+      const map = { c1: 'content1', c2: 'content2' };
+      data[map[section]][arr][i][field] = j.url;
+      const imgInput = document.getElementById(`${section}-img-${i}`);
+      if (imgInput) { imgInput.value = j.url; imgInput.dispatchEvent(new Event('input', { bubbles: true })); }
+      setThumb(`${prevPrefix}${i}`, j.url);
+      markDirty(); showToast('Image uploaded');
+    } else showToast(j.error || 'Upload failed', 'error');
+  } catch (e) { showToast('Upload error: ' + e.message, 'error'); console.error('[upload dynamic]', e); }
+  input.value = '';
+}
+
+// ── Misc ──────────────────────────────────────────────────────
+
+function updateStats() {
+  document.getElementById('stat-nav').textContent      = (data.header?.nav||[]).length;
+  document.getElementById('stat-carousel').textContent = (data.content1?.carousel||[]).length;
+  document.getElementById('stat-spaces').textContent   = (data.content2?.spaces||[]).length;
+}
+
+function setVal(id,v){ const e=document.getElementById(id); if(e) e.value=v??''; }
+function getVal(id){ const e=document.getElementById(id); return e?e.value:''; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+window.addEventListener('beforeunload', e => { if(dirty){ e.preventDefault(); e.returnValue=''; } });
+document.addEventListener('input', markDirty);
+window.addEventListener('resize', scalePreviewFrame);
+
+// ResizeObserver keeps the scale correct when the split panel resizes
+if (window.ResizeObserver) {
+  new ResizeObserver(scalePreviewFrame).observe(document.getElementById('preview-frame-wrap'));
+}
+
+loadContent();
+</script>
+</body>
+</html>

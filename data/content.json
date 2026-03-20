@@ -1,0 +1,226 @@
+{
+  "header": {
+    "logo": {
+      "text": "",
+      "image": "/uploads/logo black_3.svg"
+    },
+    "nav": [
+      {
+        "label": "About c11",
+        "url": "#"
+      },
+      {
+        "label": "Your Spaces",
+        "url": "#"
+      },
+      {
+        "label": "Happenings",
+        "url": "#"
+      },
+      {
+        "label": "Campaign & Promotion",
+        "url": "#"
+      }
+    ],
+    "cta": {
+      "label": "Contact",
+      "url": "#"
+    }
+  },
+  "hero_banner": {
+    "slides": [
+      {
+        "id": 1,
+        "image": "/uploads/498206510_667257412966746_8564542676216494053_n_1.jpg",
+        "tagline_left": "bangkok's new creative ecosystem",
+        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+      },
+      {
+        "id": 1773908833263,
+        "image": "/uploads/487944332_627756903583464_7677920487019142277_n.jpg",
+        "tagline_left": "bangkok's new creative ecosystem",
+        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+      },
+      {
+        "id": 1773908849828,
+        "image": "/uploads/592902051_1273774828117893_8835163902527661951_n.jpg",
+        "tagline_left": "bangkok's new creative ecosystem",
+        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+      },
+      {
+        "id": 1773988638699,
+        "image": ""
+      }
+    ],
+    "tagline_left": "bangkok's new creative ecosystem",
+    "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+  },
+  "content1": {
+    "heading": "Snøhetta’s design philosophy brought to life. A new kind of creative park",
+    "button_text": "View full details",
+    "button_url": "",
+    "carousel": [
+      {
+        "id": 1,
+        "image": "/uploads/487944332_627756903583464_7677920487019142277_n_1.jpg",
+        "title": "The Garden Atrium",
+        "subtitle": "Where nature meets technology"
+      },
+      {
+        "id": 2,
+        "image": "/uploads/498206510_667257412966746_8564542676216494053_n.jpg",
+        "title": "The Creative Hub",
+        "subtitle": "Collaboration and innovation space"
+      },
+      {
+        "id": 1773988820482,
+        "image": "",
+        "title": "New Slide",
+        "subtitle": ""
+      },
+      {
+        "id": 1773988822463,
+        "image": "",
+        "title": "New Slide",
+        "subtitle": ""
+      }
+    ],
+    "bg_image": "/uploads/bgspace.png"
+  },
+  "content2": {
+    "heading": "Design for the\ncontent industry",
+    "description": "Purpose-built infrastructure for creators and storytellers. From production studios to cultural anchors, Cloud 11 is built for the people who shape what the world watches, listens to, and shares.",
+    "button_text": "Discover all spaces",
+    "button_url": "#",
+    "spaces": [
+      {
+        "id": 1,
+        "image": "",
+        "name": "1500 Sound Academy",
+        "category": "Creative Tech Tec",
+        "subcategory": ""
+      },
+      {
+        "id": 2,
+        "image": "",
+        "name": "Documentary Club",
+        "category": "Audio Production",
+        "subcategory": ""
+      },
+      {
+        "id": 3,
+        "image": "",
+        "name": "Cat Radio",
+        "category": "Visual",
+        "subcategory": "Effects"
+      },
+      {
+        "id": 4,
+        "image": "",
+        "name": "KOVE",
+        "category": "Visual",
+        "subcategory": "Effects"
+      }
+    ]
+  },
+  "content3": {
+    "heading": "",
+    "description": "",
+    "button_text": "",
+    "button_url": "",
+    "app_icon": "",
+    "profile_images": []
+  },
+  "footer": {
+    "tagline": "Bangkok's\nnew creative\necosystem",
+    "logo_text": "",
+    "logo_image": "/uploads/logo-gradient.svg",
+    "sitemap": {
+      "title": "Sitemap",
+      "links": [
+        {
+          "label": "Home",
+          "url": "#"
+        },
+        {
+          "label": "About Cloud11",
+          "url": "#"
+        },
+        {
+          "label": "To be a Creative",
+          "url": "#"
+        },
+        {
+          "label": "Business contract",
+          "url": "#"
+        }
+      ]
+    },
+    "facility": {
+      "title": "Facility Service",
+      "links": [
+        {
+          "label": "Booking Service",
+          "url": "#"
+        },
+        {
+          "label": "Auto Parking",
+          "url": "#"
+        },
+        {
+          "label": "Gym & Etc",
+          "url": "#"
+        }
+      ]
+    },
+    "visit": {
+      "title": "Your visit",
+      "links": [
+        {
+          "label": "Map & Directory",
+          "url": "#"
+        },
+        {
+          "label": "Terms & Conditions",
+          "url": "#"
+        },
+        {
+          "label": "Contact us",
+          "url": "#"
+        }
+      ]
+    },
+    "info": {
+      "title": "Information or assistance",
+      "items": [
+        {
+          "label": "Chat support",
+          "url": "#"
+        },
+        {
+          "label": "Customer Service Counter",
+          "url": "#"
+        },
+        {
+          "label": "customer-support@cloud11.co.th",
+          "url": "mailto:customer-support@cloud11.co.th"
+        }
+      ]
+    },
+    "social": [
+      {
+        "label": "Youtube",
+        "url": "#"
+      },
+      {
+        "label": "Instagram",
+        "url": "#"
+      },
+      {
+        "label": "Facebook",
+        "url": "#"
+      }
+    ],
+    "copyright": "@2026 Cloud11. All Right Reserved"
+  }
+}
