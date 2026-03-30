@@ -37,7 +37,31 @@
       "Bash(/dev/null done:*)",
       "Bash(lsof -t -i:8080)",
       "Bash(python3 export_standalone.py)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Read(//Users/mememean/Downloads/**)",
+      "Read(//private/tmp/**)",
+      "Bash(unzip -o \"/Users/mememean/Downloads/Landing page with animations.make\" -d \"figma-make\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(len\\(d\\)\\); print\\(type\\(d\\)\\)\")",
+      "Bash(ffmpeg -i \"/var/folders/48/2cf72m092ljcffpywxcnm20w0000gn/T/TemporaryItems/NSIRD_screencaptureui_wMWxyF/Screen Recording 2569-03-20 at 18.37.06.mov\" -vf \"fps=1\" /tmp/figma-frame-%03d.png -y)",
+      "Bash(brew list:*)",
+      "Bash(ls /tmp/*.mov.png)",
+      "Bash(ls /tmp/*Screen*)",
+      "Bash(ls /tmp/*.png)",
+      "Bash(qlmanage -t -s 1920 -o /tmp/ \"/var/folders/48/2cf72m092ljcffpywxcnm20w0000gn/T/TemporaryItems/NSIRD_screencaptureui_wMWxyF/Screen Recording 2569-03-20 at 18.37.06.mov\")",
+      "Bash(screencapture -x -D 1 /tmp/qt_frame1.png)",
+      "Bash(screencapture -x -D 1 /tmp/qt_video.png)",
+      "Bash(open \"/var/folders/48/2cf72m092ljcffpywxcnm20w0000gn/T/TemporaryItems/NSIRD_screencaptureui_wMWxyF/Screen Recording 2569-03-20 at 18.37.06.mov\")",
+      "Bash(screencapture -x -D 1 /tmp/qt_video2.png)",
+      "Bash(screencapture -x -D 1 /tmp/qt_front.png)",
+      "Bash(find '/Users/mememean/Documents/Cloud 11/' -name *.ttf -o -name *.woff -o -name *.woff2 -o -name *.otf)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python3 \"/Users/mememean/Documents/Cloud 11/server.py\" --check)",
+      "Bash(/tmp/cloud11_server.sh:*)",
+      "Bash(chmod +x /tmp/cloud11_server.sh)",
+      "Bash(curl -s http://localhost:8080/api/content)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(open -a \"Google Chrome\" \"http://localhost:8080/\")",
+      "Bash(open -a \"Google Chrome\" \"https://www.figma.com/make/A22mew3HUkIPdH9WDqAqBx/Landing-page-with-animations?fullscreen=1\")"
     ]
   }
 }

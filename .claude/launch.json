@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "Cloud 11 CMS Server",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["server.py"],
+      "runtimeExecutable": "/tmp/cloud11_server.sh",
+      "runtimeArgs": [],
       "port": 8080
     }
   ]

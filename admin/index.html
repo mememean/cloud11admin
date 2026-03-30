@@ -2460,7 +2460,11 @@ async function exportSite() {
   btn.disabled = true;
   btn.textContent = 'Exporting…';
   try {
-    // Collect all /uploads/ paths from data + hardcoded
+    // 1. Fetch the real public site HTML
+    const pageRes = await fetch('/');
+    let html = await pageRes.text();
+
+    // 2. Collect all /uploads/ paths (from CMS data + hardcoded in HTML)
     function collectPaths(obj) {
       const s = new Set();
       if (typeof obj === 'string') { if (obj.startsWith('/uploads/')) s.add(obj); }
@@ -2469,94 +2473,58 @@ async function exportSite() {
       return s;
     }
     const paths = collectPaths(data);
-    paths.add('/uploads/bgspace.png');
-    paths.add('/uploads/logo-gradient.svg');
+    // Also grab paths hardcoded in the HTML
+    [...html.matchAll(/\/uploads\/[^\s"'`]+/g)].forEach(m => paths.add(m[0]));
 
-    // Fetch each image and convert to base64
+    // 3. Convert all images to base64 data URIs
     const imgMap = {};
     await Promise.all([...paths].map(async path => {
       try {
-        const url = absUrl(path);
-        // Already a data URI (previously embedded) — use as-is
-        if (url.startsWith('data:')) { imgMap['http://localhost:8080' + path] = url; return; }
-        const res = await fetch(url);
-        if (!res.ok) return;
-        const blob = await res.blob();
-        const b64 = await new Promise(resolve => {
-          const r = new FileReader();
-          r.onload = () => resolve(r.result);
-          r.readAsDataURL(blob);
+        const r = await fetch(path);
+        if (!r.ok) return;
+        const blob = await r.blob();
+        imgMap[path] = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
         });
-        imgMap['http://localhost:8080' + path] = b64;
       } catch(e) { /* skip missing */ }
     }));
 
-    // Get all script blocks from current page (section builders)
-    const scripts = [...document.querySelectorAll('script')];
-    const mainScript = scripts.reduce((a, s) => s.textContent.length > a.length ? s.textContent : a, '');
+    // 4. Replace /uploads/... paths in HTML with base64
+    html = html.replace(/\/uploads\/[^\s"'`]+/g, p => imgMap[p] || p);
 
-    const dataJson   = JSON.stringify(data);
-    const imgMapJson = JSON.stringify(imgMap);
-
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cloud 11</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5; overflow-x: hidden; }
-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-a { cursor: pointer; }
-</style>
-</head>
-<body>
-<script>
-${mainScript}
-<\/script>
-<script>
-(function() {
-  var _IMG = ${imgMapJson};
-  window.absUrl = function(u) {
-    if (!u) return '';
-    var full = u.startsWith('http') ? u : 'http://localhost:8080' + u;
-    return _IMG[full] || full;
-  };
-  var _noop = function() {};
-  window.loadContent    = async function() {};
-  window.showPage       = _noop;
-  window.markDirty      = _noop;
-  window.schedulePreviewRefresh = _noop;
-  window.refreshPreview = _noop;
-  window.populateAll    = _noop;
-  window.clearDirty     = _noop;
-  data = ${dataJson};
-  function renderWithScripts(container, html) {
-    container.innerHTML = html;
-    container.querySelectorAll('script').forEach(function(old) {
-      var s = document.createElement('script');
-      s.textContent = old.textContent;
-      old.parentNode.replaceChild(s, old);
-    });
-  }
-  document.addEventListener('DOMContentLoaded', function() {
-    try {
-      var html = buildDashboardPreview(data);
-      renderWithScripts(document.body, html);
-    } catch(e) {
-      document.body.innerHTML = '<div style="padding:40px;font-family:monospace;color:red"><b>Export render error:</b><br>' + e.message + '</div>';
-      console.error(e);
+    // 5. Replace /uploads/... paths inside the data object itself (for dynamic img.src set by JS)
+    function embedPaths(obj) {
+      if (typeof obj === 'string') return (obj.startsWith('/uploads/') && imgMap[obj]) ? imgMap[obj] : obj;
+      if (Array.isArray(obj)) return obj.map(embedPaths);
+      if (obj && typeof obj === 'object') {
+        const out = {};
+        for (const k of Object.keys(obj)) out[k] = embedPaths(obj[k]);
+        return out;
+      }
+      return obj;
     }
-  });
+    const dataJson = JSON.stringify(embedPaths(data));
+    html = html.replace(
+      '</head>',
+      `<script>
+(function(){
+  var _d = ${dataJson};
+  var _f = window.fetch;
+  window.fetch = function(url, opts) {
+    if (typeof url === 'string' && url.includes('/api/content') && (!opts || opts.method === undefined || opts.method === 'GET'))
+      return Promise.resolve({ ok:true, json: function(){ return Promise.resolve(_d); } });
+    return _f.apply(this, arguments);
+  };
 })();
-<\/script>
-</body>
-</html>`;
+<\/script></head>`
+    );
 
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    // 6. Download
+    const blob2 = new Blob([html], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    a.href = URL.createObjectURL(blob2);
     a.download = 'site.html';
     a.click();
     URL.revokeObjectURL(a.href);
