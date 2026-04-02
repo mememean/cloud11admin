@@ -816,7 +816,6 @@ code.inline { background: var(--muted); border: 1px solid var(--border); border-
           <div class="nav-sub-item" id="subnav-hero_banner" onclick="showPage('hero_banner')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
             Hero Banner
-            <span class="nav-badge">Slides</span>
           </div>
           <div class="nav-sub-item" id="subnav-content1" onclick="showPage('content1')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
@@ -1050,12 +1049,7 @@ code.inline { background: var(--muted); border: 1px solid var(--border); border-
         <div class="card-body">
           <div class="field-row">
             <div class="field">
-              <label class="label">Logo text</label>
-              <input class="shad-input" id="header-logo-text" placeholder="c11"
-                oninput="data.header.logo.text=this.value; markDirty()" />
-            </div>
-            <div class="field">
-              <label class="label">Logo image <span class="label-hint">(overrides text)</span></label>
+              <label class="label">Logo image <span class="label-hint">(Desktop)</span></label>
               <div class="img-upload-wrap" style="margin-top:2px">
                 <div class="img-thumb" id="prev-header-logo" onclick="document.getElementById('up-header-logo').click()">
                   <span style="padding:6px;font-size:10px">No image</span>
@@ -1067,6 +1061,24 @@ code.inline { background: var(--muted); border: 1px solid var(--border); border-
                   </label>
                   <input type="file" id="up-header-logo" accept="image/*" style="display:none" onchange="uploadImage(this,'header-logo-image','prev-header-logo')" />
                   <input class="shad-input" id="header-logo-image" placeholder="or paste URL…" oninput="data.header.logo.image=this.value; updatePreview('header-logo-image','prev-header-logo')" />
+                  <p style="font-size:11px;color:var(--muted-fg);margin-top:4px">Recommended: 32 × 32 px (SVG or PNG with transparent background)</p>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Logo image <span class="label-hint">(Mobile ≤393px)</span></label>
+              <div class="img-upload-wrap" style="margin-top:2px">
+                <div class="img-thumb" id="prev-header-logo-mobile" onclick="document.getElementById('up-header-logo-mobile').click()">
+                  <span style="padding:6px;font-size:10px">No image</span>
+                </div>
+                <div class="img-upload-zone">
+                  <label class="upload-trigger" for="up-header-logo-mobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                    Upload image
+                  </label>
+                  <input type="file" id="up-header-logo-mobile" accept="image/*" style="display:none" onchange="uploadImage(this,'header-logo-mobile-image','prev-header-logo-mobile')" />
+                  <input class="shad-input" id="header-logo-mobile-image" placeholder="or paste URL…" oninput="data.header.logo.mobile_image=this.value; updatePreview('header-logo-mobile-image','prev-header-logo-mobile')" />
+                  <p style="font-size:11px;color:var(--muted-fg);margin-top:4px">Recommended: 120 × 32 px (SVG or PNG with transparent background)</p>
                 </div>
               </div>
             </div>
@@ -1243,11 +1255,7 @@ code.inline { background: var(--muted); border: 1px solid var(--border); border-
 
       <div class="card">
         <div class="card-header-row">
-          <div><div class="card-title">Profile images</div><div class="card-description" style="margin-top:3px">Float around the app icon</div></div>
-          <button class="btn btn-outline btn-sm" onclick="addProfileImage()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            Add image
-          </button>
+          <div><div class="card-title">Profile images</div><div class="card-description" style="margin-top:3px">8 images that float around the app icon</div></div>
         </div>
         <div class="card-body">
           <div id="c3-profiles-list"></div>
@@ -1496,15 +1504,34 @@ function imgOrPlaceholder(url, label) {
 }
 
 function wrapPreview(bodyHTML, bg) {
+  const fontBase = location.origin + '/public/fonts/';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;background:${bg||'#fff'}}
-  ::-webkit-scrollbar{width:0;height:0}
+@font-face{font-family:'ABC Diatype Thai Loopless';src:url('${fontBase}ABCDiatypeThaiLoopless-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'ABC Diatype Thai Loopless';src:url('${fontBase}ABCDiatypeThaiLoopless-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'ABC Diatype Thai Loopless';src:url('${fontBase}ABCDiatypeThaiLoopless-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+:root{
+  --color-primary:#007ff7;
+  --color-primary-light:#76baf2;
+  --color-primary-pale:#a1d6f5;
+  --color-dark:#0f172a;
+  --color-body:#334155;
+  --color-muted:#475569;
+  --color-bg:#ffffff;
+  --color-bg-soft:#f1f5f9;
+  --font-base:'ABC Diatype Thai Loopless','Helvetica Neue',Arial,sans-serif;
+  --font-display:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-base);-webkit-font-smoothing:antialiased;background:${bg||'#fff'}}
+::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
 <body>${bodyHTML}</body>
@@ -1528,30 +1555,83 @@ function buildSectionHTML(section, d) {
 
 function buildHeaderSection(h) {
   const navLinks = (h.nav||[]).map(n =>
-    `<a href="${esc(n.url)}" style="color:#111;text-decoration:none;font-size:26px;font-weight:500;white-space:nowrap;padding:4px 4px">${esc(n.label)}</a>`
+    `<a class="nav-link" href="${esc(n.url)}">${esc(n.label)}</a>`
   ).join('');
+  const logoSrc = absUrl(h.logo.image);
+  const logoMobileSrc = absUrl(h.logo.mobile_image || h.logo.image);
+  const logoEl = logoSrc
+    ? `<img class="nav-logo-img" src="${esc(logoSrc)}" alt="logo">`
+    : `<span class="nav-logo-text">${esc(h.logo.text||'c11')}</span>`;
+  const logoMobileEl = logoMobileSrc
+    ? `<img class="nav-logo-img" src="${esc(logoMobileSrc)}" alt="logo">`
+    : `<span class="nav-logo-text">${esc(h.logo.text||'c11')}</span>`;
+  const ctaLabel = esc(h.cta.label||'Contact');
+
   return `
-  <div style="background:#111;padding:36px 60px;min-height:100vh;display:flex;flex-direction:column;gap:0">
-    <!-- Navbar pill -->
-    <nav style="display:flex;align-items:center;gap:0;background:#d9d9d9;border-radius:9999px;padding:18px 18px 18px 40px;width:100%">
-      <!-- Logo -->
-      <div style="flex-shrink:0;margin-right:40px">
-        ${h.logo.image
-          ? `<img src="${esc(absUrl(h.logo.image))}" style="height:60px;display:block">`
-          : `<span style="font-size:36px;font-weight:900;letter-spacing:-1px;color:#111">${esc(h.logo.text||'c11')}</span>`}
-      </div>
-      <!-- Nav links -->
-      <div style="display:flex;align-items:center;gap:48px;flex:1">
-        ${navLinks}
-      </div>
-      <!-- CTA -->
-      <a href="${esc(h.cta.url)}" style="background:#111;color:#fff;text-decoration:none;font-size:22px;font-weight:600;padding:18px 44px;border-radius:9999px;white-space:nowrap;margin-left:20px">${esc(h.cta.label||'Contact')}</a>
-      <!-- Dark mode icon -->
-      <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-left:10px;cursor:pointer">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </div>
-    </nav>
-  </div>`;
+<style>
+.header-bg{
+  background:linear-gradient(160deg,#0d1a35 0%,#162444 50%,#1e3560 100%);
+  min-height:100vh;position:relative;overflow:hidden;
+}
+.header-bg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(0,127,247,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.s1-nav{
+  position:absolute;top:35px;left:50%;transform:translateX(-50%);
+  width:min(910px,calc(100% - 160px));
+  height:62px;border-radius:174px;
+  display:flex;align-items:center;padding:0 24px;
+  background:rgba(255,255,255,0.82);
+  backdrop-filter:blur(45px) saturate(180%);
+  -webkit-backdrop-filter:blur(45px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 4px 24px rgba(0,0,0,.12);
+  overflow:hidden;
+}
+.nav-logo{flex-shrink:0;width:auto;height:32px;display:flex;align-items:center;margin-right:32px}
+.nav-logo-img{width:auto;height:32px;object-fit:contain;display:block}
+.nav-logo-text{font-size:16px;font-weight:900;color:#fff}
+.nav-links{display:flex;align-items:center;flex:1;justify-content:center}
+.nav-link{
+  color:#fff;text-decoration:none;font-size:14px;font-weight:500;
+  white-space:nowrap;padding:0 12px;height:50px;
+  display:flex;align-items:center;border-radius:46px;
+}
+.nav-cta{
+  background:#007ff7;color:#fff;text-decoration:none;
+  font-size:14px;font-weight:500;padding:8px 24px;
+  border-radius:46px;white-space:nowrap;flex-shrink:0;
+}
+.nav-hamburger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:38px;height:38px;flex-shrink:0}
+.nav-hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px}
+.nav-logo-mobile{display:none}
+
+@media(max-width:480px){
+  .s1-nav{
+    width:calc(100% - 32px);height:56px;top:20px;
+    padding:0 6px 0 14px;border-radius:9999px;
+  }
+  .nav-logo{display:none}
+  .nav-logo-mobile{display:flex;flex:1;align-items:center;margin-right:20px}
+  .nav-logo-mobile img{width:120px;height:auto;object-fit:contain;display:block}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  .nav-cta{padding:8px 16px;margin-right:4px}
+}
+</style>
+<div class="header-bg">
+  <nav class="s1-nav">
+    <div class="nav-logo">${logoEl}</div>
+    <div class="nav-logo-mobile"><img src="${esc(logoMobileSrc)}" alt="logo"></div>
+    <div class="nav-links">${navLinks}</div>
+    <a class="nav-cta">${ctaLabel}</a>
+    <div class="nav-hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+</div>`;
 }
 
 function buildHeroBannerSection(hb) {
@@ -1577,19 +1657,14 @@ function buildHeroBannerSection(hb) {
       </div>
       <div style="position:absolute;inset:0;background:
         linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.38) 55%,rgba(0,0,0,.72) 100%)"></div>
-      <div style="position:absolute;top:38%;left:0;right:0;
-                  display:flex;justify-content:space-between;align-items:flex-start;
-                  padding:20px 120px 20px 20px;gap:32px;z-index:2">
-        <p style="color:#fff;font-size:42px;font-weight:700;line-height:1.2;
-                  white-space:pre-line;max-width:320px;margin:0;text-align:left">${nl2br(hb.tagline_left)}</p>
-        <p style="color:#fff;font-size:42px;font-weight:700;line-height:1.2;
-                  white-space:pre-line;max-width:720px;margin:0;text-align:left">${nl2br(hb.tagline_right)}</p>
-      </div>
-      <div style="position:absolute;bottom:-16px;left:0;right:0;z-index:2">
-        <svg width="100%" viewBox="0 0 1280 312" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" style="display:block">
-          <path d="M1269.98 0.445176C1261.29 0.445176 1239.52 0.3521 1230.92 0.445176C1228.93 0.468445 1225.72 0.274536 1222.28 2.35324C1217.72 5.09898 1215.95 12.103 1214.01 17.5014C1209.99 28.7093 1199.4 39.0717 1186.59 46.0137C1177.01 51.2104 1161.3 56.0814 1153.73 53.483C1138.89 48.3716 1142.41 35.6357 1141.66 9.00042C1141.53 4.25354 1137.51 0.445176 1132.46 0.445176C1121.29 0.445176 1100.71 0.406394 1090 0.445176C1080.53 0.476201 1079.45 10.5284 1076.36 17.5014C1068.03 36.2717 1051.66 46.8746 1032.33 52.4204C1027.53 53.801 1021.8 54.7163 1017.25 56.221C1010.87 58.3307 1009.45 61.4333 1009.47 67.6926C1009.49 79.3892 1009.29 98.9041 1009.21 111.159C1009.16 120.056 1013.91 122.235 1021.81 121.809C1026.08 121.576 1032.56 120.529 1036.77 119.536C1044.74 117.659 1053.39 113.889 1061.1 115.022C1067.97 116.038 1073.16 121.871 1073.16 131.869C1073.16 187.513 1073.25 240.294 1073.5 295.046C1073.91 299.762 1076.99 302.655 1081.55 303.291L1132.59 303.307C1135.85 303.051 1138.28 302.05 1139.88 299.731C1140.83 298.358 1141.83 295.706 1141.82 293.728C1141.73 245.445 1141.9 192.453 1141.97 142.208C1143.32 121.467 1158.08 123.104 1173.72 119.761C1188.96 116.503 1207.8 106.583 1210.92 130.767C1211.45 185.55 1211.12 240.294 1211.37 295.046C1211.79 299.747 1214.84 302.655 1219.43 303.291C1219.43 303.291 1254.92 303.291 1271.36 303.291C1274.13 303.291 1279.77 300.716 1279.81 294.069C1280.2 230.118 1279.86 10.1173 1279.86 10.1173C1279.86 3.60201 1274.2 0.460688 1269.96 0.460688L1269.98 0.445176Z" fill="white"/>
-          <path d="M966.613 0.480676L918.441 0.457407C913.927 0.457407 908.962 3.64526 908.962 8.9506V8.98163C908.955 22.9741 908.939 50.5711 908.962 63.7724C909.048 97.1402 882.301 81.9688 865.096 80.9682C831.314 79.0059 798.556 92.8587 778.349 121.72C773.501 128.646 765.883 146.502 757.924 148.813C753.356 150.139 750.912 147.727 747.933 144.493C742.496 138.606 745.195 107.836 744.156 95.3485C744.156 90.0432 739.191 86.8475 734.684 86.8475L695.232 86.832C693.324 86.7622 691.4 86.7545 689.476 86.832H686.684C682.696 86.832 678.368 89.3141 677.398 93.5568C677.034 94.7668 676.855 96.1474 676.855 97.7297V214.222C676.855 231.294 668.09 248.179 649.9 251.561C626.815 255.85 615.303 236.157 615.303 216.371V98.2106C615.233 97.21 615.187 96.2094 615.055 95.3485C615.055 90.0432 610.09 86.8475 605.583 86.8475L557.195 86.8243C552.68 86.8243 547.716 90.0121 547.716 95.3175V95.3485C546.715 111.04 549.888 147.758 542.868 157.298C536.049 166.559 528.028 155.483 524.941 149.658C519.115 138.652 515.501 129.95 507.736 120.029C466.205 66.9525 378.216 69.2096 338.655 115.383C332.069 123.07 327.57 130.182 322.04 138.939C318.805 144.074 311.156 149.783 305.377 145.866C299.622 141.964 298.892 130.663 298.892 124.349C298.892 86.4132 298.892 46.6619 298.714 8.96611C298.714 3.66078 293.749 0.465164 289.243 0.465164L240.978 0.441895C236.464 0.441895 231.499 3.62975 231.499 8.93509V8.96611C231.499 46.4292 231.499 89.1822 231.569 128.895C231.577 133.742 231.103 137.574 229.986 142.453C227.923 151.427 222.578 159.517 214.123 150.256C209.05 144.702 206.258 136.814 202.651 130.283C186.71 101.468 162.965 86.2193 130.657 81.9533C61.2858 72.8008 5.68312 113.731 0.183364 184.453C-0.0726187 187.727 -0.0493475 201.494 0.183364 206.931C2.10712 251.569 27.7209 302.8 93.2449 309.71C132.946 313.899 176.455 302.482 199.23 267.787C203.907 260.667 208.616 247.148 216.233 242.401C221.865 238.895 228.42 241.998 230.103 252.965C232.259 267.004 231.476 281.221 231.476 295.447C231.476 298.991 235.362 303.296 238.899 303.304C255.492 303.343 273.566 303.513 290.181 303.304C295.324 303.242 298.249 299.806 298.605 294.562C299.792 277.39 296.046 255.129 304.625 247.295C307.798 244.402 311.133 244.736 314.748 246.682C322.055 250.615 326.608 261.575 331.495 268.299C373.453 326.084 472.907 324.773 512.809 264.654C518.417 256.207 521.823 247.365 526.105 238.818C528.16 234.707 534.94 226.733 541.355 231.015C548.53 235.793 549.771 247.59 552.215 255.222C566.069 298.603 604.048 316.87 647.479 308.338C653.297 307.197 657.866 305.445 663.707 304.328C674.831 302.21 712.879 303.451 735.949 303.296C741.813 303.257 743.768 299.108 744.35 293.546C745.606 281.516 741.472 256.122 749.485 247.07C755.838 239.896 763.944 248.265 767.373 253.764C771.336 260.124 774.68 266.841 778.985 272.914C800.2 302.815 838.326 314.962 874.125 309.113C883.17 307.632 891.68 304.095 900.918 303.513C913.12 302.745 946.204 304.025 968.35 303.156C973.043 302.97 975.836 298.704 976.069 294.113V8.98163C976.069 3.67629 971.112 0.480676 966.597 0.480676H966.613ZM221.935 207.179C213.123 212.368 186.942 208.746 158.482 210.127C146.319 210.716 148.413 221.862 144.829 230.681C137.786 248.024 120.969 256.099 102.639 252.376C55.0568 242.688 55.7239 143.639 106.463 138.474C123.521 136.736 137.266 143.748 143.332 160.122C146.032 167.42 144.643 178.799 154.789 179.195C171.397 179.838 197.329 179.233 206.048 179.412C212.137 179.536 218.847 179.807 223.734 183.779C232.484 190.883 229.094 202.96 221.919 207.187L221.935 207.179ZM458.486 225.872C444.252 262.343 397.57 263.087 383.336 226.33C372.352 197.973 377.89 142.422 416.226 138.706C461.961 134.27 471.231 193.226 458.494 225.872H458.486ZM870.611 253.074C813.116 256.161 810.067 143.841 865.212 138.714C925.105 133.145 926.54 250.072 870.611 253.074Z" fill="white"/>
-        </svg>
+      <div class="hero-content" style="z-index:2">
+        <div class="hero-texts">
+          <p class="hero-text hero-text-left">${nl2br(hb.tagline_left)}</p>
+          <p class="hero-text hero-text-right">${nl2br(hb.tagline_right)}</p>
+        </div>
+        <div class="hero-logo-wrap">
+          <img src="${absUrl('/uploads/logo-white.svg')}" style="width:100%;height:auto;display:block" alt="cloud 11">
+        </div>
       </div>
     </div>`).join('');
 
@@ -1604,6 +1679,32 @@ function buildHeroBannerSection(hb) {
     </div>` : '';
 
   return `
+  <style>
+  .hero-content{position:absolute;bottom:50px;left:80px;right:80px;display:flex;flex-direction:column;gap:32px}
+  .hero-texts{display:flex;justify-content:space-between;align-items:flex-start;gap:32px}
+  .hero-text{color:#fff;font-size:42px;font-weight:700;line-height:1.2;white-space:pre-line;margin:0;text-align:left}
+  .hero-text-left{max-width:320px}
+  .hero-text-right{max-width:720px}
+  .hero-logo-wrap{width:100%}
+  @media(max-width:768px){
+    .hero-content{left:32px;right:32px;bottom:32px;gap:20px}
+    .hero-texts{flex-direction:column;gap:4px}
+    .hero-text{font-size:28px;line-height:34px}
+    .hero-text-left{max-width:100%}
+    .hero-text-right{max-width:100%;opacity:0.7;font-weight:400;font-size:20px;line-height:26px}
+  }
+  @media(max-width:480px){
+    .hero-content{
+      top:101px;bottom:20px;left:20px;right:20px;
+      gap:0;justify-content:space-between;
+    }
+    .hero-texts{flex-direction:column;gap:6px}
+    .hero-text{font-size:16px;line-height:normal;white-space:normal}
+    .hero-text-left{max-width:100%;font-weight:700}
+    .hero-text-right{max-width:100%;font-weight:400;font-size:14px;line-height:normal;opacity:1}
+    .hero-logo-wrap{width:100%;flex-shrink:0}
+  }
+  </style>
   <div style="position:relative;width:100%;height:100vh;overflow:hidden;background:#0a0a0f">
     ${slideHTML}
     ${dots}
@@ -1623,7 +1724,7 @@ function buildHeroBannerSection(hb) {
       var seed  = (Math.random() * 999) | 0;
       var uid   = 'hcf' + Date.now();
       var SCALE = 5;
-      var DUR   = 4500;
+      var DUR   = 5000;
       var NS    = 'http://www.w3.org/2000/svg';
 
       var svg = document.createElementNS(NS, 'svg');
@@ -1665,12 +1766,24 @@ function buildHeroBannerSection(hb) {
       function tick(now) {
         var t = Math.min((now - start) / DUR, 1);
         var e = t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
-        var bias = -SCALE + e * (SCALE * 1.5);
+
+        /* cloud threshold */
+        var bias = -SCALE + e * (SCALE * 1.8);
         cm.setAttribute('values', '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ' + SCALE + ' 0 0 0 ' + bias.toFixed(4));
+
+        /* radial mask grows from center */
+        var r     = (e * 150).toFixed(1);
+        var inner = Math.max(0, e * 150 - 35).toFixed(1);
+        var grad  = 'radial-gradient(circle at 50% 50%, black ' + inner + '%, transparent ' + r + '%)';
+        incoming.style.webkitMaskImage = grad;
+        incoming.style.maskImage       = grad;
+
         if (t < 1) {
           requestAnimationFrame(tick);
         } else {
-          incoming.style.filter = '';
+          incoming.style.filter          = '';
+          incoming.style.webkitMaskImage = '';
+          incoming.style.maskImage       = '';
           incoming.style.zIndex = '1';
           outgoing.style.zIndex = '0';
           svg.remove();
@@ -1710,7 +1823,7 @@ function buildHeroBannerSection(hb) {
 function buildContent1Section(c1) {
   const slides   = (c1.carousel||[]);
   /* Figma sizes: center 1200×600, side 923.52×500 */
-  const CW = 1200, CH = 600, SW = 924, SH = 500, GAP = 16, PAD_L = 120;
+  const CW = 1200, CH = 600, SW = 924, SH = 500, GAP = 40, PAD_L = 120;
   const SHADOW = '0 18px 36px -9px rgba(0,0,0,.25)';
   const bg = 'background:url(' + absUrl('/uploads/bgspace.png') + ') center/cover no-repeat';
 
@@ -1724,14 +1837,11 @@ function buildContent1Section(c1) {
     'flex-shrink:0;'
   ].join('');
 
-  /* initial HTML: card[0] = center size, rest = side size */
-  const cards = slides.map((s, i) => {
-    const w = i === 0 ? CW : SW, h = i === 0 ? CH : SH;
-    return `
-    <div class="c1card" data-i="${i}"
-         style="flex:0 0 ${w}px;width:${w}px;height:${h}px;border-radius:24px;overflow:hidden;
-                position:relative;background:#b8d4e0;
-                box-shadow:${SHADOW};
+  /* card builder helper */
+  function mkCard(s, isActive) {
+    const w = isActive ? CW : SW, h = isActive ? CH : SH;
+    return `<div class="c1card" style="flex:0 0 ${w}px;width:${w}px;height:${h}px;border-radius:24px;overflow:hidden;
+                position:relative;background:#b8d4e0;box-shadow:${SHADOW};opacity:${isActive?'1':'0.65'};
                 transition:flex-basis .5s ease,width .5s ease,height .5s ease,opacity .4s;">
       ${imgOrPlaceholder(s.image, s.title)}
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,rgba(0,0,0,.68) 100%)"></div>
@@ -1752,23 +1862,51 @@ function buildContent1Section(c1) {
         </span>
       </div>
     </div>`;
-  }).join('');
+  }
+
+  /* filter slides with images */
+  const valid = slides.filter(s => s.image);
+  const total = valid.length;
 
   const arrowSvgL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>';
   const arrowSvgR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>';
 
+  /* JSON data for script */
+  const validJson = JSON.stringify(valid.map(s=>({image:absUrl(s.image),title:s.title||'',subtitle:s.subtitle||''})));
+
   return `
-  <section style="${bg};padding:60px 0 60px;min-height:100vh">
-    ${slides.length ? `
-    <div style="position:relative;height:${CH}px;margin-bottom:40px">
-      <div style="overflow:hidden;width:100%;height:100%;padding:18px 0">
-        <div id="c1t" style="display:flex;gap:${GAP}px;padding-left:${PAD_L}px;align-items:center;height:100%;
+  <style>
+    .c1card{transition:flex-basis .5s ease,width .5s ease,height .5s ease,opacity .4s}
+    @media(max-width:480px){
+      .c1-section{padding:36px 0 40px!important;overflow:visible!important}
+      .c1-carousel-wrap{height:auto!important;margin-bottom:0!important;overflow:visible!important}
+      .c1-overflow{overflow:visible!important;height:auto!important;padding:0!important}
+      .c1-track{gap:12px!important;padding:10px 0 30px 0!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;transform:none!important;scroll-snap-type:x proximity;margin:0!important}
+      .c1-track::-webkit-scrollbar{display:none}
+      .c1card{flex:0 0 300px!important;width:300px!important;height:190px!important;border-radius:10px!important;opacity:1!important;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+      .c1card:first-child{margin-left:20px}
+      .c1card:last-child{margin-right:20px}
+      .c1card .c1-info{padding:12px 16px!important}
+      .c1card .c1-title{font-size:12px!important}
+      .c1card .c1-sub{font-size:10px!important}
+      .c1card .c1-btn{padding:6px 12px!important;font-size:8px!important}
+      .c1card .c1-btn svg{width:5px;height:5px}
+      .c1-arrows{display:none!important}
+      .c1-heading{font-size:14px!important;padding:0 20px!important;white-space:pre-line!important}
+      .c1-bottom-btn{padding:9px 19px!important;font-size:10px!important}
+      .c1-bottom{gap:16px!important;padding:10px 20px 0!important}
+    }
+  </style>
+  <section class="c1-section" style="${bg};padding:60px 0 60px;min-height:100vh">
+    ${total ? `
+    <div class="c1-carousel-wrap" style="position:relative;height:${CH}px;margin-bottom:40px">
+      <div class="c1-overflow" style="overflow:hidden;width:100%;height:100%;padding:18px 0">
+        <div id="c1t" class="c1-track" style="display:flex;gap:${GAP}px;align-items:center;height:100%;
                              transition:transform .5s cubic-bezier(.25,.46,.45,.94)">
-          ${cards}
         </div>
       </div>
-      ${slides.length > 1 ? `
-      <div style="position:absolute;top:${(CH/2)-26}px;left:0;right:0;
+      ${total > 1 ? `
+      <div class="c1-arrows" style="position:absolute;top:${(CH/2)-26}px;left:0;right:0;
                   display:flex;justify-content:space-between;padding:0 36px;pointer-events:none">
         <button id="c1p" style="${glassArrow}pointer-events:auto">${arrowSvgL}</button>
         <button id="c1n" style="${glassArrow}pointer-events:auto">${arrowSvgR}</button>
@@ -1776,39 +1914,64 @@ function buildContent1Section(c1) {
     </div>
     <script>
     (function(){
-      var CW=${CW}, CH=${CH}, SW=${SW}, SH=${SH}, GAP=${GAP}, PAD_L=${PAD_L}, VW=1440;
-      var cur = 0;
-      var cards = Array.from(document.querySelectorAll('.c1card'));
+      var CW=${CW}, CH=${CH}, SW=${SW}, SH=${SH}, GAP=${GAP}, VW=1440;
+      var valid = ${validJson};
+      var total = valid.length;
       var track = document.getElementById('c1t');
-      var total = cards.length;
       var bp = document.getElementById('c1p');
       var bn = document.getElementById('c1n');
+
+      var isMobile = window.innerWidth <= 480;
+
+      function mkCard(s) {
+        return '<div class="c1card" style="flex:0 0 '+SW+'px;width:'+SW+'px;height:'+SH+'px;border-radius:24px;overflow:hidden;position:relative;background:#b8d4e0;box-shadow:0 18px 36px -9px rgba(0,0,0,.25);opacity:0.65">'
+          + (s.image ? '<img src="'+s.image+'" style="width:100%;height:100%;object-fit:cover;display:block" />' : '')
+          + '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,rgba(0,0,0,.68) 100%)"><\\/div>'
+          + '<div class="c1-info" style="position:absolute;bottom:0;left:0;right:0;padding:24px 28px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px">'
+          + '<div><div class="c1-title" style="color:#fff;font-size:20px;font-weight:700;margin-bottom:5px">'+s.title+'<\\/div><div class="c1-sub" style="color:rgba(255,255,255,.75);font-size:14px">'+s.subtitle+'<\\/div><\\/div>'
+          + '<span class="c1-btn" style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border:1px solid rgba(255,255,255,.38);border-radius:9999px;padding:10px 22px;color:#fff;font-size:14px;font-weight:600;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);">Explore <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/><\\/svg><\\/span>'
+          + '<\\/div><\\/div>';
+      }
+
+      if (isMobile) {
+        track.innerHTML = valid.map(function(s){ return mkCard(s); }).join('');
+        track.scrollLeft = 0;
+      } else {
+        /* Build persistent pool of cards for smooth transitions */
+        var pool = [];
+        while(pool.length < Math.max(5, total * 3)){
+          for(var vi=0; vi<total; vi++) pool.push(valid[vi]);
+        }
+        var cur = Math.floor(pool.length / 2);
+        cur = cur - (cur % total);
+        track.innerHTML = pool.map(function(s){ return mkCard(s); }).join('');
+      }
+
+      var cards = Array.from(track.querySelectorAll('.c1card'));
+
       function upd() {
-        /* resize each card */
-        var xPos = 0, activeX = 0, activeW = CW;
-        cards.forEach(function(c, i) {
+        if(isMobile) return;
+        var xPos=0, activeX=0, activeW=CW;
+        cards.forEach(function(c,i){
           var isActive = i === cur;
           var w = isActive ? CW : SW, h = isActive ? CH : SH;
-          c.style.flexBasis = w + 'px'; c.style.width = w + 'px'; c.style.height = h + 'px';
+          c.style.width=w+'px'; c.style.flexBasis=w+'px'; c.style.height=h+'px';
           c.style.opacity = isActive ? '1' : '0.65';
-          if (isActive) { activeX = xPos; activeW = w; }
+          if(isActive){ activeX=xPos; activeW=w; }
           xPos += w + GAP;
         });
-        /* center active card */
-        var tx = PAD_L + activeX + activeW/2 - VW/2;
-        if (tx < 0) tx = 0;
-        track.style.transform = 'translateX(-' + tx + 'px)';
-        if (bp) bp.style.opacity = cur > 0 ? '1' : '0.3';
-        if (bn) bn.style.opacity = cur < total-1 ? '1' : '0.3';
+        var tx = activeX + activeW/2 - VW/2;
+        track.style.transform = 'translateX(-'+tx+'px)';
       }
-      if (bp) bp.addEventListener('click', function(){ if(cur>0){cur--;upd();} });
-      if (bn) bn.addEventListener('click', function(){ if(cur<total-1){cur++;upd();} });
+
+      if(bp) bp.addEventListener('click', function(){ if(cur>0){cur--;upd();} });
+      if(bn) bn.addEventListener('click', function(){ if(cur<pool.length-1){cur++;upd();} });
       upd();
     })();
     <\/script>` : '<div style="padding:80px 40px;text-align:center;color:rgba(0,0,0,.5);font-size:14px">No slides yet</div>'}
-    <div style="text-align:center;padding:32px 40px 0">
-      <h2 style="font-size:38px;font-weight:700;line-height:1.35;max-width:640px;margin:0 auto 28px;color:#111;white-space:pre-line">${nl2br(c1.heading)}</h2>
-      <a href="${esc(c1.button_url)}" style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:#111;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:9999px;border:1px solid rgba(0,0,0,.12);box-shadow:0 1px 6px rgba(0,0,0,.1)">
+    <div class="c1-bottom" style="text-align:center;padding:32px 40px 0">
+      <h2 class="c1-heading" style="font-size:38px;font-weight:700;line-height:1.35;max-width:640px;margin:0 auto 28px;color:#111;white-space:pre-line">${nl2br(c1.heading)}</h2>
+      <a class="c1-bottom-btn" href="${esc(c1.button_url)}" style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:#111;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:9999px;border:1px solid rgba(0,0,0,.12);box-shadow:0 1px 6px rgba(0,0,0,.1)">
         ${esc(c1.button_text)}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
@@ -1827,75 +1990,121 @@ function buildContent2Section(c2) {
   const btnUrl  = c2.button_url   || '#';
   const heading = c2.heading      || 'Design for the\ncontent industry';
 
+  const CARD_W = 424, GAP = 34;
   const cards = spaces.map(s => `
-    <div style="flex:0 0 400px;width:400px;border-radius:32px;overflow:hidden;background:#347FEE;padding:32px 32px 24px;box-shadow:${CARD_SHADOW};display:flex;flex-direction:column">
-      <div style="height:300px;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0">
+    <div class="c2-card" style="flex:0 0 ${CARD_W}px;width:${CARD_W}px;height:564px;border-radius:32px;overflow:hidden;background:linear-gradient(180deg,#3d9af8 0%,#1a7ef5 100%);padding:24px 20px;display:flex;flex-direction:column;flex-shrink:0;box-sizing:border-box;box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)">
+      <div class="c2-card-img" style="width:384px;height:440px;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0;background:rgba(0,0,0,.2)">
         ${imgOrPlaceholder(s.image, s.name)}
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.2);border-radius:12px"></div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.2)"></div>
       </div>
-      <div style="margin-top:20px;flex:1;display:flex;flex-direction:column">
-        <div style="font-size:14px;color:rgba(255,255,255,.8);font-weight:400;margin-bottom:6px">${esc(s.category)}</div>
-        <div style="font-size:20px;font-weight:700;color:#fff;line-height:1.3">${esc(s.name)}</div>
-        <div style="margin-top:16px;display:flex;justify-content:flex-end">
-          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
+      <div class="c2-card-text" style="margin-top:12px;display:flex;flex-direction:column">
+        <div class="c2-name" style="font-size:20px;font-weight:700;color:#fff;line-height:28px">${esc(s.name)}</div>
+        <div class="c2-bottom" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-bottom:8px">
+          <span class="c2-cat" style="font-size:14px;color:rgba(255,255,255,.85)">${esc(s.category)}</span>
+          <span class="c2-plus" style="width:20px;height:20px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#007ff7;font-size:14px;line-height:1;flex-shrink:0">+</span>
         </div>
       </div>
     </div>`).join('');
   const NAV_BTN = (dir) => `
-    <button onclick="c2nav(${dir==='left'?-1:1})" style="width:48px;height:48px;border-radius:50%;border:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.12)">
+    <button onclick="c2nav(${dir==='left'?-1:1})" style="width:48px;height:48px;border-radius:50%;border:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1)">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2">${dir==='left'?'<path d="M15 18l-6-6 6-6"/>':'<path d="M9 18l6-6-6-6"/>'}</svg>
     </button>`;
   return `
-  <section style="background:#fff;padding:72px 80px;min-height:100vh">
-    <div style="display:flex;align-items:flex-start;gap:48px;margin-bottom:69px">
+  <style>
+  @media(max-width:480px){
+    .c2-section{padding:31px 0 28px!important}
+    .c2-top{padding:0 20px!important;flex-direction:column!important;gap:8px!important;margin-bottom:15px!important}
+    .c2-top h2{font-size:21px!important;line-height:1.3!important}
+    .c2-top-right{gap:10px!important}
+    .c2-top-right p{font-size:12px!important;line-height:1.6!important}
+    .c2-top-right a{font-size:10px!important;padding:8px 18px!important}
+    .c2-clip{overflow-x:auto!important;overflow-y:visible!important;-webkit-overflow-scrolling:touch}
+    .c2-clip::-webkit-scrollbar{display:none}
+    .c2-clip-inner{padding:0!important;display:inline-flex!important;overflow:visible!important}
+    #c2track{gap:10px!important;transform:none!important;transition:none!important;padding:0 20px 24px!important;flex-wrap:nowrap!important}
+    .c2-card{flex:0 0 180px!important;width:180px!important;min-width:180px!important;height:auto!important;
+      background:#fff!important;border-radius:12px!important;padding:0!important;
+      box-shadow:0 7px 9px -1.8px rgba(0,0,0,.1),0 2.9px 3.6px -2.2px rgba(0,0,0,.1)!important}
+    .c2-card-img{width:100%!important;height:152px!important;border-radius:0!important}
+    .c2-card-text{padding:10px!important;margin-top:0!important}
+    .c2-card-text .c2-name{color:#0f172a!important;font-size:10px!important;line-height:1.3!important;margin:0!important}
+    .c2-card-text .c2-bottom{padding:0!important;margin-top:4px!important}
+    .c2-card-text .c2-cat{color:#64748b!important;font-size:8px!important}
+    .c2-card-text .c2-plus{width:8px!important;height:8px!important;font-size:7px!important;background:#007ff7!important;color:#fff!important}
+    .c2-arrows{padding:0 20px!important;margin-top:8px!important}
+    .c2-arrows button{width:30px!important;height:30px!important}
+  }
+  </style>
+  <section class="c2-section" style="background:#fff;padding:72px 0">
+    <div class="c2-top" style="padding:0 50px;display:flex;align-items:flex-start;gap:40px;margin-bottom:69px">
       <div style="flex:1">
         <h2 style="font-size:52px;font-weight:700;line-height:1.15;color:#0f172a">${nl2br(heading)}</h2>
       </div>
-      <div style="flex:1;padding-top:10px">
-        <p style="font-size:18px;color:#334155;line-height:1.75;margin-bottom:24px">${esc(desc)}</p>
-        <a href="${esc(btnUrl)}" style="display:inline-block;background:#347FEE;color:#fff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 32px;border-radius:8px">${esc(btnText)}</a>
+      <div class="c2-top-right" style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:flex-start">
+        <p style="font-size:18px;color:#334155;line-height:26px;margin:0">${esc(desc)}</p>
+        <a href="${esc(btnUrl)}" style="display:inline-block;background:linear-gradient(90deg,#4F93F7 0%,#6AABF8 53%,#73B1FA 100%);color:#fff;text-decoration:none;font-size:16px;font-weight:500;padding:12px 24px;border-radius:9999px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1)">${esc(btnText)}</a>
       </div>
     </div>
-    <div style="overflow:hidden;margin:0 -80px">
-      <div id="c2track" style="display:flex;gap:24px;padding:16px 80px 48px;transition:transform 0.45s cubic-bezier(.4,0,.2,1);will-change:transform">
-        ${cards||'<div style="color:#94a3b8;font-size:15px;padding:20px 0">No spaces yet</div>'}
+    <div class="c2-clip" style="overflow:hidden">
+      <div class="c2-clip-inner" style="padding:16px 50px 48px;margin:0;overflow:hidden">
+        <div id="c2track" style="display:flex;gap:${GAP}px;transition:transform 0.45s cubic-bezier(.4,0,.2,1);will-change:transform">
+          ${cards||'<div style="color:rgba(255,255,255,.6);font-size:15px;padding:20px 0">No spaces yet — add spaces in the editor</div>'}
+        </div>
       </div>
     </div>
-    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px">
+    <div class="c2-arrows" style="display:flex;justify-content:flex-end;gap:16px;margin-top:16px;padding:0 50px">
       ${NAV_BTN('left')}${NAV_BTN('right')}
     </div>
   </section>
   \x3cscript>
   var c2tx=0;
   function c2nav(dir){
-    var maxTx=Math.max(0,${n}*${STEP}-24-1280);
-    c2tx=Math.max(0,Math.min(maxTx,c2tx+dir*${STEP}));
+    if(window.innerWidth<=480){
+      var clip=document.querySelector('.c2-clip');
+      clip.scrollBy({left:dir*190,behavior:'smooth'});
+      return;
+    }
+    var step=${CARD_W+GAP};
+    var maxTx=Math.max(0,${n}*step-1280);
+    c2tx=Math.max(0,Math.min(maxTx,c2tx+dir*step));
     document.getElementById('c2track').style.transform='translateX(-'+c2tx+'px)';
   }
   \x3c/script>`;
 }
 
 function buildContent3Section(c3) {
-  /* [top, left, width, height, rotate, borderRadius, floatDur, floatDelay] */
+  /* [top, left, width, height, rotate, borderRadius, floatDur, floatDelay, parallaxSpeed] */
   const pos = [
-    ['5%',  '3%',  '110px','145px', '-7deg', '14px',  '6s',   '0s'   ],
-    ['3%',  '73%', '90px', '90px',  '6deg',  '50%',   '7s',   '-1.5s'],
-    ['50%', '1%',  '115px','135px', '4deg',  '14px',  '5.5s', '-2s'  ],
-    ['53%', '73%', '105px','130px', '-5deg', '14px',  '6.5s', '-3s'  ],
-    ['72%', '20%', '130px','95px',  '-3deg', '14px',  '7.5s', '-1s'  ],
-    ['66%', '55%', '95px', '135px', '8deg',  '14px',  '5s',   '-4s'  ],
+    ['-2%', '-2%', '135px','158px', '-8deg', '15px', '5.5s', '0s',   .035],
+    ['8%',  '22%', '120px','173px', '4deg',  '15px', '6s',   '-.4s', .04],
+    ['0%',  '55%', '105px','120px', '0deg',  '12px', '5s',   '-.2s', .025],
+    ['2%',  '80%', '113px','158px', '5deg',  '12px', '6.5s', '-.6s', .03],
+    ['35%', '-3%', '210px','143px', '-3deg', '18px', '5s',   '-.8s', .045],
+    ['38%', '75%', '210px','143px', '6deg',  '18px', '5.5s', '-1s',  .05],
+    ['75%', '30%', '120px','173px', '0deg',  '12px', '6s',   '-1.2s',.03],
+    ['70%', '55%', '195px','131px', '-3deg', '18px', '4.5s', '-1.4s',.04],
   ];
   const imgs = c3.profile_images || [];
-  const floats = pos.map((p, i) => `
-    <div style="position:absolute;top:${p[0]};left:${p[1]};z-index:1;
-                animation:c3fl ${p[6]} ease-in-out ${p[7]} infinite">
-      <div style="width:${p[2]};height:${p[3]};border-radius:${p[5]};overflow:hidden;
-                  transform:rotate(${p[4]});box-shadow:0 8px 28px rgba(0,0,0,.14)">
+  // compute emerge vectors
+  const maxDist = Math.max(...pos.map(p => {
+    const tx=parseFloat(p[0]),lx=parseFloat(p[1]);
+    return Math.sqrt((50-lx)**2+(50-tx)**2);
+  }));
+  const floats = pos.map((p, i) => {
+    const tx=parseFloat(p[0]),lx=parseFloat(p[1]);
+    const dist=Math.sqrt((50-lx)**2+(50-tx)**2);
+    const emergeX=Math.round((50-lx)*0.7)+'%';
+    const emergeY=Math.round((50-tx)*0.7)+'%';
+    const emergeDelay=(0.1+dist/maxDist*0.5).toFixed(2);
+    return `
+    <div class="c3f" data-pspd="${p[8]}" data-rot="${p[4]}" style="position:absolute;top:${p[0]};left:${p[1]};width:${p[2]};height:${p[3]};z-index:1;opacity:0;
+         --rot:${p[4]};--emerge-x:${emergeX};--emerge-y:${emergeY};--emerge-delay:${emergeDelay}s;transform:rotate(${p[4]});will-change:transform">
+      <div class="c3fi" style="width:100%;height:100%;border-radius:${p[5]};overflow:hidden;
+                  box-shadow:0 8px 28px rgba(0,0,0,.14);--float-dur:${p[6]};--float-del:${p[7]}">
         ${imgOrPlaceholder(imgs[i]||'','Photo')}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const heading = c3.heading   || 'Download the\nCloud 11 App';
   const desc    = c3.description || "Stay connected with Bangkok's creative ecosystem. Book spaces, discover events, and connect with creators — all in one place.";
@@ -1903,18 +2112,64 @@ function buildContent3Section(c3) {
   const btnUrl  = c3.button_url  || '#';
 
   return `
-  <style>@keyframes c3fl{0%,100%{transform:translateY(0px)}50%{transform:translateY(-14px)}}</style>
-  <section style="background:#fff;padding:80px 40px 90px;text-align:center;position:relative;min-height:100vh;overflow:hidden">
+  <style>
+  @keyframes c3fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes s4Emerge{from{opacity:0;transform:rotate(var(--rot,0deg)) translate(var(--emerge-x,0),var(--emerge-y,0)) scale(.4)}to{opacity:1;transform:rotate(var(--rot,0deg)) translate(0,0) scale(1)}}
+  .c3f.fv{animation:s4Emerge .9s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--emerge-delay,0s)}
+  .c3fi.fl{animation:c3fl var(--float-dur,6s) ease-in-out var(--float-del,0s) infinite}
+  .c3-icon{transform:scale(1.6) translateY(40px);transition:transform .9s cubic-bezier(.22,1,.36,1)}
+  .c3-entered .c3-icon{transform:scale(1) translateY(0)}
+  .c3-heading,.c3-desc,.c3-btn{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .c3-entered .c3-heading{opacity:1;transform:none;transition-delay:.35s}
+  .c3-entered .c3-desc{opacity:1;transform:none;transition-delay:.5s}
+  .c3-entered .c3-btn{opacity:1;transform:none;transition-delay:.65s}
+  </style>
+  <section class="c3sec" style="background:#fff;padding:108px 162px;text-align:center;position:relative;min-height:560px;display:flex;align-items:center;justify-content:center;overflow:hidden">
     ${floats}
-    <div style="position:relative;z-index:2;max-width:400px;margin:0 auto;padding-top:60px">
+    <div style="position:relative;z-index:2;max-width:400px;margin:0 auto">
       ${c3.app_icon
-        ? `<img src="${esc(absUrl(c3.app_icon))}" style="width:58px;height:58px;border-radius:14px;margin:0 auto 18px;display:block;box-shadow:0 4px 16px rgba(52,127,238,.25)">`
-        : `<div style="width:58px;height:58px;background:linear-gradient(135deg,#347FEE,#5fa8ff);border-radius:14px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(52,127,238,.25)"><span style="color:#fff;font-weight:800;font-size:17px">c11</span></div>`}
-      <h2 style="font-size:30px;font-weight:800;line-height:1.25;color:#347FEE;margin:0 auto 16px;white-space:pre-line">${nl2br(heading)}</h2>
-      <p style="font-size:14px;color:#6b7280;line-height:1.75;margin:0 auto 28px">${esc(desc)}</p>
-      <a href="${esc(btnUrl)}" style="display:inline-block;background:#347FEE;color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:12px 28px;border-radius:8px;box-shadow:0 4px 14px rgba(52,127,238,.3)">${esc(btnText)}</a>
+        ? `<img class="c3-icon" src="${esc(absUrl(c3.app_icon))}" style="width:58px;height:58px;border-radius:14px;margin:0 auto 18px;display:block;box-shadow:0 4px 16px rgba(52,127,238,.25)">`
+        : `<div class="c3-icon" style="width:58px;height:58px;background:linear-gradient(135deg,#347FEE,#5fa8ff);border-radius:14px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(52,127,238,.25)"><span style="color:#fff;font-weight:800;font-size:17px">c11</span></div>`}
+      <h2 class="c3-heading" style="font-size:30px;font-weight:800;line-height:1.25;color:#347FEE;margin:0 auto 16px;white-space:pre-line">${nl2br(heading)}</h2>
+      <p class="c3-desc" style="font-size:14px;color:#6b7280;line-height:1.75;margin:0 auto 28px">${esc(desc)}</p>
+      <a class="c3-btn" href="${esc(btnUrl)}" style="display:inline-block;background:#347FEE;color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:12px 28px;border-radius:8px;box-shadow:0 4px 14px rgba(52,127,238,.3)">${esc(btnText)}</a>
     </div>
-  </section>`;
+  </section>
+  \x3cscript>
+  (function(){
+    var sec=document.querySelector('.c3sec');
+    if(!sec) return;
+    // auto-trigger after short delay in preview
+    setTimeout(function(){
+      sec.classList.add('c3-entered');
+      sec.querySelectorAll('.c3f').forEach(function(el){el.classList.add('fv')});
+      setTimeout(function(){
+        sec.querySelectorAll('.c3f').forEach(function(el){
+          var rot=el.dataset.rot||'0deg';
+          el.style.opacity='1';el.style.transform='rotate('+rot+')';
+          el.classList.remove('fv');
+          el.querySelector('.c3fi').classList.add('fl');
+        });
+      },1500);
+    },300);
+    // parallax
+    sec.addEventListener('mousemove',function(e){
+      var r=sec.getBoundingClientRect(),cx=(e.clientX-r.left)/r.width-.5,cy=(e.clientY-r.top)/r.height-.5;
+      sec.querySelectorAll('.c3f').forEach(function(el){
+        var s=parseFloat(el.dataset.pspd)||.03;
+        var rot=el.dataset.rot||'0deg';
+        el.style.transform='rotate('+rot+') translate('+Math.round(cx*s*100)+'px,'+Math.round(cy*s*100)+'px)';
+      });
+    });
+    sec.addEventListener('mouseleave',function(){
+      sec.querySelectorAll('.c3f').forEach(function(el){
+        var rot=el.dataset.rot||'0deg';
+        el.style.transition='transform .6s ease-out';el.style.transform='rotate('+rot+')';
+        setTimeout(function(){el.style.transition=''},600);
+      });
+    });
+  })();
+  \x3c/script>`;
 }
 
 function buildFooterSection(f) {
@@ -2018,10 +2273,43 @@ function updatePreview(inputId, previewId) {
   markDirty();
 }
 
+/* ── Image conversion: resize to max 2560×1440, export WebP q85 ── */
+function convertToWebP(file, maxW, maxH) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      // Scale down proportionally if larger than max, never upscale
+      let w = img.naturalWidth, h = img.naturalHeight;
+      const ratio = Math.min(1, maxW / w, maxH / h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        if (blob) resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.webp'), { type: 'image/webp' }));
+        else reject(new Error('Canvas conversion failed'));
+      }, 'image/webp', 0.85);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
+    img.src = url;
+  });
+}
+
 async function uploadImage(input, targetId, previewId) {
   if (!input.files?.[0]) return;
+  showToast('Processing…', 'info');
+  let file = input.files[0];
+  // Convert all images to WebP 2560×1440 max (SVG skipped)
+  if (!file.type.includes('svg')) {
+    try { file = await convertToWebP(file, 2560, 1440); }
+    catch (e) { showToast('Conversion error: ' + e.message, 'error'); return; }
+  }
   const fd = new FormData();
-  fd.append('file', input.files[0]);
+  fd.append('file', file);
   showToast('Uploading…', 'info');
   try {
     const r = await fetch('/api/upload', { method: 'POST', body: fd });
@@ -2034,7 +2322,7 @@ async function uploadImage(input, targetId, previewId) {
       }
       if (previewId) setThumb(previewId, j.url);
       markDirty();
-      showToast('Image uploaded');
+      showToast('Uploaded as WebP ✓');
     } else showToast(j.error || 'Upload failed', 'error');
   } catch (e) { showToast('Upload error: ' + e.message, 'error'); }
   input.value = '';
@@ -2049,6 +2337,7 @@ async function loadContent() {
     snapshot = JSON.stringify(data);
     populateAll();
     clearDirty();
+    showPage('hero_banner');
     refreshPreview();
     showToast('Content loaded');
   } catch (e) { showToast('Failed to load: ' + e.message, 'error'); }
@@ -2074,6 +2363,8 @@ function populateHeader() {
   setVal('header-logo-text', data.header.logo.text);
   setVal('header-logo-image', data.header.logo.image);
   updatePreview('header-logo-image', 'prev-header-logo');
+  setVal('header-logo-mobile-image', data.header.logo.mobile_image);
+  updatePreview('header-logo-mobile-image', 'prev-header-logo-mobile');
   setVal('header-cta-label', data.header.cta.label);
   setVal('header-cta-url', data.header.cta.url);
   renderNavLinks();
@@ -2099,10 +2390,11 @@ function removeNavLink(i) { data.header.nav.splice(i,1); renderNavLinks(); markD
 function addNavLink() { data.header.nav.push({label:'New Link',url:'#'}); renderNavLinks(); markDirty(); }
 
 function collectHeader() {
-  data.header.logo.text  = getVal('header-logo-text');
-  data.header.logo.image = getVal('header-logo-image');
-  data.header.cta.label  = getVal('header-cta-label');
-  data.header.cta.url    = getVal('header-cta-url');
+  data.header.logo.text         = getVal('header-logo-text');
+  data.header.logo.image        = getVal('header-logo-image');
+  data.header.logo.mobile_image = getVal('header-logo-mobile-image');
+  data.header.cta.label         = getVal('header-cta-label');
+  data.header.cta.url           = getVal('header-cta-url');
 }
 
 // ── Hero Banner ────────────────────────────────────────────────
@@ -2127,7 +2419,7 @@ function renderHeroSlides() {
             ${slide.image ? `<img src="${esc(slide.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
           </div>
           <div class="img-upload-zone">
-            <label class="upload-trigger" for="up-hero-${i}">${ICONS.upload} Upload image — recommended 1920×1080</label>
+            <label class="upload-trigger" for="up-hero-${i}">${ICONS.upload} Upload image — recommended 2560×1440</label>
             <input type="file" id="up-hero-${i}" accept="image/*" style="display:none" onchange="uploadHeroSlide(this,${i})" />
             <input class="shad-input" id="hero-img-${i}" value="${esc(slide.image)}" placeholder="or paste URL…"
               oninput="data.hero_banner.slides[${i}].image=this.value; setThumb('prev-hero-${i}',this.value); markDirty()" />
@@ -2139,7 +2431,13 @@ function renderHeroSlides() {
 
 async function uploadHeroSlide(input, i) {
   if (!input.files?.[0]) return;
-  const fd = new FormData(); fd.append('file', input.files[0]);
+  showToast('Processing…', 'info');
+  let file = input.files[0];
+  if (!file.type.includes('svg')) {
+    try { file = await convertToWebP(file, 2560, 1440); }
+    catch (e) { showToast('Conversion error: ' + e.message, 'error'); return; }
+  }
+  const fd = new FormData(); fd.append('file', file);
   showToast('Uploading…', 'info');
   try {
     const r = await fetch('/api/upload', { method: 'POST', body: fd });
@@ -2189,7 +2487,7 @@ function renderCarousel() {
             ${item.image ? `<img src="${esc(item.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
           </div>
           <div class="img-upload-zone">
-            <label class="upload-trigger" for="up-c1-${i}">${ICONS.upload} Upload image</label>
+            <label class="upload-trigger" for="up-c1-${i}">${ICONS.upload} Upload image — recommended 2560×1440</label>
             <input type="file" id="up-c1-${i}" accept="image/*" style="display:none" onchange="uploadDynamic(this,${i},'c1','carousel','image','prev-c1-')" />
             <input class="shad-input" id="c1-img-${i}" value="${esc(item.image)}" placeholder="or paste URL…"
               oninput="data.content1.carousel[${i}].image=this.value; setThumb('prev-c1-${i}',this.value); markDirty()" />
@@ -2253,14 +2551,14 @@ function renderSpaces() {
     remove: `removeSpace(${i})`,
     fields: `
       <div class="field">
-        <label class="label">Card image</label>
+        <label class="label">Card image <span style="font-weight:400;color:#94a3b8;font-size:11px">Recommended: 567×650 px, .webp</span></label>
         <div class="img-upload-wrap">
           <div class="img-thumb img-thumb-wide" id="prev-c2-${i}" onclick="document.getElementById('up-c2-${i}').click()">
             ${item.image ? `<img src="${esc(item.image)}" />` : '<span style="font-size:10px;padding:6px">No image</span>'}
           </div>
           <div class="img-upload-zone">
             <label class="upload-trigger" for="up-c2-${i}">${ICONS.upload} Upload image</label>
-            <input type="file" id="up-c2-${i}" accept="image/*" style="display:none" onchange="uploadDynamic(this,${i},'c2','spaces','image','prev-c2-')" />
+            <input type="file" id="up-c2-${i}" accept="image/webp,image/*" style="display:none" onchange="uploadDynamic(this,${i},'c2','spaces','image','prev-c2-')" />
             <input class="shad-input" id="c2-img-${i}" value="${esc(item.image)}" placeholder="or paste URL…"
               oninput="data.content2.spaces[${i}].image=this.value; setThumb('prev-c2-${i}',this.value); markDirty()" />
           </div>
@@ -2282,7 +2580,8 @@ function renderSpaces() {
 function removeSpace(i) { data.content2.spaces.splice(i,1); renderSpaces(); markDirty(); }
 function addSpaceCard() {
   if ((data.content2.spaces||[]).length >= 10) { alert('Maximum 10 spaces allowed.'); return; }
-  data.content2.spaces.push({id:Date.now(),image:'',name:'New Space',category:'',subcategory:''});
+  var n = (data.content2.spaces||[]).length + 1;
+  data.content2.spaces.push({id:Date.now(),image:'',name:'Card ' + n,category:'',subcategory:''});
   renderSpaces(); markDirty();
 }
 function collectContent2() {
@@ -2305,10 +2604,13 @@ function populateContent3() {
 }
 
 function renderProfiles() {
-  const c = data.content3.profile_images || [];
+  // always exactly 8 profile images
+  if (!data.content3.profile_images) data.content3.profile_images = [];
+  while (data.content3.profile_images.length < 8) data.content3.profile_images.push('');
+  data.content3.profile_images.length = 8;
+  const c = data.content3.profile_images;
   render('c3-profiles-list', c, (url, i) => linkCard({}, i, {
     title: `Profile image ${i + 1}`,
-    remove: `removeProfile(${i})`,
     fields: `
       <div class="img-upload-wrap">
         <div class="img-thumb" id="prev-c3p-${i}" onclick="document.getElementById('up-c3p-${i}').click()">
@@ -2339,8 +2641,7 @@ async function uploadProfileImg(input, i) {
   } catch (e) { showToast('Upload error: ' + e.message, 'error'); console.error('[upload profile]', e); }
   input.value = '';
 }
-function removeProfile(i) { data.content3.profile_images.splice(i,1); renderProfiles(); markDirty(); }
-function addProfileImage() { data.content3.profile_images.push(''); renderProfiles(); markDirty(); }
+// profile images fixed at 8 — no add/remove
 function collectContent3() {
   data.content3.heading = getVal('c3-heading');
   data.content3.description = getVal('c3-desc');
@@ -2597,8 +2898,12 @@ async function exportCMS() {
   };
   function toB64(file) { return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){res(r.result);}; r.onerror=rej; r.readAsDataURL(file); }); }
   async function storeFile(file) {
+    // Auto-convert to WebP (max 2560×1440), skip SVG
+    if (file.type && !file.type.includes('svg')) {
+      try { file = await convertToWebP(file, 2560, 1440); } catch(e) { /* fallback to original */ }
+    }
     var b64 = await toB64(file);
-    var key = '/uploads/local_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    var key = '/uploads/local_' + Date.now() + '_' + file.name.replace(/\.[^.]+$/, '.webp').replace(/[^a-zA-Z0-9._-]/g,'_');
     var store = getImgs(); store[key] = b64; localStorage.setItem(LS_I, JSON.stringify(store));
     return key;
   }

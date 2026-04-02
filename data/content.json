@@ -2,85 +2,76 @@
   "header": {
     "logo": {
       "text": "",
-      "image": "/uploads/210d531a42260cdabb175d827fe9982188b8931f_1.jpg"
+      "image": "/uploads/Vector_1.svg",
+      "mobile_image": "/uploads/LogoFull.svg"
     },
     "nav": [
       {
         "label": "About c11",
-        "url": "#"
+        "url": "https://cloud11bangkok.com/th"
       },
       {
         "label": "Your Spaces",
-        "url": "#"
+        "url": "https://cloud11bangkok.com/th"
       },
       {
         "label": "Happenings",
-        "url": "#"
+        "url": "https://cloud11bangkok.com/th"
       },
       {
         "label": "Campaign & Promotion",
-        "url": "#"
+        "url": "https://cloud11bangkok.com/th"
       }
     ],
     "cta": {
       "label": "Contact",
-      "url": "#"
+      "url": "https://cloud11bangkok.com/th"
     }
   },
   "hero_banner": {
     "slides": [
       {
         "id": 1,
-        "image": "/uploads/498206510_667257412966746_8564542676216494053_n_1.jpg",
-        "tagline_left": "bangkok's new creative ecosystem",
-        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+        "image": "/uploads/Image 1.webp",
+        "tagline_left": "bangkok's\nnew creative\necosystem",
+        "tagline_right": "designed for creator,\ncompaines, and communities\nshaping the future of culture"
       },
       {
         "id": 1773908833263,
-        "image": "/uploads/487944332_627756903583464_7677920487019142277_n.jpg",
-        "tagline_left": "bangkok's new creative ecosystem",
-        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+        "image": "/uploads/Image 2.webp",
+        "tagline_left": "bangkok's\nnew creative\necosystem",
+        "tagline_right": "designed for creator,\ncompaines, and communities\nshaping the future of culture"
       },
       {
         "id": 1773908849828,
-        "image": "/uploads/592902051_1273774828117893_8835163902527661951_n.jpg",
-        "tagline_left": "bangkok's new creative ecosystem",
-        "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
-      },
-      {
-        "id": 1773988638699,
-        "image": ""
+        "image": "/uploads/Image 3.webp",
+        "tagline_left": "bangkok's\nnew creative\necosystem",
+        "tagline_right": "designed for creator,\ncompaines, and communities\nshaping the future of culture"
       }
     ],
-    "tagline_left": "bangkok's new creative ecosystem",
-    "tagline_right": "designed for creator, compaines, and communities  shaping the future of culture"
+    "tagline_left": "bangkok's\nnew creative\necosystem",
+    "tagline_right": "designed for creator,\ncompaines, and communities\nshaping the future of culture"
   },
   "content1": {
-    "heading": "Snøhetta’s design philosophy brought to life. A new kind of creative park",
+    "heading": "Snøhetta’s design philosophy brought to life.\nA new kind of creative park",
     "button_text": "View full details",
     "button_url": "",
     "carousel": [
       {
         "id": 1,
-        "image": "/uploads/487944332_627756903583464_7677920487019142277_n_1.jpg",
+        "image": "/uploads/Image 1_1.png",
         "title": "The Garden Atrium",
         "subtitle": "Where nature meets technology"
       },
       {
         "id": 2,
-        "image": "/uploads/498206510_667257412966746_8564542676216494053_n.jpg",
+        "image": "/uploads/Image 2_1.png",
         "title": "The Creative Hub",
         "subtitle": "Collaboration and innovation space"
       },
       {
         "id": 1773988820482,
-        "image": "",
-        "title": "New Slide",
-        "subtitle": ""
-      },
-      {
-        "id": 1773988822463,
-        "image": "",
+        "image": "/uploads/Image 3_1.png",
         "title": "New Slide",
         "subtitle": ""
       }
@@ -95,28 +86,28 @@
     "spaces": [
       {
         "id": 1,
-        "image": "",
+        "image": "/uploads/1500 Sound Academy.png",
         "name": "1500 Sound Academy",
         "category": "Creative Tech Tec",
         "subcategory": ""
       },
       {
         "id": 2,
-        "image": "",
+        "image": "/uploads/Documentary Club.png",
         "name": "Documentary Club",
         "category": "Audio Production",
         "subcategory": ""
       },
       {
         "id": 3,
-        "image": "",
+        "image": "/uploads/Cat Radio.png",
         "name": "Cat Radio",
         "category": "Visual",
         "subcategory": "Effects"
       },
       {
         "id": 4,
-        "image": "",
+        "image": "/uploads/KOVE Studios.png",
         "name": "KOVE",
         "category": "Visual",
         "subcategory": "Effects"
@@ -124,12 +115,21 @@
     ]
   },
   "content3": {
-    "heading": "",
-    "description": "",
+    "heading": "Become part of our new\ncreative culture",
+    "description": "Experiences and resources empowering people to create, collaborate,\nand bring ideas to life.",
     "button_text": "",
     "button_url": "",
-    "app_icon": "",
-    "profile_images": []
+    "app_icon": "/uploads/iconapp.webp",
+    "profile_images": [
+      "/uploads/magnus-andersson-0tODL-2pO1Y-unsplash.jpg",
+      "/uploads/good-faces-T4p72-fc2_A-unsplash.jpg",
+      "/uploads/Screenshot 2569-04-02 at 11.27.08_1.png",
+      "/uploads/635197086_883751327984019_6969396223831629211_n_2.jpg",
+      "/uploads/Image 1_5.png",
+      "/uploads/Image 2_6.png",
+      "/uploads/dom-hill-nimElTcTNyY-unsplash.jpg",
+      "/uploads/helena-lopes-e3OUQGT9bWU-unsplash.jpg"
+    ]
   },
   "footer": {
     "tagline": "Bangkok's\nnew creative\necosystem",
