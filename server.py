@@ -28,8 +28,11 @@ def read_content():
 
 
 def write_content(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+    tmp = DATA_FILE.with_suffix(".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    tmp.replace(DATA_FILE)
 
 
 class CMSHandler(http.server.BaseHTTPRequestHandler):
@@ -183,13 +186,15 @@ a{{cursor:pointer}}
         path = parsed.path
 
         if path == "/api/content":
-            length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length)
             try:
+                length = int(self.headers.get("Content-Length", 0))
+                body = self.rfile.read(length)
                 data = json.loads(body.decode("utf-8"))
                 write_content(data)
                 self.send_json({"ok": True})
             except Exception as e:
+                import traceback
+                traceback.print_exc()
                 self.send_json({"error": str(e)}, 400)
             return
 
@@ -286,7 +291,7 @@ a{{cursor:pointer}}
 
 
 if __name__ == "__main__":
-    server = http.server.HTTPServer(("0.0.0.0", PORT), CMSHandler)
+    server = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), CMSHandler)
     print(f"Cloud 11 CMS running on port {PORT}")
     print(f"  Public:  http://localhost:{PORT}/")
     print(f"  Admin:   http://localhost:{PORT}/admin/")
