@@ -59,6 +59,11 @@ class CMSHandler(http.server.BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = urllib.parse.unquote(parsed.path)
 
+        # Health check
+        if path == "/health":
+            self.send_json({"status": "ok"})
+            return
+
         # API endpoints
         if path == "/api/content":
             try:
@@ -281,8 +286,10 @@ a{{cursor:pointer}}
 
 
 if __name__ == "__main__":
-    server = http.server.HTTPServer(("", PORT), CMSHandler)
-    print(f"Cloud 11 CMS running at http://localhost:{PORT}/admin/")
+    server = http.server.HTTPServer(("0.0.0.0", PORT), CMSHandler)
+    print(f"Cloud 11 CMS running on port {PORT}")
+    print(f"  Public:  http://localhost:{PORT}/")
+    print(f"  Admin:   http://localhost:{PORT}/admin/")
     print("Press Ctrl+C to stop.")
     try:
         server.serve_forever()
