@@ -793,6 +793,41 @@ body {
 .quick-info .qname { font-size: 14px; font-weight: 600; color: var(--foreground); }
 .quick-info .qdesc { font-size: 12px; color: var(--muted-fg); margin-top: 3px; line-height: 1.5; }
 
+/* ── Dashboard: Quick Action short-menu ── */
+.qa-group { margin-bottom: 28px; }
+.qa-group-title { font-size: 13px; font-weight: 700; color: var(--foreground); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.qa-group-title .qa-group-count { font-size: 11px; font-weight: 500; color: var(--muted-fg); background: var(--secondary); padding: 1px 8px; border-radius: 9999px; }
+.qa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 900px) { .qa-grid { grid-template-columns: 1fr; } }
+.qa-card {
+  background: var(--background);
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 2px rgba(15,23,42,.04);
+  transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.qa-card:hover { box-shadow: 0 8px 20px rgba(15,23,42,.08); transform: translateY(-3px); border-color: var(--primary-light); }
+.qa-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--primary-light); color: var(--primary);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.qa-icon svg { width: 18px; height: 18px; }
+.qa-card-name { font-size: 14px; font-weight: 600; color: var(--foreground); }
+.qa-card-desc { font-size: 12px; color: var(--muted-fg); margin-top: 3px; line-height: 1.5; }
+.qa-btn {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 9999px;
+  border: 1px solid var(--border); background: var(--secondary); color: var(--foreground);
+  cursor: pointer; transition: background-color .15s, transform .15s, border-color .15s;
+}
+.qa-card:hover .qa-btn { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); transform: scale(1.05); }
+.qa-btn svg { width: 12px; height: 12px; }
+
 .quick-sections {
   display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
 }
@@ -1052,76 +1087,96 @@ At our Academy, professional instructors guide you through hands-on practice to 
       <div class="card">
         <div class="card-header-row">
           <div>
-            <div class="card-title">Quick Edit</div>
-            <div class="card-description" style="margin-top:3px">Jump directly to any section</div>
+            <div class="card-title">Quick Actions</div>
+            <div class="card-description" style="margin-top:3px">Shortcuts to the things you do most</div>
           </div>
         </div>
         <div class="card-body">
-          <div class="quick-grid">
 
-            <!-- Homepage -->
-            <div class="quick-card" onclick="showPage('header')">
-              <div class="quick-card-top">
-                <div class="quick-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+          <div class="qa-group">
+            <div class="qa-group-title">Content &amp; Marketing <span class="qa-group-count">3</span></div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></div>
+                <div>
+                  <div class="qa-card-name">Add promotion</div>
+                  <div class="qa-card-desc">สร้างโปรโมชันใหม่ใน Just for you</div>
                 </div>
-                <div class="quick-card-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></div>
+                <button class="qa-btn" onclick="showPage('cp_promotions'); openPromotionModal();">
+                  Quick Add
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                </button>
               </div>
-              <div class="quick-card-bottom">
-                <div class="quick-info">
-                  <div class="qname">Homepage</div>
-                  <div class="qdesc">หน้าหลักของเว็บไซต์ Cloud 11</div>
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></div>
+                <div>
+                  <div class="qa-card-name">Add mission</div>
+                  <div class="qa-card-desc">สร้างมิชชั่นใหม่ใน Mission Activity</div>
                 </div>
-                <div class="quick-sections">
-                  <span class="quick-section-tag">Header</span>
-                  <span class="quick-section-tag">Hero Banner</span>
-                  <span class="quick-section-tag">Content 1–3</span>
-                  <span class="quick-section-tag">Footer</span>
+                <button class="qa-btn" onclick="showPage('cp_mission'); openMissionModal();">
+                  Quick Add
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                </button>
+              </div>
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM12.375 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.4-.022-.821-.365-1.075C3.999 17.193 3 14.962 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg></div>
+                <div>
+                  <div class="qa-card-name">FAQ Categories</div>
+                  <div class="qa-card-desc">จัดการหมวดหมู่คำถามที่พบบ่อย</div>
                 </div>
+                <button class="qa-btn" onclick="showPage('faq');">
+                  Manage Now
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
               </div>
             </div>
-
-            <!-- Your Space Page -->
-            <div class="quick-card" onclick="showPage('ys_hero')">
-              <div class="quick-card-top">
-                <div class="quick-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5M3.75 3v18m16.5-18v18M5.25 3h13.5M5.25 21h13.5m-10.5-3.75h.008v.008H8.25v-.008Zm0-3h.008v.008H8.25v-.008Zm0-3h.008v.008H8.25v-.008Zm0-3h.008v.008H8.25v-.008Zm4.5 9h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm4.5 9h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Z"/></svg>
-                </div>
-              </div>
-              <div class="quick-card-bottom">
-                <div class="quick-info">
-                  <div class="qname">Your Space</div>
-                  <div class="qdesc">จัดการหน้า Your Space</div>
-                </div>
-                <div class="quick-sections">
-                  <span class="quick-section-tag">Hero Banner</span>
-                  <span class="quick-section-tag">Community</span>
-                  <span class="quick-section-tag">Academy</span>
-                  <span class="quick-section-tag">Sport</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Happenings Page -->
-            <div class="quick-card" onclick="showPage('happenings')">
-              <div class="quick-card-top">
-                <div class="quick-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
-                </div>
-              </div>
-              <div class="quick-card-bottom">
-                <div class="quick-info">
-                  <div class="qname">Happenings</div>
-                  <div class="qdesc">กิจกรรมและความเคลื่อนไหว</div>
-                </div>
-                <div class="quick-sections">
-                  <span class="quick-section-tag">Creativity</span>
-                  <span class="quick-section-tag">Passion</span>
-                </div>
-              </div>
-            </div>
-
           </div>
+
+          <div class="qa-group">
+            <div class="qa-group-title">Info &amp; Content <span class="qa-group-count">2</span></div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg></div>
+                <div>
+                  <div class="qa-card-name">Terms &amp; Conditions</div>
+                  <div class="qa-card-desc">แก้ไขข้อกำหนดและเงื่อนไข</div>
+                </div>
+                <button class="qa-btn" onclick="showPage('terms');">
+                  Manage Now
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
+              </div>
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-3.038a1.5 1.5 0 0 0-1.085-1.442l-3.518-1.005a1.5 1.5 0 0 0-1.55.422l-1.293 1.293a11.25 11.25 0 0 1-5.61-5.61l1.293-1.293a1.5 1.5 0 0 0 .422-1.55L8.605 2.835A1.5 1.5 0 0 0 7.163 1.75H4.5a1.5 1.5 0 0 0-1.5 1.5v3.5Z"/></svg></div>
+                <div>
+                  <div class="qa-card-name">Contact Us</div>
+                  <div class="qa-card-desc">แก้ไขข้อมูลติดต่อและฟอร์ม</div>
+                </div>
+                <button class="qa-btn" onclick="showPage('contact_us');">
+                  Manage Now
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="qa-group">
+            <div class="qa-group-title">Location &amp; Spaces <span class="qa-group-count">1</span></div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <div class="qa-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg></div>
+                <div>
+                  <div class="qa-card-name">Map &amp; Directory</div>
+                  <div class="qa-card-desc">แผนที่ เส้นทาง และข้อมูลโครงการ</div>
+                </div>
+                <button class="qa-btn" onclick="showPage('map_directory');">
+                  Manage Now
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -4580,6 +4635,12 @@ function showPage(id) {
   document.getElementById('page-title').textContent = PAGE_LABELS[id] || id;
   currentSection = id;
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Dashboard has no previewable content — hide the Preview control and close the panel if open
+  const isDashboard = id === 'dashboard';
+  document.getElementById('preview-btn').style.display = isDashboard ? 'none' : '';
+  if (isDashboard && previewOpen) togglePreview();
+
   refreshPreview();
 }
 
@@ -4660,7 +4721,7 @@ async function loadContent() {
     snapshot = JSON.stringify(data);
     populateAll();
     clearDirty();
-    showPage('hero_banner');
+    showPage('dashboard');
     refreshPreview();
     showToast('Content loaded');
   } catch (e) {
@@ -4671,7 +4732,7 @@ async function loadContent() {
         snapshot = JSON.stringify(data);
         populateAll();
         clearDirty();
-        showPage('hero_banner');
+        showPage('dashboard');
         refreshPreview();
         showToast('Loaded read-only snapshot (no backend on this deployment)', 'info');
         return;
