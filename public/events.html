@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>All Events — Cloud 11</title>
+<style>
+:root{--color-primary:#007ff7;--color-primary-light:#6AABF8;--color-dark:#0f172a;--color-muted:#64748b;--color-bg:#fff;--color-bg-soft:#f0f5ff;--font-base:'Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-base);color:var(--color-dark);background:var(--color-bg)}
+.ae-header{padding:48px 60px 0}
+.ae-header h1{font-size:28px;font-weight:700;margin-bottom:16px}
+.ae-filters{display:flex;gap:8px;margin-bottom:24px}
+.ae-filter-btn{padding:8px 18px;border-radius:9999px;border:1px solid #e2e8f0;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--color-muted)}
+.ae-filter-btn.active{background:linear-gradient(to right,#4F93F7 0%,#6AABF8 50%,#73B1FA 100%);color:#fff;border-color:transparent}
+.ae-body{padding:0 60px 60px}
+@media(max-width:768px){.ae-header,.ae-body{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+
+<header class="ae-header">
+  <h1>All Event</h1>
+  <div class="ae-filters" id="ae-filters">
+    <button class="ae-filter-btn active" data-source="">All Events</button>
+    <button class="ae-filter-btn" data-source="cloud11">Cloud11</button>
+    <button class="ae-filter-btn" data-source="creator">Creator</button>
+  </div>
+</header>
+
+<main class="ae-body">
+  <div class="ev-grid" id="ae-grid"></div>
+</main>
+
+<script src="/public/js/happenings-ui.js"></script>
+<script src="/public/js/happenings-api.js"></script>
+<script>
+var grid = document.getElementById('ae-grid');
+
+function load(source) {
+  renderSkeletons(grid, 6);
+  HappeningsAPI.useQuery(
+    function () { return HappeningsAPI.fetchEvents(source || undefined); },
+    function (state) {
+      if (state.loading) return;
+      if (state.error) return renderErrorState(grid, 'Unable to load events right now.');
+      renderEventGrid(grid, state.data);
+    }
+  );
+}
+
+document.getElementById('ae-filters').addEventListener('click', function (e) {
+  var btn = e.target.closest('.ae-filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.ae-filter-btn').forEach(function (b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  load(btn.getAttribute('data-source'));
+});
+
+load('');
+</script>
+</body>
+</html>

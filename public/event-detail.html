@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Event Detail — Cloud 11</title>
+<style>
+:root{--color-primary:#007ff7;--color-primary-light:#6AABF8;--color-dark:#0f172a;--color-body:#334155;--color-muted:#64748b;--color-bg:#fff;--color-bg-soft:#f0f5ff;--font-base:'Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-base);color:var(--color-dark);background:var(--color-bg)}
+.ed-wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.ed-back{font-size:13px;color:var(--color-muted);text-decoration:none}
+.ed-title{font-size:24px;font-weight:700;margin:16px 0 8px}
+.ed-meta{display:flex;gap:16px;font-size:13px;color:var(--color-muted);margin-bottom:24px}
+.ed-desc{font-size:14px;line-height:1.7;color:var(--color-body);white-space:pre-wrap;margin-bottom:32px}
+.ed-gallery{display:flex;gap:10px;overflow-x:auto;margin-bottom:32px}
+.ed-gallery img{height:220px;border-radius:12px;cursor:zoom-in;flex-shrink:0}
+.ed-tickets{background:var(--color-bg-soft);border-radius:16px;padding:20px;margin-bottom:32px}
+.ed-ticket-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2e8f0}
+.ed-ticket-row:last-child{border-bottom:none}
+.ed-ticket-name{font-weight:600;font-size:14px}
+.ed-ticket-note{font-size:12px;color:var(--color-muted)}
+.ed-ticket-btn{padding:8px 16px;border-radius:9999px;background:linear-gradient(to right,#4F93F7 0%,#6AABF8 50%,#73B1FA 100%);color:#fff;font-size:12px;font-weight:600;border:none;cursor:pointer}
+.ed-organizer{font-size:13px;color:var(--color-body);line-height:1.6}
+.ed-skel-line{height:14px;background:#e2e8f0;border-radius:6px;margin-bottom:10px;animation:ev-pulse 1.2s ease-in-out infinite}
+@keyframes ev-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.ed-zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100}
+.ed-zoom-overlay.open{display:flex}
+.ed-zoom-overlay img{max-width:90%;max-height:90%;object-fit:contain}
+.ed-error{padding:60px 0;text-align:center;color:var(--color-muted)}
+</style>
+</head>
+<body>
+
+<div class="ed-wrap" id="ed-root">
+  <a class="ed-back" href="/happenings/all">&#8592; Back to all events</a>
+  <div id="ed-content">
+    <div class="ed-skel-line" style="width:60%;height:24px;margin-top:16px"></div>
+    <div class="ed-skel-line" style="width:40%"></div>
+    <div class="ed-skel-line" style="width:100%"></div>
+    <div class="ed-skel-line" style="width:90%"></div>
+  </div>
+</div>
+
+<div class="ed-zoom-overlay" id="ed-zoom"><img id="ed-zoom-img" src=""></div>
+
+<script>
+function ticketRowHTML(t) {
+  return '<div class="ed-ticket-row"><div><div class="ed-ticket-name">' + t.name + '</div><div class="ed-ticket-note">' + t.note + '</div></div><button class="ed-ticket-btn">เข้าแอป &#8594;</button></div>';
+}
+
+function renderEvent(ev) {
+  var html =
+    '<h1 class="ed-title">' + ev.title + '</h1>' +
+    '<div class="ed-meta"><span>&#128205; ' + ev.venue + '</span><span>&#128197; ' + ev.date_range + '</span></div>' +
+    '<div class="ed-desc">' + ev.description + '</div>' +
+    '<div class="ed-gallery">' + ev.gallery.map(function (src) { return '<img src="' + src + '" data-full="' + src + '">'; }).join('') + '</div>' +
+    '<div class="ed-tickets"><h3 style="margin-bottom:10px;font-size:15px">Select Ticket</h3>' + ev.tickets.map(ticketRowHTML).join('') + '</div>' +
+    '<div class="ed-organizer"><strong>Organizer & Contact</strong><br>' + ev.organizer.name + '<br>M: ' + ev.organizer.phone + '<br>E: ' + ev.organizer.email + '</div>';
+  document.getElementById('ed-content').innerHTML = html;
+
+  document.querySelectorAll('.ed-gallery img').forEach(function (img) {
+    img.addEventListener('click', function () {
+      document.getElementById('ed-zoom-img').src = img.getAttribute('data-full');
+      document.getElementById('ed-zoom').classList.add('open');
+    });
+  });
+}
+
+document.getElementById('ed-zoom').addEventListener('click', function () {
+  this.classList.remove('open');
+});
+
+// id comes from the path: /happenings/event/<id>
+var eventId = decodeURIComponent(location.pathname.split('/').pop());
+</script>
+<script src="/public/js/happenings-api.js"></script>
+<script>
+HappeningsAPI.useQuery(
+  function () { return HappeningsAPI.fetchEvent(eventId); },
+  function (state) {
+    if (state.loading) return;
+    if (state.error) {
+      document.getElementById('ed-content').innerHTML = '<div class="ed-error">Event not found.</div>';
+      return;
+    }
+    renderEvent(state.data);
+  }
+);
+</script>
+</body>
+</html>

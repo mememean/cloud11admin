@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Happenings — Cloud 11</title>
+<style>
+:root{--color-primary:#007ff7;--color-primary-light:#6AABF8;--color-dark:#0f172a;--color-body:#334155;--color-muted:#64748b;--color-bg:#fff;--color-bg-soft:#f0f5ff;--font-base:'Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-base);color:var(--color-dark);background:var(--color-bg)}
+.hp-hero{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#0b1020;display:flex;flex-direction:column;justify-content:flex-end}
+.hp-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hp-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.05))}
+.hp-hero-content{position:relative;z-index:1;display:flex;flex-direction:column;gap:clamp(2px,0.8%,8px);padding:clamp(16px,4%,48px) clamp(20px,5%,60px);color:#fff}
+.hp-hero h1{font-size:clamp(22px,4vw,48px);font-weight:700;line-height:1.15;margin:0}
+.hp-hero p{font-size:clamp(12px,1.6vw,17px);opacity:.85;margin:0}
+.hp-section{padding:48px 60px}
+.hp-section-top{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;margin-bottom:20px;flex-wrap:wrap}
+.hp-section h2{font-size:24px;font-weight:700}
+.hp-section-desc{font-size:14px;line-height:1.6;color:var(--color-body);white-space:pre-line;max-width:520px}
+.hp-more-btn{display:inline-block;margin-top:20px;padding:10px 20px;border-radius:9999px;background:linear-gradient(to right,#4F93F7 0%,#6AABF8 50%,#73B1FA 100%);color:#fff;text-decoration:none;font-size:13px;font-weight:600}
+@media(max-width:768px){.hp-hero,.hp-section{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+
+<section class="hp-hero" id="hp-hero">
+  <img id="hp-hero-img" src="" alt="" style="display:none">
+  <div class="hp-hero-overlay"></div>
+  <div class="hp-hero-content">
+    <h1 id="hp-hero-heading">Happening for you</h1>
+    <p id="hp-hero-sub">A place where stories begin</p>
+  </div>
+</section>
+
+<section class="hp-section">
+  <div class="hp-section-top">
+    <h2 id="hp-creativity-heading">Creativity, elevated</h2>
+    <div>
+      <p class="hp-section-desc" id="hp-creativity-desc"></p>
+      <a class="hp-more-btn" id="hp-creativity-btn" href="/happenings/all">See All &#8594;</a>
+    </div>
+  </div>
+  <div class="ev-grid" id="grid-cloud11"></div>
+</section>
+
+<section class="hp-section">
+  <div class="hp-section-top">
+    <h2 id="hp-passion-heading">Create your Passion</h2>
+    <div>
+      <p class="hp-section-desc" id="hp-passion-desc"></p>
+      <a class="hp-more-btn" id="hp-passion-btn" href="/happenings/all">See All &#8594;</a>
+    </div>
+  </div>
+  <div class="ev-grid" id="grid-creator"></div>
+</section>
+
+<script src="/public/js/happenings-ui.js"></script>
+<script src="/public/js/happenings-api.js"></script>
+<script>
+function getLang(){ return localStorage.getItem('cloud11_lang') || 'en'; }
+function t(field){ if(field && typeof field === 'object') return field[getLang()] || field.en || ''; return field || ''; }
+
+// CMS copy (admin → Happenings page) — hero/heading/button text
+fetch('/api/content').then(function (r) { return r.json(); }).then(function (d) {
+  var hp = d.happenings;
+  if (!hp) return;
+  if (hp.hero) {
+    document.getElementById('hp-hero-heading').textContent = t(hp.hero.heading);
+    document.getElementById('hp-hero-sub').textContent = t(hp.hero.subheading);
+    if (hp.hero.image) {
+      var heroImg = document.getElementById('hp-hero-img');
+      heroImg.src = hp.hero.image;
+      heroImg.style.display = 'block';
+    }
+  }
+  if (hp.creativity) {
+    document.getElementById('hp-creativity-heading').textContent = t(hp.creativity.heading);
+    document.getElementById('hp-creativity-desc').textContent = t(hp.creativity.description);
+    document.getElementById('hp-creativity-btn').textContent = t(hp.creativity.button_text) + ' →';
+  }
+  if (hp.passion) {
+    document.getElementById('hp-passion-heading').textContent = t(hp.passion.heading);
+    document.getElementById('hp-passion-desc').textContent = t(hp.passion.description);
+    document.getElementById('hp-passion-btn').textContent = t(hp.passion.button_text) + ' →';
+  }
+}).catch(function (e) { console.warn('CMS fetch failed:', e); });
+
+function loadSection(gridId, source) {
+  var grid = document.getElementById(gridId);
+  renderSkeletons(grid, 3);
+  HappeningsAPI.useQuery(
+    function () { return HappeningsAPI.fetchEvents(source); },
+    function (state) {
+      if (state.loading) return;
+      if (state.error) return renderErrorState(grid, 'Unable to load events right now.');
+      renderEventGrid(grid, state.data);
+    }
+  );
+}
+loadSection('grid-cloud11', 'cloud11');
+loadSection('grid-creator', 'creator');
+</script>
+</body>
+</html>

@@ -81,9 +81,49 @@ class CMSHandler(http.server.BaseHTTPRequestHandler):
             self.serve_file(file_path)
             return
 
+        # Mock BE API — Cloud11 + Creator events (Happenings module)
+        if path == "/api/events":
+            from happenings_api import list_events
+            qs = urllib.parse.parse_qs(parsed.query)
+            self.send_json(list_events(source=qs.get("source", [None])[0]))
+            return
+        if path.startswith("/api/events/"):
+            from happenings_api import get_event
+            event_id = path[len("/api/events/"):]
+            event = get_event(event_id)
+            if event is None:
+                self.send_json({"error": "not found"}, 404)
+            else:
+                self.send_json(event)
+            return
+
+        # Mock BE API — Community Space booking system (Your Space module)
+        if path == "/api/community-spaces":
+            from community_api import list_spaces
+            self.send_json(list_spaces())
+            return
+        if path.startswith("/api/community-spaces/"):
+            from community_api import get_space
+            space_id = path[len("/api/community-spaces/"):]
+            space = get_space(space_id)
+            if space is None:
+                self.send_json({"error": "not found"}, 404)
+            else:
+                self.send_json(space)
+            return
+
         # Public website
         if path == "/":
             self.serve_file(BASE_DIR / "public" / "index.html")
+            return
+        if path == "/happenings":
+            self.serve_file(BASE_DIR / "public" / "happenings.html")
+            return
+        if path == "/happenings/all":
+            self.serve_file(BASE_DIR / "public" / "events.html")
+            return
+        if path.startswith("/happenings/event/"):
+            self.serve_file(BASE_DIR / "public" / "event-detail.html")
             return
 
         # Admin UI
