@@ -4555,7 +4555,7 @@ const MENU_CONFIG = [
 const PAGE_LABELS = { dashboard:'Dashboard', header:'Header', hero_banner:'Hero Banner', content1:'Content 1', brand_logos:'Brand Logos', content2:'Content 2', content3:'Download App', footer:'Footer', ys_hero:'Your Space — Hero Banner', ys_community:'Your Space — Community', ys_academy:'Your Space — Academy', ys_sport:'Your Space — Sport & Lifestyle', terms:'Terms & Conditions', contact_us:'Contact Us', map_directory:'Map & Directory', happenings:'Happenings', cp_hero:'Campaign & Promotion — Hero Banner', cp_promotions:'Just for you / Promotions', cp_mall:'Mall Directory', cp_mission:'Mission Activity', faq:'FAQ' };
 
 // Toggle state lives in a Set keyed by parent item id — independent per menu, no shared/global flag.
-const openMenus = new Set(['homepage']);
+const openMenus = new Set();
 
 // Reverse lookup: child page id → parent menu id, built once from MENU_CONFIG.
 const PARENT_OF = {};
